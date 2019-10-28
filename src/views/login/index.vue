@@ -43,9 +43,28 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button  type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-      <el-button  type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
     </el-form>
+    <el-dialog
+      title="请选择登录角色"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-select v-model="value" multiple placeholder="请选择" style="width: 100%;">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -71,6 +90,7 @@ export default {
       }
     }
     return {
+      dialogVisible: false,
       loginForm: {
         username: 'admin',
         password: '111111'
@@ -83,7 +103,15 @@ export default {
       capsTooltip: false,
       loading: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      options: [{
+        value: 'item1',
+        label: '老师'
+      }, {
+        value: 'item2',
+        label: '家长'
+      }],
+      value: []
     }
   },
   watch: {
@@ -135,6 +163,7 @@ export default {
       })
     },
     handleLogin() {
+      this.dialogVisible = true
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -162,7 +191,7 @@ export default {
         }
         return acc
       }, {})
-    }
+    },
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)
@@ -181,6 +210,13 @@ export default {
     //     }
     //   }
     // }
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    }
   }
 }
 </script>
@@ -201,6 +237,9 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  .el-select .el-input{
+    width: 100%;
+  }
   .el-input {
     display: inline-block;
     height: 47px;
