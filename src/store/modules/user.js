@@ -1,4 +1,4 @@
-import { Login, logout, getInfo } from '@/api/user'
+import { Login, GenerateAuth, logout, getInfo, Register, GetCode } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -30,15 +30,58 @@ const mutations = {
 }
 
 const actions = {
-  // user login
+  // 获取验证码
+  getCode({ commit }, userInfo) {
+    const { username } = userInfo
+    return new Promise((resolve, reject) => {
+      GetCode({ phone: username.trim() }).then(response => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // 用户注册
+  register({ commit }, userInfo) {
+    const { username, password, code } = userInfo
+    return new Promise((resolve, reject) => {
+      Register({ phone: username.trim(), password: password, code: code.trim() }).then(response => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // 用户登录
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       Login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+        if (data.token) {
+          commit('SET_TOKEN', data.token)
+          setToken(data.token)
+        }
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // 多角色用户登录
+  generateAuth({ commit }, userInfo) {
+    const { username, password, roleId } = userInfo
+    return new Promise((resolve, reject) => {
+      GenerateAuth({ username: username.trim(), password: password, roleId: roleId }).then(response => {
+        const { data } = response
+        if (data.token) {
+          commit('SET_TOKEN', data.token)
+          setToken(data.token)
+        }
+        resolve(data)
       }).catch(error => {
         reject(error)
       })

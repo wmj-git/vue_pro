@@ -137,6 +137,7 @@ export const constantRoutes = [
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
+
 export const asyncRoutes = [
 
   /** when your routing map is too long, you can split it into small modules **/
@@ -337,7 +338,6 @@ export const asyncRoutes = [
       }
     ]
   },
-
   {
     path: '/pdf',
     component: Layout,

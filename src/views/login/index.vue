@@ -12,7 +12,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="输入手机账号"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +30,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="Password"
+            placeholder="输入密码"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -50,34 +50,33 @@
       title="请选择登录角色"
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose"
     >
-      <el-select v-model="value" multiple placeholder="请选择" style="width: 100%;">
+      <el-select v-model="value"  placeholder="请选择" style="width: 100%;color: #2d2f33">
         <el-option
           v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.zhName"
+          :value="item.id"
         />
       </el-select>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+         <el-button type="primary" @click="handleGenerateAuth">确 定</el-button>
+         <el-button @click="dialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { isPhone } from '@/utils/validate'
 
 export default {
   name: 'Login',
   components: {},
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+      if (!isPhone(value)) {
+        callback(new Error('请输入手机号'))
       } else {
         callback()
       }
@@ -90,10 +89,9 @@ export default {
       }
     }
     return {
-      dialogVisible: false,
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -104,13 +102,8 @@ export default {
       loading: false,
       redirect: undefined,
       otherQuery: {},
-      options: [{
-        value: 'item1',
-        label: '老师'
-      }, {
-        value: 'item2',
-        label: '家长'
-      }],
+      dialogVisible: false,
+      options: [],
       value: []
     }
   },
@@ -127,7 +120,6 @@ export default {
     }
   },
   created() {
-    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -163,14 +155,20 @@ export default {
       })
     },
     handleLogin() {
-      this.dialogVisible = true
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
+            .then((res) => {
+              console.log(res)
+              if (res.user && res.user.roleList && res.user.roleList.length === 1) {
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                this.loading = false
+              } else if (res.user && res.user.roleList && res.user.roleList.length > 1) {
+                this.dialogVisible = true
+                this.options = []
+                this.options = this.options.concat(res.user.roleList)
+              }
             })
             .catch(() => {
               this.loading = false
@@ -180,6 +178,24 @@ export default {
           return false
         }
       })
+    },
+    handleGenerateAuth() {
+      const _this = this
+      console.log(this.options, this.value)
+      this.$store.dispatch('user/generateAuth', {
+        username: this.loginForm.username,
+        password: this.loginForm.username,
+        roleId: this.value
+      })
+        .then((res) => {
+          console.log(res)
+          _this.dialogVisible = false
+          _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          _this.loading = false
+        })
+        .catch(() => {
+          _this.loading = false
+        })
     },
     handleRegister() {
       this.$router.push('/register')
@@ -191,31 +207,6 @@ export default {
         }
         return acc
       }, {})
-    },
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   }
 }
@@ -226,7 +217,7 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg:#283443;
-$light_gray:#fff;
+$light_gray: #c6c6c6;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {

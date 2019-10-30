@@ -3,6 +3,18 @@
  */
 
 /**
+ 判断为手机号码
+ */
+export function isPhone(str) {
+  const _r = /^[1][3,4,5,7,8][0-9]{9}$/
+  if (!_r.test(str)) {
+    return false
+  } else {
+    return true
+  }
+}
+
+/**
  * @param {string} path
  * @returns {Boolean}
  */

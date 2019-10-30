@@ -34,6 +34,11 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 
+// 后台获取路由列表
+export function getAsyncRoutes() {
+  return
+}
+
 const state = {
   routes: [],
   addRoutes: []
@@ -48,13 +53,15 @@ const mutations = {
 
 const actions = {
   generateRoutes({ commit }, roles) {
+    // asyncRoutes = getAsyncRoutes()
     return new Promise(resolve => {
-      let accessedRoutes
+      const accessedRoutes = asyncRoutes || []
+      /* let accessedRoutes
       if (roles.includes('admin')) {
         accessedRoutes = asyncRoutes || []
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
+      }*/
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
