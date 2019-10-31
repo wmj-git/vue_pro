@@ -76,7 +76,7 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isPhone(value)) {
-        callback(new Error('请输入手机号'))
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
@@ -104,7 +104,8 @@ export default {
       otherQuery: {},
       dialogVisible: false,
       options: [],
-      value: []
+      value: [],
+      uuid: ''
     }
   },
   watch: {
@@ -160,7 +161,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then((res) => {
-              console.log(res)
+              console.log('login', res)
               if (res.user && res.user.roleList && res.user.roleList.length === 1) {
                 this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
                 this.loading = false
@@ -168,6 +169,7 @@ export default {
                 this.dialogVisible = true
                 this.options = []
                 this.options = this.options.concat(res.user.roleList)
+                this.uuid = res.uuid
               }
             })
             .catch(() => {
@@ -184,8 +186,8 @@ export default {
       console.log(this.options, this.value)
       this.$store.dispatch('user/generateAuth', {
         username: this.loginForm.username,
-        password: this.loginForm.username,
-        roleId: this.value
+        roleId: this.value,
+        uuid: this.uuid
       })
         .then((res) => {
           console.log(res)

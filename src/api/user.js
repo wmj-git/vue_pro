@@ -10,14 +10,6 @@ export function getPbk() {
   })
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
 // 账户登录
 export function Login(_data) {
   const obj = JSON.stringify({
@@ -42,7 +34,7 @@ export function Login(_data) {
 export function GenerateAuth(_data) {
   const obj = JSON.stringify({
     phone: _data.username,
-    password: _data.password,
+    uuid: _data.uuid,
     roleId: _data.roleId
   })
   return new Promise(function(resolve, reject) {

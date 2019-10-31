@@ -1,9 +1,17 @@
-import { Login, GenerateAuth, logout, getInfo, Register, GetCode } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { Login, GenerateAuth, logout, Register, GetCode } from '@/api/user'
+import { getToken, setToken, removeToken,
+  setUser, getUser, removeUser,
+  getRSAPublicKey, setRSAPublicKey, removeRSAPublicKey,
+  getExpires, setExpires, removeExpires,
+  getRefreshToken, setRefreshToken, removeRefreshToken
+} from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  RSAPublicKey: getRSAPublicKey(),
+  expires: getExpires(),
+  refreshToken: getRefreshToken(),
   name: '',
   avatar: '',
   introduction: '',
@@ -14,6 +22,15 @@ const mutations = {
 
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_RSAPUBLICKEY: (state, RSAPublicKey) => {
+    state.RSAPublicKey = RSAPublicKey
+  },
+  SET_EXPIRES: (state, expires) => {
+    state.expires = expires
+  },
+  SET_REFRESHTOKEN: (state, refreshToken) => {
+    state.refreshToken = refreshToken
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -26,6 +43,30 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  }
+}
+
+function setUserData(commit, data) {
+  if (data.token) {
+    commit('SET_TOKEN', data.token.Authorization)
+    setToken(data.token.Authorization)
+    commit('SET_REFRESHTOKEN', data.token.refreshAuthorization)
+    setRefreshToken(data.token.refreshAuthorization)
+    commit('SET_RSAPUBLICKEY', data.token.RSAPublicKey)
+    setRSAPublicKey(data.token.RSAPublicKey)
+    commit('SET_EXPIRES', data.token.expires)
+    setExpires(data.token.expires)
+  }
+  if (data.user && data.user.roleList) {
+    const _roles = []
+    data.user.roleList.forEach(function(_item) {
+      _roles.push(_item.name)
+    })
+    commit('SET_ROLES', _roles)
+    commit('SET_NAME', data.user.username)
+    commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+    commit('SET_INTRODUCTION', data.user.createDate)
+    setUser(data.user)
   }
 }
 
@@ -60,10 +101,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       Login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        if (data.token) {
-          commit('SET_TOKEN', data.token)
-          setToken(data.token)
-        }
+
+        setUserData(commit, data)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -73,14 +112,12 @@ const actions = {
 
   // 多角色用户登录
   generateAuth({ commit }, userInfo) {
-    const { username, password, roleId } = userInfo
+    const { username, uuid, roleId } = userInfo
     return new Promise((resolve, reject) => {
-      GenerateAuth({ username: username.trim(), password: password, roleId: roleId }).then(response => {
+      GenerateAuth({ username: username.trim(), uuid: uuid, roleId: roleId }).then(response => {
         const { data } = response
-        if (data.token) {
-          commit('SET_TOKEN', data.token)
-          setToken(data.token)
-        }
+
+        setUserData(commit, data)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -88,31 +125,31 @@ const actions = {
     })
   },
 
-  // get user info
+  // 获取本地存储的用户信息
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      const data = getUser()
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+      if (!data) {
+        reject('Verification failed, please Login again.')
+      }
+      const { roleList, username, createDate } = JSON.parse(data)
 
-        const { roles, name, avatar, introduction } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
+      const roles = []
+      roleList.forEach(function(_item) {
+        roles.push(_item.name)
       })
+
+      // roles must be a non-empty array
+      if (!roles || roles.length <= 0) {
+        reject('getInfo: roles must be a non-null array!')
+      }
+
+      commit('SET_ROLES', roles)
+      commit('SET_NAME', username)
+      commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+      commit('SET_INTRODUCTION', createDate)
+      resolve(roles)
     })
   },
 
@@ -121,10 +158,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
         removeToken()
+        commit('SET_REFRESHTOKEN', '')
+        removeRefreshToken()
+        commit('SET_RSAPUBLICKEY', '')
+        removeRSAPublicKey()
+        commit('SET_EXPIRES', '')
+        removeExpires()
+        commit('SET_ROLES', [])
+        removeUser()
         resetRouter()
-
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
