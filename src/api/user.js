@@ -52,10 +52,24 @@ export function GenerateAuth(_data) {
 }
 
 // 账户登出
-export function logout() {
+export function Logout(_val) {
   return request({
-    url: '/user/logout',
-    method: 'post'
+    url: '/jwt/auth/logout',
+    method: 'get',
+    params: {
+      refreshAuthorization: _val
+    }
+  })
+}
+
+// 刷新
+export function RefreshToken(_val) {
+  return request({
+    url: '/jwt/auth/logout',
+    method: 'get',
+    params: {
+      refreshAuthorization: _val
+    }
   })
 }
 

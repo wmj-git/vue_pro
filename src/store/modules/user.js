@@ -1,4 +1,4 @@
-import { Login, GenerateAuth, logout, Register, GetCode } from '@/api/user'
+import { Login, GenerateAuth, Logout, RefreshToken, Register, GetCode } from '@/api/user'
 import { getToken, setToken, removeToken,
   setUser, getUser, removeUser,
   getRSAPublicKey, setRSAPublicKey, removeRSAPublicKey,
@@ -46,6 +46,7 @@ const mutations = {
   }
 }
 
+// 登录时数据存入vuex
 function setUserData(commit, data) {
   if (data.token) {
     commit('SET_TOKEN', data.token.Authorization)
@@ -152,11 +153,10 @@ const actions = {
       resolve(roles)
     })
   },
-
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      Logout(state.refreshToken).then(() => {
         commit('SET_TOKEN', '')
         removeToken()
         commit('SET_REFRESHTOKEN', '')
@@ -173,6 +173,20 @@ const actions = {
         dispatch('tagsView/delAllViews', null, { root: true })
 
         resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // remove token
+  refreshTokenFn({ commit }, _val) {
+    return new Promise((resolve, reject) => {
+      RefreshToken({ username: username.trim(), uuid: uuid, roleId: roleId }).then(response => {
+        const { data } = response
+
+        setUserData(commit, data)
+        resolve(data)
       }).catch(error => {
         reject(error)
       })
