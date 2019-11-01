@@ -49,6 +49,8 @@ const mutations = {
 // 登录时数据存入vuex
 function setUserData(commit, data) {
   if (data.token) {
+    /* commit('SET_TOKEN', data.token.Authorization)
+    setToken(data.token.Authorization) */
     commit('SET_TOKEN', data.token.Authorization)
     setToken(data.token.Authorization)
     commit('SET_REFRESHTOKEN', data.token.refreshAuthorization)
