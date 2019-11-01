@@ -43,8 +43,8 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
     <el-dialog
       title="请选择登录角色"
@@ -163,7 +163,7 @@ export default {
             .then((res) => {
               console.log('login', res)
               if (res.user && res.user.roleList && res.user.roleList.length === 1) {
-                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                this.$router.push({ path: this.redirect || '/' })
                 this.loading = false
               } else if (res.user && res.user.roleList && res.user.roleList.length > 1) {
                 this.dialogVisible = true
@@ -192,7 +192,7 @@ export default {
         .then((res) => {
           console.log(res)
           _this.dialogVisible = false
-          _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          _this.$router.push({ path: this.redirect || '/' })
           _this.loading = false
         })
         .catch(() => {

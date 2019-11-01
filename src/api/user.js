@@ -62,10 +62,10 @@ export function Logout(_val) {
   })
 }
 
-// 刷新
+// 刷新Token
 export function RefreshToken(_val) {
   return request({
-    url: '/jwt/auth/logout',
+    url: '/jwt/auth/refreshAuthorization',
     method: 'get',
     params: {
       refreshAuthorization: _val

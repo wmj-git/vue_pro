@@ -49,6 +49,8 @@ const mutations = {
 // 登录时数据存入vuex
 function setUserData(commit, data) {
   if (data.token) {
+    /* commit('SET_TOKEN', data.token.Authorization)
+    setToken(data.token.Authorization) */
     commit('SET_TOKEN', data.token.Authorization)
     setToken(data.token.Authorization)
     commit('SET_REFRESHTOKEN', data.token.refreshAuthorization)
@@ -179,13 +181,20 @@ const actions = {
     })
   },
 
-  // remove token
-  refreshTokenFn({ commit }, _val) {
+  // 刷新Token
+  refreshTokenFn({ commit, state }) {
     return new Promise((resolve, reject) => {
-      RefreshToken({ username: username.trim(), uuid: uuid, roleId: roleId }).then(response => {
+      RefreshToken(state.refreshToken).then(response => {
         const { data } = response
+        console.log('refreshToken', response)
 
-        setUserData(commit, data)
+        commit('SET_TOKEN', data.Authorization)
+        setToken(data.Authorization)
+        commit('SET_REFRESHTOKEN', data.refreshAuthorization)
+        setRefreshToken(data.refreshAuthorization)
+        commit('SET_EXPIRES', data.expires)
+        setExpires(data.expires)
+
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -48,7 +48,15 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 
+import { TimeFn } from '@/utils/tool'
+import { getExpires } from '@/utils/auth'
+
 export default {
+  data() {
+    return {
+      timeToken: ''
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -72,6 +80,21 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
+  },
+  mounted() {
+    const _time = getExpires() - 300000
+    this.$store.dispatch('user/refreshTokenFn')
+    this.timeToken = new TimeFn('tm2', () => {
+      this.$store.dispatch('user/refreshTokenFn')
+    }, () => {
+      return true
+    }, _time)
+    // 运行
+    this.timeToken.run()
+  },
+  destroyed() {
+    // 关闭
+    this.timeToken.stop()
   }
 }
 </script>
