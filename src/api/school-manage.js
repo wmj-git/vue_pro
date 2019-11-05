@@ -21,3 +21,20 @@ export function editList() {
     method: 'post'
   })
 }
+// 学校管理添加
+export function addList(obj) {
+  return request({
+    url: '/school/school/add',
+    method: 'post',
+    data: obj
+  })
+}
+// 获取所属教委id
+export function JiaoweiList(obj) {
+  return request({
+    url: '/school/education/queryAllByPage',
+    method: 'get',
+    data: obj
+  })
+}
+

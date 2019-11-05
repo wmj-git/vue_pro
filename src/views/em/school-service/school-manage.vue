@@ -45,16 +45,34 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <Pagination
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      :hide-on-single-page="pageOne"
+      @pagination="getList"
+      @current-change="handleCurrentChange"
+    />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp">
-        <el-form-item label="姓名" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="学校名称" prop="name" :label-width="formLabelWidth">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="住址" prop="address" :label-width="formLabelWidth">
-          <el-select v-model="temp.address" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
+        <el-form-item label="学校地址" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.address" />
+        </el-form-item>
+        <el-form-item label="所属教委id" prop="name" :label-width="formLabelWidth">
+          <el-select v-model="temp.siEcId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
+        </el-form-item>
+        <el-form-item label="学校联系电话" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.tel" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -65,11 +83,9 @@
   </div>
 </template>
 <script>
-import { fetchList } from '@/api/school-manage'
-import Pagination from '@/components/Pagination'
+import { fetchList, addList, JiaoweiList } from '@/api/school-manage'
 export default {
   name: 'SchoolManage',
-  components: { Pagination },
   data() {
     return {
       tableDataEnd: null,
@@ -95,10 +111,11 @@ export default {
           key: 'tel'
         }
       ],
+      pageOne: false,
       total: 0,
       listQuery: {
         page: -1,
-        limit: 20
+        limit: 10
       },
       textMap: {
         update: '修改',
@@ -111,39 +128,92 @@ export default {
         siEcId: '',
         tel: ''
       },
-      statusOptions: [
-        '重庆', '上海', '云南', '江苏'
-      ],
+      statusOptions: [],
       dialogFormVisible: false,
       dialogStatus: '',
       formLabelWidth: '120px',
-      inputFilter: ''
+      inputFilter: '',
+      multipleSelection: []
     }
   },
   created() {
     this.getList()
+    this.getSection()
   },
   methods: {
+    // 渲染表格数据
     getList() {
       fetchList(this.listQuery).then(response => {
         console.log(response.data.list)
-        this.tableDataEnd = response.data.list
         this.total = response.data.total
+        console.log('total', this.total)
+        this.listQuery.limit = response.data.pageSize
+        console.log('pageSize:', response.data.pageSize)
+        console.log('pages:', response.data.pages)
+        this.tableDataEnd = response.data.list
       })
+    },
+    // 获取下拉选项
+    getSection() {
+      const optionsArr = []
+      JiaoweiList().then(response => {
+        console.log(response.data.list)
+        response.data.list.forEach((_val) => {
+          optionsArr.push({ 'label': _val.name, 'value': _val.id })
+        })
+        this.statusOptions = optionsArr
+      })
+      console.log(optionsArr)
+    },
+    currentSel(val) {
+      console.log(val)
     },
     handleEdit() {
       this.dialogFormVisible = true
       this.dialogStatus = 'update'
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleCreate() {
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleFilter(ids) {
     },
     handleDelete() {},
-    createData() {},
-    updateData() {}
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          addList(this.temp).then((res) => {
+            console.log(res)
+            if (res.statusCode === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.getList()
+              this.dialogFormVisible = false
+            } else {
+              this.$message.error('添加失败')
+            }
+          })
+        }
+      })
+    },
+    updateData() {},
+    resetTemp() {
+      this.temp = {}
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    handleCurrentChange(val) {
+      console.log('当前页:', val)
+    }
   }
 }
 </script>
