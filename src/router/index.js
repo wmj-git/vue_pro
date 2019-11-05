@@ -15,7 +15,7 @@ import nestedRouter from './modules/nested'
 /* demo */
 import emPermission from './modules/em/emPermission' // 权限
 import systemManagement from './modules/em/systemManagement' // 系统管理
-import school from './modules/em/school' // 学校服务
+import schoolService from './modules/em/schoolService' // 学校服务
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -143,7 +143,7 @@ export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   emPermission,
   systemManagement,
-  school,
+  schoolService,
   {
     path: '/permission',
     component: Layout,

@@ -3,22 +3,21 @@ export function fetchList(obj) {
   return request({
     url: '/school/school/queryAllByPage',
     method: 'get',
-    data: obj
+    params: obj
   })
 }
-export function filterList(ids) {
+export function filterList(obj) {
   return request({
     url: '/school/school/getListByIds',
     method: 'post',
-    params: {
-      ids: ids
-    }
+    data: obj
   })
 }
-export function editList() {
+export function editList(obj) {
   return request({
     url: '/school/school/update',
-    method: 'post'
+    method: 'post',
+    data: obj
   })
 }
 // 学校管理添加
@@ -29,12 +28,19 @@ export function addList(obj) {
     data: obj
   })
 }
+// 学校管理删除
+export function delList(obj) {
+  return request({
+    url: '/school/school/deletes',
+    method: 'delete',
+    data: obj.params
+  })
+}
 // 获取所属教委id
-export function JiaoweiList(obj) {
+export function educationCommission() {
   return request({
     url: '/school/education/queryAllByPage',
-    method: 'get',
-    data: obj
+    method: 'get'
   })
 }
 

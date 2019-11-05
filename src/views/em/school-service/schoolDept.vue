@@ -40,11 +40,8 @@
   </div>
 </template>
 <script>
-import { fetchList } from '@/api/school-manage'
-import Pagination from '@/components/Pagination'
 export default {
-  name: 'SchoolDepartment',
-  components: { Pagination },
+  name: 'SchoolDept',
   data() {
     return {
       tableDataEnd: [],
@@ -88,7 +85,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      /* fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
 
@@ -96,7 +93,7 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
-      })
+      })*/
     },
     handleEdit() {},
     handleDelete() {}

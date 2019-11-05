@@ -1,6 +1,6 @@
 import Layout from '@/layout'
 
-const school = {
+const schoolService = {
   path: '/school',
   component: Layout,
   redirect: 'noRedirect',
@@ -12,18 +12,18 @@ const school = {
   },
   children: [
     {
-      path: 'school-manage',
-      component: () => import('@/views/em/school-service/school-manage'),
-      name: 'SchoolManage',
+      path: 'schoolInfo',
+      component: () => import('@/views/em/school-service/schoolInfo'),
+      name: 'schoolInfo',
       meta: {
         title: '学校管理',
         icon: 'chart'
       }
     },
     {
-      path: 'school-department',
-      component: () => import('@/views/em/school-service/school-department'),
-      name: 'SchoolDepartment',
+      path: 'schoolDept',
+      component: () => import('@/views/em/school-service/schoolDept'),
+      name: 'SchoolDept',
       meta: {
         title: '学校部门管理',
         icon: 'chart'
@@ -31,4 +31,4 @@ const school = {
     }
   ]
 }
-export default school
+export default schoolService
