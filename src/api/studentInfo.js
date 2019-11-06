@@ -15,7 +15,7 @@ export function filterList(obj) {
 }
 export function editList(obj) {
   return request({
-    url: '/school/student/add',
+    url: '/school/student/update',
     method: 'post',
     data: obj
   })
@@ -31,9 +31,17 @@ export function addList(obj) {
 // 学生管理删除
 export function delList(obj) {
   return request({
-    url: '/school/schoolDept/deletes',
+    url: '/school/student/deletes',
     method: 'delete',
     data: obj.params
+  })
+}
+// 获取班级id
+export function classId(obj) {
+  return request({
+    url: '/school/class/queryAllByPage',
+    method: 'get',
+    params: obj
   })
 }
 

@@ -14,6 +14,12 @@
         icon="el-icon-delete"
         @click="handleDelete"
       >删除</el-button>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-delete"
+        @click="handleExcel"
+      >csv导入</el-button>
     </div>
 
     <el-table
@@ -64,7 +70,7 @@
     />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :model="temp">
+      <el-form ref="dataForm" :model="temp" :inline="true">
         <el-form-item label="身份识别号" prop="name" :label-width="formLabelWidth">
           <el-input v-model="temp.idCardNo" />
         </el-form-item>
@@ -73,6 +79,16 @@
         </el-form-item>
         <el-form-item label="学生学号" prop="introduction" :label-width="formLabelWidth">
           <el-input v-model="temp.studentNumber" />
+        </el-form-item>
+        <el-form-item v-show="itemFormVisible" label="所属班级id" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.classId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+            <el-option
+              v-for="item in classOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
           <el-select v-model="temp.studentSex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
@@ -99,7 +115,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList } from '@/api/studentInfo'
+import { fetchList, addList, editList, delList, classId } from '@/api/studentInfo'
 export default {
   name: 'StudentInfo',
   data() {
@@ -145,8 +161,10 @@ export default {
         studentTel: '',
         studentSex: ''
       },
-      statusOptions: [{ 'label': '男', 'value': 1 }, { 'label': '女', 'value': 2 }], // 获取到的所属教委id
+      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
+      classOptions: [], // 班级id
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
       formLabelWidth: '100px',
       inputFilter: '',
@@ -156,6 +174,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getSection()
   },
   methods: {
     // 分页改变:改变条数和分页
@@ -171,7 +190,17 @@ export default {
       }).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
-        console.log(response.data.list)
+      })
+    },
+    // 获取班级id
+    getSection() {
+      const optionsArr = []
+      classId().then(response => {
+        response.data.list.forEach((_val) => {
+          console.log(_val)
+          optionsArr.push({ 'label': _val.id, 'value': _val.id })
+        })
+        this.classOptions = optionsArr
       })
     },
     currentSel(val) {
@@ -188,6 +217,7 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
@@ -238,7 +268,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
-            console.log(this.temp)
+            console.log('temp', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -291,7 +321,8 @@ export default {
       this.multipleSelection = val
     },
     handleCurrentChange(val) {
-    }
+    },
+    handleExcel() {}
   }
 }
 </script>
