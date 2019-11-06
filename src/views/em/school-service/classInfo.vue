@@ -38,6 +38,11 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="结业状态">
+        <template slot-scope="scope">
+          <span>{{ scope.row.graduateStatus === 1 ? '在读': scope.row.graduateStatus === 0 ? '结业' : '遣散' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <el-button
@@ -60,14 +65,11 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="学校名称" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="班级名称" prop="name" :label-width="formLabelWidth">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="学校地址" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.address" />
-        </el-form-item>
-        <el-form-item label="所属教委id" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.siEcId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="学校组织编码" prop="name" :label-width="formLabelWidth">
+          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -76,8 +78,21 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="学校联系电话" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.tel" />
+        <el-form-item label="结业状态" prop="name" :label-width="formLabelWidth">
+          <el-select v-model="temp.graduateStatus" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+            <el-option
+              v-for="item in graduateStatus"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="界别" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.boundary" />
+        </el-form-item>
+        <el-form-item label="年级" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.gradeName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -88,32 +103,32 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, educationCommission, editList, delList } from '@/api/schoolInfo'
+import { fetchList, addList, schoolInfo, editList, delList } from '@/api/classInfo'
 export default {
-  name: 'SchoolInfo',
+  name: 'ClassInfo',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '学校名称',
+          label: '班级编号',
+          key: 'classSerialNumber'
+        },
+        {
+          label: '班级名称',
           key: 'name'
         },
         {
-          label: '学校地址',
-          key: 'address'
+          label: '界别',
+          key: 'boundary'
+        },
+        {
+          label: '年级',
+          key: 'gradeName'
         },
         {
           label: '学校组织编码',
-          key: 'orgCode'
-        },
-        {
-          label: '所属教委id',
-          key: 'siEcId'
-        },
-        {
-          label: '学校联系电话',
-          key: 'tel'
+          key: 'siOrgCode'
         }
       ],
       pageOne: false,
@@ -130,16 +145,17 @@ export default {
         name: '',
         address: '',
         orgCode: '',
-        siEcId: '',
+        siOrgCode: '',
         tel: ''
       },
-      statusOptions: [], // 获取到的所属教委id
+      statusOptions: [], // 获取学校组织编码
       dialogFormVisible: false,
       dialogStatus: '',
       formLabelWidth: '120px',
       inputFilter: '',
       multipleSelection: [],
-      ids: [] // 要删除数组的id
+      ids: [], // 要删除数组的id
+      graduateStatus: [{ label: '在读', value: 1 }, { label: '结业', value: 0 }, { label: '遣散', value: -1 }] // 结业状态
     }
   },
   created() {
@@ -167,9 +183,9 @@ export default {
     // 获取下拉选项
     getSection() {
       const optionsArr = []
-      educationCommission().then(response => {
+      schoolInfo().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.name, 'value': _val.id })
+          optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
         })
         this.statusOptions = optionsArr
       })
