@@ -1,8 +1,15 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="inputFilter" placeholder="输入学校组织编码查询" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
+      <!-- <el-select v-model="studentId " class="filter-item" clearable placeholder="选择学生id" @change="currentSel">
+        <el-option
+          v-for="item in studentOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>-->
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter(ids)">
         查询
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
@@ -38,9 +45,9 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="结业状态">
+      <el-table-column label="家长性别">
         <template slot-scope="scope">
-          <span>{{ scope.row.graduateStatus === 1 ? '在读': scope.row.graduateStatus === 0 ? '结业' : '遣散' }}</span>
+          {{ scope.row.parentSex === 2 ? '女' : '男' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
@@ -65,11 +72,24 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="班级名称" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.name" />
+        <el-form-item label="家长姓名" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.parentName" />
         </el-form-item>
-        <el-form-item label="学校组织编码" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="学生id" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.studentIds " class="filter-item" clearable placeholder="选择学生id" @change="currentSel">
+            <el-option
+              v-for="item in studentOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="家长年龄" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.parentAge" />
+        </el-form-item>
+        <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.parentSex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -78,21 +98,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="结业状态" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.graduateStatus" class="filter-item" clearable placeholder="Please select" @change="currentSel">
-            <el-option
-              v-for="item in graduateStatus"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="界别" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.boundary" />
-        </el-form-item>
-        <el-form-item label="年级" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.gradeName" />
+        <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.parentTel" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,32 +110,24 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, schoolInfo, editList, delList } from '@/api/classInfo'
+import { fetchList, addList, editList, delList, studentInfo, filterList } from '@/api/parentInfo'
 export default {
-  name: 'ClassInfo',
+  name: 'ParentInfo',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '班级编号',
-          key: 'classSerialNumber'
+          label: '家长姓名',
+          key: 'parentName'
         },
         {
-          label: '班级名称',
-          key: 'name'
+          label: '家长年龄',
+          key: 'parentAge'
         },
         {
-          label: '界别',
-          key: 'boundary'
-        },
-        {
-          label: '年级',
-          key: 'gradeName'
-        },
-        {
-          label: '学校组织编码',
-          key: 'siOrgCode'
+          label: '家长电话',
+          key: 'parentTel'
         }
       ],
       pageOne: false,
@@ -142,34 +141,34 @@ export default {
         create: '添加'
       },
       temp: {
-        name: '',
-        address: '',
-        orgCode: '',
-        siOrgCode: '',
-        tel: ''
+        parentName: '',
+        parentAge: '',
+        studentNumber: '',
+        parentSex: '',
+        parentTel: '',
+        studentIds: ''
       },
-      statusOptions: [], // 获取学校组织编码
+      studentId: '', // 查询学生id
+      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
+      studentOptions: [], // 添加学生id
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
-      formLabelWidth: '120px',
+      formLabelWidth: '100px',
       inputFilter: '',
-      multipleSelection: [],
-      ids: [], // 要删除数组的id
-      graduateStatus: [{ label: '在读', value: 1 }, { label: '结业', value: 0 }, { label: '遣散', value: -1 }] // 结业状态
+      multipleSelection: []
     }
   },
   created() {
-    this.getList()
     this.getSection()
+    this.getList()
   },
   methods: {
-
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
     },
-
     // 渲染表格数据
     getList() {
       fetchList({
@@ -177,17 +176,19 @@ export default {
         pageNum: this.listQuery.page
       }).then(response => {
         this.total = response.data.total
+        this.ids = response.data.classId
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取下拉选项
+    // 获取学生id
     getSection() {
       const optionsArr = []
-      schoolInfo().then(response => {
+      studentInfo().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
+          optionsArr.push({ 'label': _val.id, 'value': _val.id })
+          console.log('optionsArr:', optionsArr)
         })
-        this.statusOptions = optionsArr
+        this.studentOptions = optionsArr
       })
     },
     currentSel(val) {
@@ -204,13 +205,21 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 查询
     handleFilter(ids) {
+      filterList({
+        classId: ids
+      }).then(res => {
+        console.log('res', res)
+      })
+      this.getList()
     },
     // 删除
     handleDelete() {
@@ -253,6 +262,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
+            console.log('temp:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',

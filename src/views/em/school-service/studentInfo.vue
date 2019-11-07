@@ -1,8 +1,15 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="inputFilter" placeholder="输入学校组织编码查询" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
+      <el-select v-model="temp.classId" class="filter-item" clearable placeholder="选择班级id" @change="currentSel">
+        <el-option
+          v-for="item in classOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter(id)">
         查询
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
@@ -80,7 +87,7 @@
         <el-form-item label="学生学号" prop="introduction" :label-width="formLabelWidth">
           <el-input v-model="temp.studentNumber" />
         </el-form-item>
-        <el-form-item v-show="itemFormVisible" label="所属班级id" prop="siOrgCode" :label-width="formLabelWidth">
+        <el-form-item v-show="itemFormVisible" label="所属班级" prop="siOrgCode" :label-width="formLabelWidth">
           <el-select v-model="temp.classId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in classOptions"
@@ -135,6 +142,10 @@ export default {
           key: 'studentNumber'
         },
         {
+          label: '设备编号',
+          key: 'imeiNo'
+        },
+        {
           label: '年龄',
           key: 'studentAge'
         },
@@ -159,7 +170,8 @@ export default {
         studentNumber: '',
         studentAge: '',
         studentTel: '',
-        studentSex: ''
+        studentSex: '',
+        imeiNo: ''
       },
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
       classOptions: [], // 班级id
@@ -169,12 +181,13 @@ export default {
       formLabelWidth: '100px',
       inputFilter: '',
       multipleSelection: [],
-      ids: [] // 要删除数组的id
+      ids: [], // 存储要删除的id
+      id: [] // 查询id
     }
   },
   created() {
-    this.getList()
     this.getSection()
+    this.getList()
   },
   methods: {
     // 分页改变:改变条数和分页
@@ -189,6 +202,7 @@ export default {
         pageNum: this.listQuery.page
       }).then(response => {
         this.total = response.data.total
+        this.id = response.data.classId
         this.tableDataEnd = response.data.list
       })
     },
@@ -197,8 +211,7 @@ export default {
       const optionsArr = []
       classId().then(response => {
         response.data.list.forEach((_val) => {
-          console.log(_val)
-          optionsArr.push({ 'label': _val.id, 'value': _val.id })
+          optionsArr.push({ 'label': _val.name, 'value': _val.id })
         })
         this.classOptions = optionsArr
       })
@@ -224,12 +237,23 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    handleFilter(ids) {
+    // 查询
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+      /* filterList().then(res => {
+        if (res.statusCode === 200) {
+          this.$notify({
+            message: '查询成功！',
+            type: 'success'
+          })
+          this.getList()
+        }
+      })*/
     },
     // 删除
     handleDelete() {
       var val = this.multipleSelection
-      console.log(val)
       val.forEach(val => {
         //  提取出需要传给后台的参数ids
         this.ids.push(val.id)

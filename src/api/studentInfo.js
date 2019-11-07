@@ -8,9 +8,9 @@ export function fetchList(obj) {
 }
 export function filterList(obj) {
   return request({
-    url: '/school/school/getListByIds',
-    method: 'post',
-    data: obj
+    url: '/school/student/getListByClassId',
+    method: 'get',
+    params: obj
   })
 }
 export function editList(obj) {

@@ -5,7 +5,7 @@ const userKey = 'system-user'
 const _SAPublicKey = 'system-RSAPublicKey'
 const _expires = 'system-expires'
 const _refreshToken = 'system-refreshToken'
-
+export const TokenName = 'Authorization'
 export function getToken() {
   return Cookies.get(TokenKey)
 }

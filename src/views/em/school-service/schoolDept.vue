@@ -1,10 +1,6 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="inputFilter" placeholder="输入学校组织编码查询" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
@@ -186,8 +182,6 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-    },
-    handleFilter(ids) {
     },
     // 删除
     handleDelete() {

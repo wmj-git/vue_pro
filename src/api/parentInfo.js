@@ -1,53 +1,47 @@
 import request from '@/utils/request'
 export function fetchList(obj) {
   return request({
-    url: '/school/school/queryAllByPage',
+    url: '/school/parent/queryAllByPage',
     method: 'get',
     params: obj
   })
 }
 export function filterList(obj) {
   return request({
-    url: '/school/school/getListByIds',
+    url: '/school/parent/getListByIds',
     method: 'post',
     data: obj
   })
 }
 export function editList(obj) {
   return request({
-    url: '/school/school/update',
+    url: '/school/parent/update',
     method: 'post',
     data: obj
   })
 }
-// 学校管理添加
+// 家长管理添加
 export function addList(obj) {
   return request({
-    url: '/school/school/add',
+    url: '/school/parent/add',
     method: 'post',
     data: obj
   })
 }
-// 学校管理删除
+// 家长管理删除
 export function delList(obj) {
   return request({
-    url: '/school/school/deletes',
+    url: '/school/parent/deletes',
     method: 'delete',
     data: obj.params
   })
 }
-// 获取所属教委id
-export function educationCommission() {
+// 获取学生id
+export function studentInfo(obj) {
   return request({
-    url: '/school/education/queryAllByPage',
-    method: 'get'
-  })
-}
-// 获取家长电话
-export function parentTel(obj) {
-  return request({
-    url: '/school/parent/queryAllByPage',
+    url: '/school/student/queryAllByPage',
     method: 'get',
     params: obj
   })
 }
+

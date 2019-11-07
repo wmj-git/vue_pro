@@ -51,7 +51,10 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <el-select v-model="value"  placeholder="请选择" style="width: 100%;color: #2d2f33">
+      <!--  <el-radio-group v-model="radio" @change="onRadioChange">
+        <el-radio :label="item.zhName" :key="item.value" v-for="item in options">{{item.label}}</el-radio>
+      </el-radio-group>-->
+      <el-select v-model="value" placeholder="请选择" style="width: 100%;color: #2d2f33">
         <el-option
           v-for="item in options"
           :key="item.id"
@@ -60,8 +63,8 @@
         />
       </el-select>
       <span slot="footer" class="dialog-footer">
-         <el-button type="primary" @click="handleGenerateAuth">确 定</el-button>
-         <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleGenerateAuth">确 定</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -105,6 +108,7 @@ export default {
       dialogVisible: false,
       options: [],
       value: [],
+      radio: [], // 角色
       uuid: ''
     }
   },
@@ -169,6 +173,7 @@ export default {
                 this.dialogVisible = true
                 this.options = []
                 this.options = this.options.concat(res.user.roleList)
+                console.log(res.user.roleList)
                 this.uuid = res.uuid
               }
             })
@@ -209,7 +214,8 @@ export default {
         }
         return acc
       }, {})
-    }
+    },
+    onRadioChange(item) {}
   }
 }
 </script>

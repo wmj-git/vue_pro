@@ -46,6 +46,24 @@ const schoolService = {
         title: '学生管理',
         icon: 'chart'
       }
+    },
+    {
+      path: 'parentInfo',
+      component: () => import('@/views/em/school-service/parentInfo'),
+      name: 'ParentInfo',
+      meta: {
+        title: '家长管理',
+        icon: 'chart'
+      }
+    },
+    {
+      path: 'schoolBanner',
+      component: () => import('@/views/em/school-service/schoolBanner'),
+      name: 'SchoolBanner',
+      meta: {
+        title: '学校banner图管理',
+        icon: 'chart'
+      }
     }
   ]
 }
