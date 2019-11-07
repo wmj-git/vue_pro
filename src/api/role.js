@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getRoutes() {
+export function fetchList(obj) {
   return request({
-    url: '/routes',
-    method: 'get'
+    url: '/user/role/selectRole',
+    method: 'get',
+    params: obj
   })
 }
 

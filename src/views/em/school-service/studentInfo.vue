@@ -14,6 +14,12 @@
         icon="el-icon-delete"
         @click="handleDelete"
       >删除</el-button>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-delete"
+        @click="handleExcel"
+      >csv导入</el-button>
     </div>
 
     <el-table
@@ -38,6 +44,11 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="性别">
+        <template slot-scope="scope">
+          {{ scope.row.studentSex === 2 ? '女' : '男' }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <el-button
@@ -60,14 +71,27 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="学校名称" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.name" />
+        <el-form-item label="身份识别号" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.idCardNo" />
         </el-form-item>
-        <el-form-item label="学校地址" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.address" />
+        <el-form-item label="学生姓名" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.studentName" />
         </el-form-item>
-        <el-form-item label="所属教委id" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.siEcId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="学生学号" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.studentNumber" />
+        </el-form-item>
+        <el-form-item v-show="itemFormVisible" label="所属班级id" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.classId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+            <el-option
+              v-for="item in classOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.studentSex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -76,8 +100,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="学校联系电话" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.tel" />
+        <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.studentTel" />
+        </el-form-item>
+        <el-form-item label="年龄" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.studentAge" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -88,32 +115,32 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, educationCommission, editList, delList } from '@/api/schoolInfo'
+import { fetchList, addList, editList, delList, classId } from '@/api/studentInfo'
 export default {
-  name: 'SchoolInfo',
+  name: 'StudentInfo',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '学校名称',
-          key: 'name'
+          label: '身份识别号',
+          key: 'idCardNo'
         },
         {
-          label: '学校地址',
-          key: 'address'
+          label: '学生姓名',
+          key: 'studentName'
         },
         {
-          label: '学校组织编码',
-          key: 'orgCode'
+          label: '学生学号',
+          key: 'studentNumber'
         },
         {
-          label: '所属教委id',
-          key: 'siEcId'
+          label: '年龄',
+          key: 'studentAge'
         },
         {
-          label: '学校联系电话',
-          key: 'tel'
+          label: '联系方式',
+          key: 'studentTel'
         }
       ],
       pageOne: false,
@@ -127,16 +154,19 @@ export default {
         create: '添加'
       },
       temp: {
-        name: '',
-        address: '',
-        orgCode: '',
-        siEcId: '',
-        tel: ''
+        idCardNo: '',
+        studentName: '',
+        studentNumber: '',
+        studentAge: '',
+        studentTel: '',
+        studentSex: ''
       },
-      statusOptions: [], // 获取到的所属教委id
+      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
+      classOptions: [], // 班级id
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
-      formLabelWidth: '120px',
+      formLabelWidth: '100px',
       inputFilter: '',
       multipleSelection: [],
       ids: [] // 要删除数组的id
@@ -147,13 +177,11 @@ export default {
     this.getSection()
   },
   methods: {
-
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
     },
-
     // 渲染表格数据
     getList() {
       fetchList({
@@ -164,14 +192,15 @@ export default {
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取下拉选项
+    // 获取班级id
     getSection() {
       const optionsArr = []
-      educationCommission().then(response => {
+      classId().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.name, 'value': _val.id })
+          console.log(_val)
+          optionsArr.push({ 'label': _val.id, 'value': _val.id })
         })
-        this.statusOptions = optionsArr
+        this.classOptions = optionsArr
       })
     },
     currentSel(val) {
@@ -188,6 +217,7 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
@@ -238,7 +268,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
-            console.log('res11：', this.temp)
+            console.log('temp', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -291,7 +321,8 @@ export default {
       this.multipleSelection = val
     },
     handleCurrentChange(val) {
-    }
+    },
+    handleExcel() {}
   }
 }
 </script>
