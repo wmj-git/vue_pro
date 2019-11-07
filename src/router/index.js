@@ -12,8 +12,7 @@ import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 
-/* demo */
-import emPermission from './modules/em/emPermission' // 权限
+/* 菜单数据 */
 import systemManagement from './modules/em/systemManagement' // 系统管理
 import schoolService from './modules/em/schoolService' // 学校服务
 /**
@@ -141,7 +140,6 @@ export const constantRoutes = [
 export const asyncRoutes = [
 
   /** when your routing map is too long, you can split it into small modules **/
-  emPermission,
   systemManagement,
   schoolService,
   {
