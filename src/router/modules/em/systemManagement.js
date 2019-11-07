@@ -14,14 +14,8 @@ const systemManagement = {
   },
   children: [
     {
-      path: 'split-pane',
-      component: () => import('@/views/components-demo/split-pane'),
-      name: 'SplitpaneDemo1',
-      meta: { title: 'SplitPane' }
-    },
-    {
       path: 'account-manage',
-      component: () => import('@/views/em/account-manager'),
+      component: () => import('@/views/em/system-management/account-manager'),
       name: 'AccountManager',
       meta:
         {
@@ -31,11 +25,21 @@ const systemManagement = {
     },
     {
       path: 'role-manage',
-      component: () => import('@/views/em/role-manager'),
+      component: () => import('@/views/em/system-management/role-manager'),
       name: 'RoleManager',
       meta:
         {
           title: '角色管理',
+          icon: 'chart'
+        }
+    },
+    {
+      path: 'permissions-manager',
+      component: () => import('@/views/em/system-management/permissions/permissions-manager'),
+      name: 'permissionsManager',
+      meta:
+        {
+          title: '权限管理',
           icon: 'chart'
         }
     }
