@@ -37,7 +37,7 @@ export function delList(obj) {
   })
 }
 // 获取班级id
-export function classId(obj) {
+export function ClassId(obj) {
   return request({
     url: '/school/class/queryAllByPage',
     method: 'get',

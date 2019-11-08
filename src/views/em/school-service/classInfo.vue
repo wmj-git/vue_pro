@@ -103,7 +103,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, schoolInfo, editList, delList } from '@/api/classInfo'
+import { fetchList, addList, schoolInfo, editList, delList } from '@/api/schoolService/classInfo'
 export default {
   name: 'ClassInfo',
   data() {

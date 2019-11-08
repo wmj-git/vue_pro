@@ -1,7 +1,7 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-select v-model="temp.classId" class="filter-item" clearable placeholder="选择班级id" @change="currentSel">
+      <el-select v-model="id" class="filter-item" clearable placeholder="选择班级id" @change="currentSel">
         <el-option
           v-for="item in classOptions"
           :key="item.value"
@@ -122,7 +122,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, classId } from '@/api/studentInfo'
+import { fetchList, addList, editList, delList, ClassId, filterList } from '@/api/schoolService/studentInfo'
 export default {
   name: 'StudentInfo',
   data() {
@@ -182,7 +182,7 @@ export default {
       inputFilter: '',
       multipleSelection: [],
       ids: [], // 存储要删除的id
-      id: [] // 查询id
+      id: null // 查询id
     }
   },
   created() {
@@ -202,14 +202,13 @@ export default {
         pageNum: this.listQuery.page
       }).then(response => {
         this.total = response.data.total
-        this.id = response.data.classId
         this.tableDataEnd = response.data.list
       })
     },
     // 获取班级id
     getSection() {
       const optionsArr = []
-      classId().then(response => {
+      ClassId().then(response => {
         response.data.list.forEach((_val) => {
           optionsArr.push({ 'label': _val.name, 'value': _val.id })
         })
@@ -239,17 +238,14 @@ export default {
     },
     // 查询
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-      /* filterList().then(res => {
-        if (res.statusCode === 200) {
-          this.$notify({
-            message: '查询成功！',
-            type: 'success'
-          })
-          this.getList()
-        }
-      })*/
+      console.log(111)
+      console.log(this.id)
+      filterList({
+        classId: this.id
+      }).then(res => {
+        console.log('ress:', res)
+        this.getList()
+      })
     },
     // 删除
     handleDelete() {

@@ -84,7 +84,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, educationCommission, editList, delList } from '@/api/schoolInfo'
+import { fetchList, addList, educationCommission, editList, delList } from '@/api/schoolService/schoolInfo'
 export default {
   name: 'SchoolInfo',
   data() {

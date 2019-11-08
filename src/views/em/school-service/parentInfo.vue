@@ -9,7 +9,7 @@
           :value="item.value"
         />
       </el-select>-->
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter(ids)">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
@@ -110,7 +110,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, studentInfo, filterList } from '@/api/parentInfo'
+import { fetchList, addList, editList, delList, studentInfo, filterList } from '@/api/schoolService/parentInfo'
 export default {
   name: 'ParentInfo',
   data() {
@@ -156,7 +156,8 @@ export default {
       dialogStatus: '',
       formLabelWidth: '100px',
       inputFilter: '',
-      multipleSelection: []
+      multipleSelection: [],
+      classId: ''
     }
   },
   created() {
@@ -213,9 +214,11 @@ export default {
       })
     },
     // 查询
-    handleFilter(ids) {
+    handleFilter() {
+      console.log(111)
+      console.log(this.classId)
       filterList({
-        classId: ids
+        classId: this.classId
       }).then(res => {
         console.log('res', res)
       })
