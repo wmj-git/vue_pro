@@ -15,8 +15,8 @@ const systemManagement = {
   children: [
     {
       path: 'account-manage',
-      component: () => import('@/views/em/system-management/account-manager'),
-      name: 'AccountManager',
+      component: () => import('@/views/em/system-management/account-manage/account-manage'),
+      name: 'AccountManage',
       meta:
         {
           title: '账户管理',
@@ -25,7 +25,7 @@ const systemManagement = {
     },
     {
       path: 'role-manage',
-      component: () => import('@/views/em/system-management/role-manager/role-manager'),
+      component: () => import('@/views/em/system-management/role-manage/role-manage'),
       name: 'RoleManager',
       meta:
         {
@@ -34,9 +34,9 @@ const systemManagement = {
         }
     },
     {
-      path: 'permissions-manager',
-      component: () => import('@/views/em/system-management/permissions-manager/permissions-manager'),
-      name: 'permissionsManager',
+      path: 'permissions-manage',
+      component: () => import('@/views/em/system-management/permissions-manage/permissions-manage'),
+      name: 'PermissionsManager',
       meta:
         {
           title: '权限管理',

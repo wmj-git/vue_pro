@@ -49,7 +49,7 @@
 </template>
 <script>
 export default {
-  name: 'permissionsManager',
+  name: 'AccountManage',
   data() {
     return {
       inputFilter: '',
@@ -102,5 +102,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  @import "permissions-manager";
+  @import "account-manage";
+
 </style>

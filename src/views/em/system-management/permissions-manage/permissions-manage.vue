@@ -49,7 +49,7 @@
 </template>
 <script>
 export default {
-  name: 'AccountManager',
+  name: 'PermissionsManage',
   data() {
     return {
       inputFilter: '',
@@ -102,11 +102,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .account-container {
-    & .table-operate {
-      .el-input {
-        width: 30%;
-      }
-    }
-  }
+  @import "permissions-manage";
 </style>

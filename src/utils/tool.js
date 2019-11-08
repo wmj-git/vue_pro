@@ -29,7 +29,7 @@ export function treeStructure(_nodes) {
 
   // sort
   function cmp(a, b) {
-    return a.parentId - b.parentId
+    return a.pId - b.pId
   }
 
   nodes.sort(cmp)
@@ -37,7 +37,7 @@ export function treeStructure(_nodes) {
   const midObj = {}
   // 从后向前遍历
   for (let i = nodes.length - 1; i >= 0; i--) {
-    const nowPid = nodes[i].parentId
+    const nowPid = nodes[i].pId
     const nowId = nodes[i].id
     // 建立当前节点的父节点的children 数组
     if (midObj[nowPid]) {
