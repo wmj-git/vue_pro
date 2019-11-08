@@ -124,11 +124,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .role-container {
-    & .table-operate {
-      .el-input {
-        width: 30%;
-      }
-    }
-  }
+@import "role-manager";
+
 </style>

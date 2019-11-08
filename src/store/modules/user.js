@@ -212,7 +212,7 @@ const actions = {
     })
   },
 
-  // dynamically modify permissions
+  // dynamically modify permissions-manager
   changeRoles({ commit, dispatch }, role) {
     return new Promise(async resolve => {
       const token = role + '-token'

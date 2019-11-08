@@ -25,7 +25,7 @@ const systemManagement = {
     },
     {
       path: 'role-manage',
-      component: () => import('@/views/em/system-management/role-manager'),
+      component: () => import('@/views/em/system-management/role-manager/role-manager'),
       name: 'RoleManager',
       meta:
         {
@@ -35,7 +35,7 @@ const systemManagement = {
     },
     {
       path: 'permissions-manager',
-      component: () => import('@/views/em/system-management/permissions/permissions-manager'),
+      component: () => import('@/views/em/system-management/permissions-manager/permissions-manager'),
       name: 'permissionsManager',
       meta:
         {

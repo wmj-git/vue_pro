@@ -102,11 +102,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .account-container {
-    & .table-operate {
-      .el-input {
-        width: 30%;
-      }
-    }
-  }
+  @import "permissions-manager";
 </style>
