@@ -31,6 +31,7 @@
 </template>
 <script>
 import { getToken } from '@/utils/auth'
+import { downloadExcel } from '@/utils/mUtils.js'
 import { downModel } from '@/api/schoolService/studentInfo'
 export default {
   name: 'EmDialog',
@@ -42,26 +43,26 @@ export default {
       fileList: [], // 文件列表
       action: '',
       dialogVisible: false,
-      url: ''// 下载模板的url
+      url: ''
     }
   },
   created() {
     this.$emit('dialogVisible', true)
   },
   methods: {
-    submitUpload() {},
+    submitUpload() {
+      this.dialogVisible = false
+    },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     uploadFileErro() {},
     uploadFileSuccess(response, file, fileList) {},
     downloadModel() {
-      downModel().then(res => {
-        console.log('res', res)
-        if (res.statusCode === 200) {
-          console.log(123)
-          // 得到接口返回来的url地址，将其赋值给window.location.href，完成下载
-          window.location.href = res.url
-        }
+      downModel({
+        responseType: 'blob'
+      }).then((res) => {
+        console.log(12)
+        downloadExcel(res.data)
       })
     },
     changeDialogVisible() {

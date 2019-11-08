@@ -4,6 +4,7 @@
       <el-input
         v-model="inputs"
         placeholder="输入学生设备号"
+        clearable
       >
         <i slot="prefix" class="el-input__icon el-icon-search" />
       </el-input>
@@ -201,7 +202,7 @@ export default {
       inputFilter: '',
       multipleSelection: [],
       ids: [], // 存储要删除的id
-      inputs: null, // 查询设备号
+      inputs: '', // 查询设备号
       dialogVisible: false // 导入弹框
     }
   },
@@ -245,6 +246,7 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
+      this.itemFormVisible = false
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -272,7 +274,7 @@ export default {
         this.ids.push(val.id)
         console.log('ids', val.id)
       })
-      if (this.ids.length >= 1) {
+      if (this.ids.length > 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -370,7 +372,7 @@ export default {
     & .table-operate {
       margin: 10px;
       .el-input {
-        width: 30%;
+        width: 15%;
       }
     }
   }

@@ -70,8 +70,8 @@
         <el-form-item label="家长姓名" prop="name" :label-width="formLabelWidth">
           <el-input v-model="temp.parentName" />
         </el-form-item>
-        <el-form-item v-show="itemFormVisible" label="学生id" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.studentIds " multiple class="filter-item" clearable placeholder="选择学生id" @change="currentSel">
+        <el-form-item label="学生id" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.studentIds " class="filter-item" clearable placeholder="选择学生id" @change="currentSel">
             <el-option
               v-for="item in studentOptions"
               :key="item.value"
@@ -143,7 +143,7 @@ export default {
         parentTel: '',
         studentIds: ''
       },
-      studentId: [], // 查询学生
+      studentId: '', // 查询学生
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
       studentOptions: [], // 添加学生id
       dialogFormVisible: false,
@@ -153,8 +153,7 @@ export default {
       inputFilter: '',
       multipleSelection: [],
       classId: '', // 查询家长
-      pName: '', // 根据家长姓名查询家长
-      ids: []// 已选中需要删除的id(数组)
+      pName: ''// 根据家长姓名查询家长
     }
   },
   created() {
@@ -174,10 +173,11 @@ export default {
         pageNum: this.listQuery.page
       }
       if (this.pName) {
-        obj.parentName = this.pName
+        obj.pName = this.pName
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
+        this.ids = response.data.classId
         this.tableDataEnd = response.data.list
       })
     },
@@ -197,7 +197,6 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
-      this.itemFormVisible = false
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -225,7 +224,7 @@ export default {
         this.ids.push(val.id)
         console.log('ids', val.id)
       })
-      if (this.ids.length > 0) {
+      if (this.ids.length >= 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -258,6 +257,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
+            console.log('temp:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
