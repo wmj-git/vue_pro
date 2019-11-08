@@ -6,13 +6,6 @@ export function fetchList(obj) {
     params: obj
   })
 }
-export function filterList(obj) {
-  return request({
-    url: '/school/parent/getListByIds',
-    method: 'post',
-    data: obj
-  })
-}
 export function editList(obj) {
   return request({
     url: '/school/parent/update',

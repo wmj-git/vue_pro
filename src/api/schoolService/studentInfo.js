@@ -6,13 +6,7 @@ export function fetchList(obj) {
     params: obj
   })
 }
-export function filterList(obj) {
-  return request({
-    url: '/school/student/getListByClassId',
-    method: 'get',
-    params: obj
-  })
-}
+
 export function editList(obj) {
   return request({
     url: '/school/student/update',
@@ -40,6 +34,15 @@ export function delList(obj) {
 export function ClassId(obj) {
   return request({
     url: '/school/class/queryAllByPage',
+    method: 'get',
+    params: obj
+  })
+}
+
+// 下载导入模板
+export function downModel(obj) {
+  return request({
+    url: '/school/student/downModel',
     method: 'get',
     params: obj
   })

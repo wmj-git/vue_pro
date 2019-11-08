@@ -1,18 +1,31 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-select v-model="id" class="filter-item" clearable placeholder="选择班级id" @change="currentSel">
-        <el-option
-          v-for="item in classOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter(id)">
+      <el-input
+        v-model="inputs"
+        placeholder="输入学生设备号"
+        clearable
+      >
+        <i slot="prefix" class="el-input__icon el-icon-search" />
+      </el-input>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        size="mini"
+        icon="el-icon-search"
+        @click="handleFilter(inputs)"
+      >
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        size="mini"
+        icon="el-icon-plus"
+        @click="handleCreate"
+      >
         添加
       </el-button>
       <el-button
@@ -20,15 +33,16 @@
         type="primary"
         icon="el-icon-delete"
         @click="handleDelete"
-      >删除</el-button>
+      >删除
+      </el-button>
       <el-button
         size="mini"
         type="primary"
         icon="el-icon-delete"
         @click="handleExcel"
-      >csv导入</el-button>
+      >csv导入
+      </el-button>
     </div>
-
     <el-table
       :data="tableDataEnd"
       style="width: 100%"
@@ -66,7 +80,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <em-dialog ref="mychild" />
     <Pagination
       :total="total"
       :page.sync="listQuery.page"
@@ -86,6 +100,9 @@
         </el-form-item>
         <el-form-item label="学生学号" prop="introduction" :label-width="formLabelWidth">
           <el-input v-model="temp.studentNumber" />
+        </el-form-item>
+        <el-form-item label="设备编码" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.imeiNo" />
         </el-form-item>
         <el-form-item v-show="itemFormVisible" label="所属班级" prop="siOrgCode" :label-width="formLabelWidth">
           <el-select v-model="temp.classId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
@@ -122,9 +139,12 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, ClassId, filterList } from '@/api/schoolService/studentInfo'
+import { fetchList, addList, editList, delList, ClassId } from '@/api/schoolService/studentInfo'
+import EmDialog from '@/components/emDialog'
+
 export default {
   name: 'StudentInfo',
+  components: { EmDialog }, // 导入
   data() {
     return {
       tableDataEnd: null,
@@ -182,7 +202,8 @@ export default {
       inputFilter: '',
       multipleSelection: [],
       ids: [], // 存储要删除的id
-      id: null // 查询id
+      inputs: '', // 查询设备号
+      dialogVisible: false // 导入弹框
     }
   },
   created() {
@@ -197,10 +218,14 @@ export default {
     },
     // 渲染表格数据
     getList() {
-      fetchList({
+      var obj = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
-      }).then(response => {
+      }
+      if (this.inputs) {
+        obj.imeiNo = this.inputs
+      }
+      fetchList(obj).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
       })
@@ -221,6 +246,7 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
+      this.itemFormVisible = false
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -238,14 +264,7 @@ export default {
     },
     // 查询
     handleFilter() {
-      console.log(111)
-      console.log(this.id)
-      filterList({
-        classId: this.id
-      }).then(res => {
-        console.log('ress:', res)
-        this.getList()
-      })
+      this.getList()
     },
     // 删除
     handleDelete() {
@@ -255,7 +274,7 @@ export default {
         this.ids.push(val.id)
         console.log('ids', val.id)
       })
-      if (this.ids.length >= 1) {
+      if (this.ids.length > 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -342,7 +361,9 @@ export default {
     },
     handleCurrentChange(val) {
     },
-    handleExcel() {}
+    handleExcel() {
+      this.$refs.mychild.changeDialogVisible()
+    }
   }
 }
 </script>
@@ -351,7 +372,7 @@ export default {
     & .table-operate {
       margin: 10px;
       .el-input {
-        width: 30%;
+        width: 15%;
       }
     }
   }
