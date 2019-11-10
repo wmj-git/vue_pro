@@ -13,9 +13,9 @@ export default {
   name: 'AppMain',
   computed: {
     cachedViews() {
-      console.log('permission_routes：', this.$store.getters.permission_routes)
-      console.log('this.$route.path：', this.$route.path, 'this.$route:', this.$route)
-      console.log('cachedViews：', this.$store.state.tagsView.cachedViews, 'visitedViews:', this.$store.state.tagsView.visitedViews)
+      // console.log('permission_routes：', this.$store.getters.permission_routes)
+      // console.log('this.$route.path：', this.$route.path, 'this.$route:', this.$route)
+      // console.log('cachedViews：', this.$store.state.tagsView.cachedViews, 'visitedViews:', this.$store.state.tagsView.visitedViews)
       return this.$store.state.tagsView.cachedViews
     },
     key() {

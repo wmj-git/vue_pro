@@ -25,7 +25,7 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
+            <el-dropdown-item>用户信息</el-dropdown-item>
           </router-link>
           <router-link to="/">
             <el-dropdown-item>Dashboard</el-dropdown-item>
@@ -52,11 +52,6 @@ import { TimeFn } from '@/utils/tool'
 import { getExpires } from '@/utils/auth'
 
 export default {
-  data() {
-    return {
-      timeToken: ''
-    }
-  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -65,21 +60,17 @@ export default {
     SizeSelect,
     Search
   },
+  data() {
+    return {
+      timeToken: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
       'device'
     ])
-  },
-  methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
   },
   mounted() {
     const _time = getExpires() - 300000
@@ -95,6 +86,15 @@ export default {
   destroyed() {
     // 关闭
     this.timeToken.stop()
+  },
+  methods: {
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
   }
 }
 </script>

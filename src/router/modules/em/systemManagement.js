@@ -5,7 +5,7 @@ import Layout from '@/layout'
 const systemManagement = {
   path: '/systemManagement',
   component: Layout,
-  redirect: 'noRedirect',
+  redirect: '/systemManagement/role-manage',
   name: 'systemManagement',
   alwaysShow: true,
   meta: {
@@ -27,11 +27,34 @@ const systemManagement = {
       path: 'role-manage',
       component: () => import('@/views/em/system-management/role-manage/role-manage'),
       name: 'RoleManager',
+      hidden: false,
+      alwaysShow: false,
       meta:
         {
           title: '角色管理',
-          icon: 'chart'
+          icon: 'chart',
+          roles: ['developer', 'admin', 'editor'],
+          noCache: false,
+          affix: false,
+          breadcrumb: true,
+          system_id: 'role_manage'
+        },
+      children: [
+        {
+          path: 'menu1-2-1',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'Menu1-2-1',
+          hidden: true,
+          meta: { title: 'Menu 1-2-2' }
+        },
+        {
+          path: 'menu1-2-2',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'Menu1-2-2',
+          hidden: true,
+          meta: { title: 'Menu 1-2-2' }
         }
+      ]
     },
     {
       path: 'permissions-manage',
@@ -40,7 +63,8 @@ const systemManagement = {
       meta:
         {
           title: '权限管理',
-          icon: 'chart'
+          icon: 'chart',
+          roles: ['developer']
         }
     }
   ]

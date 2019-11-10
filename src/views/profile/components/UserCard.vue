@@ -8,12 +8,21 @@
       <div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           <div>Hello</div>
-          {{ user.role }}
+          {{ user.role.zhName }}
         </pan-thumb>
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div>
+        <div class="user-role text-center text-muted">
+          <el-select v-model="changeRole" placeholder="请选择" @change="changeRolesFn">
+            <el-option
+              v-for="item in user.roles"
+              :key="item.id"
+              :label="item.zhName"
+              :value="item.id"
+            />
+          </el-select>
+        </div>
       </div>
     </div>
 
@@ -22,7 +31,7 @@
         <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>Education</span></div>
         <div class="user-bio-section-body">
           <div class="text-muted">
-            JS in Computer Science from the University of Technology
+            {{ user.email }}
           </div>
         </div>
       </div>
@@ -31,8 +40,8 @@
         <div class="user-bio-section-header"><svg-icon icon-class="skill" /><span>Skills</span></div>
         <div class="user-bio-section-body">
           <div class="progress-item">
-            <span>Vue</span>
-            <el-progress :percentage="70" />
+            <span>Vue:</span>
+            <span>{{ user.role.id }}</span>
           </div>
           <div class="progress-item">
             <span>JavaScript</span>
@@ -65,9 +74,29 @@ export default {
           name: '',
           email: '',
           avatar: '',
-          roles: ''
+          roles: '',
+          role: ''
         }
       }
+    }
+  },
+  data() {
+    return {
+      changeRole: ''
+    }
+  },
+  created() {
+    this.init()
+    console.log('PanThumb', this.user, this.changeRole)
+  },
+  mounted() {
+  },
+  methods: {
+    init() {
+      this.changeRole = this.user.role.id
+    },
+    changeRolesFn() {
+      this.$store.dispatch('user/changeRoles', this.changeRole)
     }
   }
 }

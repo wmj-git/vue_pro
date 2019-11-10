@@ -3,11 +3,11 @@
     <div v-if="user">
       <el-row :gutter="20">
 
-        <el-col :span="6" :xs="24">
+        <el-col :span="12" :xs="48">
           <user-card :user="user" />
         </el-col>
 
-        <el-col :span="18" :xs="24">
+        <el-col :span="36" :xs="48">
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="Activity" name="activity">
@@ -40,7 +40,7 @@ export default {
   components: { UserCard, Activity, Timeline, Account },
   data() {
     return {
-      user: {},
+      // user: {},
       activeTab: 'activity'
     }
   },
@@ -48,20 +48,24 @@ export default {
     ...mapGetters([
       'name',
       'avatar',
-      'roles'
-    ])
-  },
-  created() {
-    this.getUser()
-  },
-  methods: {
-    getUser() {
-      this.user = {
+      'roles',
+      'currentRole'
+    ]),
+    user() {
+      return {
         name: this.name,
-        role: this.roles.join(' | '),
+        roles: this.roles,
+        role: this.currentRole,
         email: 'admin@test.com',
         avatar: this.avatar
       }
+    }
+  },
+  created() {
+    console.log('currentRole', this.currentRole)
+  },
+  methods: {
+    init() {
     }
   }
 }

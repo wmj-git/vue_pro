@@ -1,6 +1,7 @@
 import { Login, GenerateAuth, Logout, RefreshToken, Register, GetCode } from '@/api/user'
 import { getToken, setToken, removeToken,
   setUser, getUser, removeUser,
+  getCurrentRole, setCurrentRole, removeCurrentRole,
   getRSAPublicKey, setRSAPublicKey, removeRSAPublicKey,
   getExpires, setExpires, removeExpires,
   getRefreshToken, setRefreshToken, removeRefreshToken
@@ -15,7 +16,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  currentRole: ''
 }
 
 const mutations = {
@@ -42,7 +44,12 @@ const mutations = {
     state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
-    state.roles = roles
+    state.roles = []
+    state.roles = state.roles.concat(roles)
+  },
+  SET_CURRENTROLE: (state, currentRole) => {
+    setCurrentRole(currentRole)
+    state.currentRole = currentRole
   }
 }
 
@@ -63,7 +70,7 @@ function setUserData(commit, data) {
   if (data.user && data.user.roleList) {
     const _roles = []
     data.user.roleList.forEach(function(_item) {
-      _roles.push(_item.name)
+      _roles.push(_item)
     })
     commit('SET_ROLES', _roles)
     commit('SET_NAME', data.user.username)
@@ -104,7 +111,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       Login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-
         setUserData(commit, data)
         resolve(data)
       }).catch(error => {
@@ -119,7 +125,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       GenerateAuth({ username: username.trim(), uuid: uuid, roleId: roleId }).then(response => {
         const { data } = response
-
         setUserData(commit, data)
         resolve(data)
       }).catch(error => {
@@ -140,22 +145,24 @@ const actions = {
 
       const roles = []
       roleList.forEach(function(_item) {
-        roles.push(_item.name)
+        roles.push(_item)
       })
 
       // roles must be a non-empty array
       if (!roles || roles.length <= 0) {
         reject('getInfo: roles must be a non-null array!')
       }
-
+      const _currentRole = JSON.parse(getCurrentRole())
       commit('SET_ROLES', roles)
+      commit('SET_CURRENTROLE', _currentRole)
       commit('SET_NAME', username)
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       commit('SET_INTRODUCTION', createDate)
-      resolve(roles)
+
+      resolve(_currentRole)
     })
   },
-  // user logout
+  // user logout*
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       Logout(state.refreshToken).then(() => {
@@ -169,11 +176,11 @@ const actions = {
         removeExpires()
         commit('SET_ROLES', [])
         removeUser()
+        removeCurrentRole()
         resetRouter()
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
-
         resolve()
       }).catch(error => {
         reject(error)
@@ -213,19 +220,25 @@ const actions = {
   },
 
   // dynamically modify permissions-manage
-  changeRoles({ commit, dispatch }, role) {
+  changeRoles({ commit, state, dispatch }, role) {
     return new Promise(async resolve => {
-      const token = role + '-token'
+      /* const token = role + '-token'
 
       commit('SET_TOKEN', token)
       setToken(token)
 
       const { roles } = await dispatch('getInfo')
+*/
+
+      state.roles.forEach(function(_role) {
+        if (_role.id === role) {
+          commit('SET_CURRENTROLE', _role)
+        }
+      })
 
       resetRouter()
-
       // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+      const accessRoutes = await dispatch('permission/generateRoutes', [state.currentRole.name], { root: true })
 
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)

@@ -1,10 +1,12 @@
 <template>
   <div class="role-container">
-    <split-pane split="vertical"  :min-percent="20" :default-percent="30">
+    <split-pane split="vertical" :min-percent="20" :default-percent="30">
       <template slot="paneL">
         <el-row>
           <el-col :span="48">
-            发送到
+            <el-card>
+              <el-tree :data="treeData" :props="defaultProps" />
+            </el-card>
           </el-col>
         </el-row>
       </template>
@@ -13,14 +15,18 @@
           <template slot="paneL">
             <el-row>
               <el-col :span="48">
-                发送到
+                <el-card>
+                  范德萨发的发的
+                </el-card>
               </el-col>
             </el-row>
           </template>
           <template slot="paneR">
             <el-row>
               <el-col :span="48">
-                发送到
+                <el-card>
+                  范德萨发的发的
+                </el-card>
               </el-col>
             </el-row>
           </template>
@@ -32,7 +38,7 @@
 <script>
 
 import vueBus from '@/utils/vueBus'
-import { toTree } from '@/utils/tool'
+// import { toTree } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
 export default {
@@ -102,7 +108,9 @@ export default {
   },
   methods: {
     init() {
-
+      const _route = this.$route.meta
+      console.log('path：', this.$route.path, '$route:', this.$route)
+      console.log('_route：', _route)
       // this.id = this.data.systemId
     }
   }

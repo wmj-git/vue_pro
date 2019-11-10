@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 
 const TokenKey = 'Admin-Token'
 const userKey = 'system-user'
+const _CurrentRole = 'system-CurrentRole'
 const _SAPublicKey = 'system-RSAPublicKey'
 const _expires = 'system-expires'
 const _refreshToken = 'system-refreshToken'
@@ -28,6 +29,18 @@ export function setUser(_data) {
 
 export function removeUser() {
   return Cookies.remove(userKey)
+}
+
+export function getCurrentRole() {
+  return Cookies.get(_CurrentRole)
+}
+
+export function setCurrentRole(_data) {
+  return Cookies.set(_CurrentRole, _data)
+}
+
+export function removeCurrentRole() {
+  return Cookies.remove(_CurrentRole)
 }
 
 export function getRSAPublicKey() {

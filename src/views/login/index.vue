@@ -167,6 +167,9 @@ export default {
             .then((res) => {
               console.log('login', res)
               if (res.user && res.user.roleList && res.user.roleList.length === 1) {
+                const _role = res.user.roleList
+                this.$store.commit('user/SET_CURRENTROLE', _role[0])
+                this.$store.dispatch('user/changeRoles', _role[0].id)
                 this.$router.push({ path: this.redirect || '/' })
                 this.loading = false
               } else if (res.user && res.user.roleList && res.user.roleList.length > 1) {
@@ -188,14 +191,18 @@ export default {
     },
     handleGenerateAuth() {
       const _this = this
-      console.log(this.options, this.value)
       this.$store.dispatch('user/generateAuth', {
         username: this.loginForm.username,
         roleId: this.value,
         uuid: this.uuid
       })
         .then((res) => {
-          console.log(res)
+          res.user.roleList.forEach((role) => {
+            if (role.id === _this.value) {
+              this.$store.commit('user/SET_CURRENTROLE', role)
+              this.$store.dispatch('user/changeRoles', role.id)
+            }
+          })
           _this.dialogVisible = false
           _this.$router.push({ path: this.redirect || '/' })
           _this.loading = false
@@ -214,8 +221,7 @@ export default {
         }
         return acc
       }, {})
-    },
-    onRadioChange(item) {}
+    }
   }
 }
 </script>
