@@ -115,3 +115,51 @@ tm2.run();
  // 关闭
 tm2.stop();
 */
+
+export class FilterTree {
+  constructor(_val) {
+    this.treeData = _val.treeData
+    this.key = _val.key
+    this.value = _val.value
+    this.res = []
+  }
+
+  has(_value, tmp) {
+    let _has = null
+    switch (this.key.length) {
+      case 1:
+        if (tmp[this.key[0]]) {
+          _has = tmp[this.key[0]] === _value
+        } else {
+          _has = false
+        }
+        break
+      case 2:
+        if (tmp[this.key[0]] && tmp[this.key[0]][this.key[1]]) {
+          _has = tmp.meta.system_id === _value ? 1 : 0
+          console.log(_has)
+        } else {
+          _has = false
+        }
+        break
+    }
+    return _has
+  }
+
+  filter(_treeData, _value) {
+    _treeData.forEach(_item => {
+      const tmp = { ..._item }
+      if (tmp.children) {
+        this.filter(tmp.children, _value)
+      }
+      if (this.has(_value, tmp)) {
+        this.res.push(tmp)
+      }
+    })
+    return this.res
+  }
+
+  getData() {
+    return this.filter(this.treeData, this.value)
+  }
+}

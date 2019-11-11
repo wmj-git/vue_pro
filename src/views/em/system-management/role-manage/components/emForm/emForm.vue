@@ -86,9 +86,6 @@ export default {
   },
   methods: {
     init() {
-      const _route = this.$route.meta
-      console.log('path：', this.$route.path, '$route:', this.$route)
-      console.log('_route：', _route)
       // this.id = this.data.systemId
     },
     onSubmit() {

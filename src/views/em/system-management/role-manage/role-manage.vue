@@ -1,34 +1,34 @@
 <template>
   <div class="role-container">
-    <el-card>
-      <!--<em-button-group></em-button-group>-->
+    <el-card v-if="set.buttonGroup">
+      <em-button-group :data="buttonGroupItem" />
     </el-card>
-    <split-pane split="vertical" :min-percent="20" :default-percent="30">
+    <split-pane split="vertical" :min-percent="20" :default-percent="Number(set.verticalPercent)">
       <template slot="paneL">
-        <div style="overflow: auto">
+        <div style="overflow: auto;height: 100%;">
           <el-row>
             <el-col :span="48">
-              <em-tree></em-tree>
+              <em-tree v-if="set.tree" :data="treeItem" />
             </el-col>
           </el-row>
         </div>
       </template>
       <template slot="paneR">
-        <split-pane split="horizontal" :min-percent="20" :default-percent="40">
+        <split-pane split="horizontal" :min-percent="20" :default-percent="Number(set.horizontalPercent)">
           <template slot="paneL">
             <div style="overflow: auto;height: 100%;">
-              <el-row >
+              <el-row>
                 <el-col :span="48">
-                  <em-form></em-form>
+                  <em-form v-if="set.form_L" :data="form_L_item" />
                 </el-col>
               </el-row>
             </div>
           </template>
           <template slot="paneR">
             <div style="overflow: auto;height: 100%;">
-              <el-row >
+              <el-row>
                 <el-col :span="48">
-                  <em-form></em-form>
+                  <em-form v-if="set.form_R" :data="form_R_item" />
                 </el-col>
               </el-row>
             </div>
@@ -41,7 +41,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-// import { toTree } from '@/utils/tool'
+import { FilterTree } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
@@ -59,15 +59,17 @@ export default {
     return {
       id: '',
       set: {
+        verticalPercent: '30',
+        horizontalPercent: '50',
         buttonGroup: false,
         tree: false,
         form_L: false,
         form_R: false
       },
-      buttonGroupItems: [],
-      treeItems: [],
-      form_L_Items: [],
-      form_R_Items: []
+      buttonGroupItem: '',
+      treeItem: '',
+      form_L_item: '',
+      form_R_item: ''
     }
   },
   computed: {
@@ -89,8 +91,45 @@ export default {
   methods: {
     init() {
       const _route = this.$route
-      console.log('_route：', _route, 'permission_routes：', this.permission_routes)
-      // this.id = this.data.systemId
+      const _meta = _route.meta
+      const _permissionRoutes = this.permission_routes
+
+      console.log('_route：', _route, 'permission_routes：', _permissionRoutes)
+
+      this.id = _meta.system_id
+      this.verticalPercent = _meta.verticalPercent
+      this.horizontalPercent = _meta.horizontalPercent
+      this.buttonGroup = _meta.buttonGroup
+      this.tree = _meta.tree
+      this.form_L = _meta.form_L
+      this.form_R = _meta.form_R
+
+      const Tree = new FilterTree({
+        treeData: _permissionRoutes,
+        key: ['meta', 'system_id'],
+        value: _meta.system_id
+      })
+      const _data = Tree.getData()
+      console.log('_data：', _data)
+
+      if (_data[0] && _data[0].length === 1 && _data[0].children) {
+        _data[0].children.forEach((_item) => {
+          switch (_item.meta.system_type) {
+            case 'EmButtonGroup':
+              this.buttonGroupItem = _item
+              break
+            case 'EmForm_L':
+              this.form_L_item = _item
+              break
+            case 'EmForm_R':
+              this.form_R_item = _item
+              break
+            case 'EmTree':
+              this.treeItem = _item
+              break
+          }
+        })
+      }
     }
   }
 }
