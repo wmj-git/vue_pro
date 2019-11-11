@@ -1,10 +1,6 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="inputFilter" placeholder="输入学校组织编码查询" clearable />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
@@ -38,11 +34,6 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="结业状态">
-        <template slot-scope="scope">
-          <span>{{ scope.row.graduateStatus === 1 ? '在读': scope.row.graduateStatus === 0 ? '结业' : '遣散' }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <el-button
@@ -65,10 +56,13 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="班级名称" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.name" />
+        <el-form-item label="建筑名称" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.buildingName" />
         </el-form-item>
-        <el-form-item label="学校组织编码" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="楼层高度" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.buildingHeight" />
+        </el-form-item>
+        <el-form-item label="学校组织编码" prop="siOrgCode" :label-width="formLabelWidth">
           <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
@@ -78,21 +72,24 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="结业状态" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.graduateStatus" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="坐标位置" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.coordinates" />
+        </el-form-item>
+        <el-form-item label="楼层数" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.floorNum" />
+        </el-form-item>
+        <el-form-item label="建筑用途" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.buildingPurpose" />
+        </el-form-item>
+        <el-form-item label="楼层建筑状态" prop="name" :label-width="formLabelWidth">
+          <el-select v-model="temp.buildingStatusRemark" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
-              v-for="item in graduateStatus"
+              v-for="item in buildingStatus"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="界别" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.boundary" />
-        </el-form-item>
-        <el-form-item label="年级" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.gradeName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,32 +100,41 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, schoolInfo, editList, delList } from '@/api/schoolService/classInfo'
+import { fetchList, addList, editList, delList } from '@/api/schoolService/schoolBuilding'
+import { schoolInfo } from '@/api/schoolService/schoolDept' // 学校组织编码
 export default {
-  name: 'ClassInfo',
+  name: 'SchoolBuilding',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '班级编号',
-          key: 'classSerialNumber'
+          label: '建筑名称',
+          key: 'buildingName'
         },
         {
-          label: '班级名称',
-          key: 'name'
+          label: '楼层高度',
+          key: 'buildingHeight'
         },
         {
-          label: '界别',
-          key: 'boundary'
+          label: '坐标位置',
+          key: 'coordinates'
         },
         {
-          label: '年级',
-          key: 'gradeName'
+          label: '楼层数',
+          key: 'floorNum'
         },
         {
           label: '学校组织编码',
           key: 'siOrgCode'
+        },
+        {
+          label: '建筑用途',
+          key: 'buildingPurpose'
+        },
+        {
+          label: '楼层建筑状态',
+          key: 'buildingStatusRemark'
         }
       ],
       pageOne: false,
@@ -142,21 +148,22 @@ export default {
         create: '添加'
       },
       temp: {
-        name: '',
-        address: '',
-        orgCode: '',
+        buildingName: '',
+        buildingHeight: '',
+        coordinates: '',
+        floorNum: '',
+        buildingStatusRemark: '',
         siOrgCode: '',
-        tel: '',
-        gradeName: ''
+        buildingPurpose: ''
       },
-      statusOptions: [], // 获取学校组织编码
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
-      formLabelWidth: '120px',
-      inputFilter: '',
+      formLabelWidth: '100px',
+      ids: [], // 存储已选中记录的id（删除）
       multipleSelection: [],
-      ids: [], // 要删除数组的id
-      graduateStatus: [{ label: '在读', value: 1 }, { label: '结业', value: 0 }, { label: '遣散', value: -1 }] // 结业状态
+      statusOptions: '', // 学校组织编码
+      buildingStatus: [{ label: '正常', value: '正常' }, { label: '危楼重建', value: '危楼重建' }, { label: '旧楼翻新', value: '旧楼翻新' }] // 结业状态
     }
   },
   created() {
@@ -164,29 +171,23 @@ export default {
     this.getList()
   },
   methods: {
-
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
     },
-
     // 渲染表格数据
     getList() {
-      const obj = {
+      var obj = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
-      }
-      console.log('inp:' + this.inputFilter)
-      if (this.inputFilter) {
-        obj.name = this.inputFilter
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取下拉选项
+    // 获取学校组织编码
     getSection() {
       const optionsArr = []
       schoolInfo().then(response => {
@@ -210,12 +211,14 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 查询
     handleFilter() {
       this.getList()
     },
@@ -260,6 +263,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
+            console.log('temp:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -321,7 +325,7 @@ export default {
     & .table-operate {
       margin: 10px;
       .el-input {
-        width: 30%;
+        width: 15%;
       }
     }
   }

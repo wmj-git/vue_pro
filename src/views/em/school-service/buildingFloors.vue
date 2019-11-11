@@ -1,12 +1,6 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="pName" placeholder="家长姓名查询" clearable>
-        <i slot="prefix" class="el-input__icon el-icon-search" />
-      </el-input>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
@@ -40,11 +34,6 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="家长性别">
-        <template slot-scope="scope">
-          {{ scope.row.parentSex === 2 ? '女' : '男' }}
-        </template>
-      </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <el-button
@@ -67,24 +56,24 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="家长姓名" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentName" />
+        <el-form-item label="楼层名称" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.floorName" />
         </el-form-item>
-        <el-form-item label="学生id" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.studentIds " class="filter-item" clearable placeholder="选择学生id" @change="currentSel">
+        <el-form-item label="所属建筑" prop="name" :label-width="formLabelWidth">
+          <el-select v-model="temp.buildingId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
-              v-for="item in studentOptions"
+              v-for="item in buildingIds"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="家长年龄" prop="introduction" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentAge" />
+        <el-form-item label="离地高度" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.floorHeight" />
         </el-form-item>
-        <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.parentSex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="学校组织编码" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -93,8 +82,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentTel" />
+        <el-form-item label="用途" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.floorPurpose" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -105,24 +94,33 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, studentInfo } from '@/api/schoolService/parentInfo'
+import { fetchList, addList, editList, delList, schoolBuilding } from '@/api/schoolService/buildingFloor'
+import { schoolInfo } from '@/api/schoolService/schoolDept' // 学校组织编码
 export default {
-  name: 'ParentInfo',
+  name: 'BuildingFloors',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '家长姓名',
-          key: 'parentName'
+          label: '建筑名称',
+          key: 'buildingName'
         },
         {
-          label: '家长年龄',
-          key: 'parentAge'
+          label: '离地高度',
+          key: 'floorHeight'
         },
         {
-          label: '家长电话',
-          key: 'parentTel'
+          label: '楼层名称',
+          key: 'floorName'
+        },
+        {
+          label: '用途',
+          key: 'floorPurpose'
+        },
+        {
+          label: '学校组织编码',
+          key: 'siOrgCode'
         }
       ],
       pageOne: false,
@@ -136,28 +134,29 @@ export default {
         create: '添加'
       },
       temp: {
-        parentName: '',
-        parentAge: '',
-        studentNumber: '',
-        parentSex: '',
-        parentTel: '',
-        studentIds: ''
+        buildingName: '',
+        floorHeight: '',
+        floorName: '',
+        floorNum: '',
+        buildingStatusRemark: '',
+        siOrgCode: '',
+        floorPurpose: '',
+        buildingId: ''
       },
-      studentId: '', // 查询学生
-      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
-      studentOptions: [], // 添加学生id
       dialogFormVisible: false,
       itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
       formLabelWidth: '100px',
       inputFilter: '',
       multipleSelection: [],
-      classId: '', // 查询家长
-      pName: ''// 根据家长姓名查询家长
+      ids: [], // 删除id
+      statusOptions: [], // 学校组织编码
+      buildingIds: [] // 所属建筑id
     }
   },
   created() {
     this.getSection()
+    this.getSectionList()
     this.getList()
   },
   methods: {
@@ -177,18 +176,27 @@ export default {
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
-        this.ids = response.data.classId
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取学生id
+    // 获取学校建筑
     getSection() {
       const optionsArr = []
-      studentInfo().then(response => {
+      schoolBuilding().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
+          optionsArr.push({ 'label': _val.buildingName, 'value': _val.id })
         })
-        this.studentOptions = optionsArr
+        this.buildingIds = optionsArr
+      })
+    },
+    // 获取学校组织编码
+    getSectionList() {
+      const optionsArr = []
+      schoolInfo().then(response => {
+        response.data.list.forEach((_val) => {
+          optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
+        })
+        this.statusOptions = optionsArr
       })
     },
     currentSel(val) {

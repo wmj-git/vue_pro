@@ -64,6 +64,51 @@ const schoolService = {
         title: '学校banner图管理',
         icon: 'chart'
       }
+    },
+    {
+      path: 'schoolBuilding',
+      component: () => import('@/views/em/school-service/schoolBuilding'),
+      name: 'SchoolBuilding',
+      meta: {
+        title: '建筑管理',
+        icon: 'chart'
+      }
+    },
+    {
+      path: 'buildingFloors',
+      component: () => import('@/views/em/school-service/buildingFloors'),
+      name: 'BuildingFloors',
+      meta: {
+        title: '建筑楼层管理',
+        icon: 'chart'
+      }
+    },
+    {
+      path: 'educationCommission',
+      component: () => import('@/views/em/school-service/educationCommission'),
+      name: 'EducationCommission',
+      meta: {
+        title: '教委管理',
+        icon: 'chart'
+      }
+    },
+    {
+      path: 'teacherInfo',
+      component: () => import('@/views/em/school-service/teacherInfo'),
+      name: 'TeacherInfo',
+      meta: {
+        title: '教师管理',
+        icon: 'chart'
+      }
+    },
+    {
+      path: 'visitorRecord',
+      component: () => import('@/views/em/school-service/visitorRecord'),
+      name: 'VisitorRecord',
+      meta: {
+        title: '访客管理',
+        icon: 'chart'
+      }
     }
   ]
 }
