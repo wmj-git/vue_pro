@@ -132,7 +132,7 @@ export default {
         },
         {
           label: '来访时间',
-          key: 'visitingTime'
+          key: 'visitingDate'
         },
         {
           label: '学校组织编码',
@@ -275,8 +275,12 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          for (const i in this.temp) { // 寻找时间字段后再转换
+            if (i === 'visitingTime') {
+              this.temp[i] = new Date(this.temp[i]).getTime()
+            }
+          }
           addList(this.temp).then((res) => {
-            console.log('tempAA:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -291,11 +295,25 @@ export default {
         }
       })
     },
+    checkTime(i) {
+      if (i < 10) {
+        i = '0' + i
+      }
+      return i
+    },
     // 修改功能
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
+          for (const j in this.temp) { // 寻找时间字段后再转换
+            if (j === 'visitingTime') {
+              var date = new Date(this.temp[j])
+              var dateTime = date.getFullYear() + '-' + this.checkTime(date.getMonth() + 1) + '-' + this.checkTime(date.getDate())
+              console.log('da', dateTime)
+            }
+          }
+          console.log('修改:', this.temp)
           editList(tempData).then(() => {
             for (const v of this.tableDataEnd) {
               if (v.id === this.temp.id) {

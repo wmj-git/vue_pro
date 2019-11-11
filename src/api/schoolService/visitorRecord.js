@@ -22,7 +22,7 @@ export function addList(obj) {
   })
 }
 // 访客管理删除
-export function visitor(obj) {
+export function delList(obj) {
   return request({
     url: '/school/visitor/deletes',
     method: 'delete',
