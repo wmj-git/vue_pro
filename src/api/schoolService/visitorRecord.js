@@ -24,7 +24,7 @@ export function addList(obj) {
 // 访客管理删除
 export function visitor(obj) {
   return request({
-    url: '/school/teacher/deletes',
+    url: '/school/visitor/deletes',
     method: 'delete',
     data: obj.params
   })

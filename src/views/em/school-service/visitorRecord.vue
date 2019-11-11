@@ -173,7 +173,7 @@ export default {
       formLabelWidth: '100px',
       multipleSelection: [],
       classId: '', // 查询家长
-      tName: '', // 根据教师姓名查询教师
+      tName: '', // 根据访客姓名查询教师
       ids: [] // 已选中需要删除的id(数组)
     }
   },
