@@ -7,7 +7,7 @@ const schoolService = {
   name: 'schoolService',
   alwaysShow: true,
   meta: {
-    title: '学校服务',
+    title: '学校管理',
     icon: 'component'
   },
   children: [
