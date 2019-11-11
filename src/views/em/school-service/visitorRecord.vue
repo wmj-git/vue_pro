@@ -40,14 +40,9 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="教师性别">
+      <el-table-column label="访客性别">
         <template slot-scope="scope">
           {{ scope.row.sex === 2 ? '女' : '男' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="在职状态">
-        <template slot-scope="scope">
-          <span>{{ scope.row.tncumbency === 1 ? '在职': scope.row.graduateStatus === 0 ? '离职' : '开除' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
@@ -72,21 +67,18 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="教师姓名" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="访客姓名" prop="name" :label-width="formLabelWidth">
           <el-input v-model="temp.name" clearable />
         </el-form-item>
-        <el-form-item v-show="itemFormVisible" label="在职状态" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.tncumbency " class="filter-item" clearable placeholder="选择在职状态" @change="currentSel">
-            <el-option
-              v-for="item in tncumbencyStatus"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+        <el-form-item label="身份证号" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.idCardNo" clearable />
         </el-form-item>
-        <el-form-item label="教师年龄" prop="introduction" :label-width="formLabelWidth">
-          <el-input v-model="temp.age" clearable />
+        <el-form-item label="来访时间" prop="introduction" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model="temp.visitingTime"
+            type="datetime"
+            placeholder="选择日期时间"
+          />
         </el-form-item>
         <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
           <el-select v-model="temp.sex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
@@ -98,8 +90,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="所在学校" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.siId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="学校组织编码" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in schoolOptions"
               :key="item.value"
@@ -108,11 +100,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="工作年限" prop="tel" :label-width="formLabelWidth">
-          <el-input v-model="temp.seniority" clearable />
-        </el-form-item>
         <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
           <el-input v-model="temp.tel" clearable />
+        </el-form-item>
+        <el-form-item label="备注信息" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.remark" clearable />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -123,7 +115,7 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, schoolInfo } from '@/api/schoolService/teacherInfo'
+import { fetchList, addList, editList, delList, schoolInfo } from '@/api/schoolService/visitorRecord'
 export default {
   name: 'VisitorRecord',
   data() {
@@ -131,24 +123,28 @@ export default {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '教师姓名',
+          label: '访客姓名',
           key: 'name'
         },
         {
-          label: '教师年龄',
-          key: 'age'
+          label: '身份识别号',
+          key: 'idCardNo'
         },
         {
-          label: '工作年限',
-          key: 'seniority'
+          label: '来访时间',
+          key: 'visitingTime'
         },
         {
-          label: '所在学校',
-          key: 'siId'
+          label: '学校组织编码',
+          key: 'siOrgCode'
         },
         {
-          label: '联系方式',
+          label: '访客联系方式',
           key: 'tel'
+        },
+        {
+          label: '备注',
+          key: 'remark'
         }
       ],
       pageOne: false,
@@ -163,25 +159,22 @@ export default {
       },
       temp: {
         name: '',
-        age: '',
+        idCardNo: '',
         sex: '',
-        tes: '',
-        siId: '',
-        seniority: '',
+        siOrgCode: '',
+        remark: '',
         tel: '',
-        tncumbency: ''
+        visitingTime: ''
       },
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
-      schoolOptions: [], // 添加学校id
+      schoolOptions: [], // 添加学校组织编码
       dialogFormVisible: false,
-      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
       formLabelWidth: '100px',
       multipleSelection: [],
       classId: '', // 查询家长
       tName: '', // 根据教师姓名查询教师
-      ids: [], // 已选中需要删除的id(数组)
-      tncumbencyStatus: [{ label: '在职', value: 1 }, { label: '离职', value: 0 }, { label: '开除', value: -1 }]
+      ids: [] // 已选中需要删除的id(数组)
     }
   },
   created() {
@@ -213,7 +206,7 @@ export default {
       const optionsArr = []
       schoolInfo().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.name, 'value': _val.id })
+          optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
         })
         this.schoolOptions = optionsArr
       })
@@ -224,7 +217,6 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
-      this.itemFormVisible = false
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -233,7 +225,6 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
-      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
@@ -285,6 +276,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           addList(this.temp).then((res) => {
+            console.log('tempAA:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
