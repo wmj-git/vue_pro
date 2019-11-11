@@ -62,6 +62,7 @@ export default {
       }
     }
   },
+  props: ["data"],
   created() {
     this.init()
     vueBus.$on(this.id, obj => {

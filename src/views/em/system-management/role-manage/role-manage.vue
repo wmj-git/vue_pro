@@ -1,30 +1,37 @@
 <template>
   <div class="role-container">
+    <el-card>
+      <!--<em-button-group></em-button-group>-->
+    </el-card>
     <split-pane split="vertical" :min-percent="20" :default-percent="30">
       <template slot="paneL">
-        <el-row>
-          <el-col :span="48">
-           <em-tree></em-tree>
-          </el-col>
-        </el-row>
+        <div style="overflow: auto">
+          <el-row>
+            <el-col :span="48">
+              <em-tree></em-tree>
+            </el-col>
+          </el-row>
+        </div>
       </template>
       <template slot="paneR">
-        <split-pane split="horizontal">
+        <split-pane split="horizontal" :min-percent="20" :default-percent="40">
           <template slot="paneL">
-            <el-row>
-              <el-col :span="48">
-                <em-form></em-form>
-              </el-col>
-            </el-row>
+            <div style="overflow: auto;height: 100%;">
+              <el-row >
+                <el-col :span="48">
+                  <em-form></em-form>
+                </el-col>
+              </el-row>
+            </div>
           </template>
           <template slot="paneR">
-            <el-row>
-              <el-col :span="48">
-                <el-card>
-                  范德萨发的发的
-                </el-card>
-              </el-col>
-            </el-row>
+            <div style="overflow: auto;height: 100%;">
+              <el-row >
+                <el-col :span="48">
+                  <em-form></em-form>
+                </el-col>
+              </el-row>
+            </div>
           </template>
         </split-pane>
       </template>
@@ -38,19 +45,29 @@ import vueBus from '@/utils/vueBus'
 import splitPane from 'vue-splitpane'
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
+import emButtonGroup from './components/emButtonGroup/emButtonGroup'
 
 export default {
   name: 'RoleManage',
   components: {
     splitPane,
     emTree,
-    emForm
+    emForm,
+    emButtonGroup
   },
   data() {
     return {
       id: '',
       set: {
-      }
+        buttonGroup: false,
+        tree: false,
+        form_L: false,
+        form_R: false
+      },
+      buttonGroupItems: [],
+      treeItems: [],
+      form_L_Items: [],
+      form_R_Items: []
     }
   },
   computed: {
