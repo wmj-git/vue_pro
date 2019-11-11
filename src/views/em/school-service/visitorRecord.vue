@@ -1,7 +1,9 @@
 <template>
   <div class="school-container">
     <div class="table-operate">
-      <el-input v-model="inputFilter" placeholder="输入学校组织编码查询" clearable />
+      <el-input v-model="tName" placeholder="输入教师姓名查询" clearable>
+        <i slot="prefix" class="el-input__icon el-icon-search" />
+      </el-input>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -38,9 +40,14 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="结业状态">
+      <el-table-column label="教师性别">
         <template slot-scope="scope">
-          <span>{{ scope.row.graduateStatus === 1 ? '在读': scope.row.graduateStatus === 0 ? '结业' : '遣散' }}</span>
+          {{ scope.row.sex === 2 ? '女' : '男' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="在职状态">
+        <template slot-scope="scope">
+          <span>{{ scope.row.tncumbency === 1 ? '在职': scope.row.graduateStatus === 0 ? '离职' : '开除' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
@@ -65,11 +72,24 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="班级名称" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.name" />
+        <el-form-item label="教师姓名" prop="name" :label-width="formLabelWidth">
+          <el-input v-model="temp.name" clearable />
         </el-form-item>
-        <el-form-item label="学校组织编码" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item v-show="itemFormVisible" label="在职状态" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.tncumbency " class="filter-item" clearable placeholder="选择在职状态" @change="currentSel">
+            <el-option
+              v-for="item in tncumbencyStatus"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="教师年龄" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.age" clearable />
+        </el-form-item>
+        <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.sex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -78,21 +98,21 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="结业状态" prop="name" :label-width="formLabelWidth">
-          <el-select v-model="temp.graduateStatus" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="所在学校" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.siId" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
-              v-for="item in graduateStatus"
+              v-for="item in schoolOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="界别" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.boundary" />
+        <el-form-item label="工作年限" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.seniority" clearable />
         </el-form-item>
-        <el-form-item label="年级" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="temp.gradeName" />
+        <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
+          <el-input v-model="temp.tel" clearable />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,32 +123,32 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, schoolInfo, editList, delList } from '@/api/schoolService/classInfo'
+import { fetchList, addList, editList, delList, schoolInfo } from '@/api/schoolService/teacherInfo'
 export default {
-  name: 'ClassInfo',
+  name: 'VisitorRecord',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '班级编号',
-          key: 'classSerialNumber'
-        },
-        {
-          label: '班级名称',
+          label: '教师姓名',
           key: 'name'
         },
         {
-          label: '界别',
-          key: 'boundary'
+          label: '教师年龄',
+          key: 'age'
         },
         {
-          label: '年级',
-          key: 'gradeName'
+          label: '工作年限',
+          key: 'seniority'
         },
         {
-          label: '学校组织编码',
-          key: 'siOrgCode'
+          label: '所在学校',
+          key: 'siId'
+        },
+        {
+          label: '联系方式',
+          key: 'tel'
         }
       ],
       pageOne: false,
@@ -143,20 +163,25 @@ export default {
       },
       temp: {
         name: '',
-        address: '',
-        orgCode: '',
-        siOrgCode: '',
+        age: '',
+        sex: '',
+        tes: '',
+        siId: '',
+        seniority: '',
         tel: '',
-        gradeName: ''
+        tncumbency: ''
       },
-      statusOptions: [], // 获取学校组织编码
+      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
+      schoolOptions: [], // 添加学校id
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
-      formLabelWidth: '120px',
-      inputFilter: '',
+      formLabelWidth: '100px',
       multipleSelection: [],
-      ids: [], // 要删除数组的id
-      graduateStatus: [{ label: '在读', value: 1 }, { label: '结业', value: 0 }, { label: '遣散', value: -1 }] // 结业状态
+      classId: '', // 查询家长
+      tName: '', // 根据教师姓名查询教师
+      ids: [], // 已选中需要删除的id(数组)
+      tncumbencyStatus: [{ label: '在职', value: 1 }, { label: '离职', value: 0 }, { label: '开除', value: -1 }]
     }
   },
   created() {
@@ -164,36 +189,33 @@ export default {
     this.getList()
   },
   methods: {
-
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
     },
-
     // 渲染表格数据
     getList() {
-      const obj = {
+      var obj = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
       }
-      console.log('inp:' + this.inputFilter)
-      if (this.inputFilter) {
-        obj.name = this.inputFilter
+      if (this.tName) {
+        obj.name = this.tName
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取下拉选项
+    // 获取学校id
     getSection() {
       const optionsArr = []
       schoolInfo().then(response => {
         response.data.list.forEach((_val) => {
-          optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
+          optionsArr.push({ 'label': _val.name, 'value': _val.id })
         })
-        this.statusOptions = optionsArr
+        this.schoolOptions = optionsArr
       })
     },
     currentSel(val) {
@@ -202,6 +224,7 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
+      this.itemFormVisible = false
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -210,12 +233,14 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 查询
     handleFilter() {
       this.getList()
     },
@@ -227,7 +252,7 @@ export default {
         this.ids.push(val.id)
         console.log('ids', val.id)
       })
-      if (this.ids.length >= 1) {
+      if (this.ids.length > 0) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -321,7 +346,7 @@ export default {
     & .table-operate {
       margin: 10px;
       .el-input {
-        width: 30%;
+        width: 15%;
       }
     }
   }
