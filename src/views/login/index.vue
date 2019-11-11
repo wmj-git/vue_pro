@@ -43,7 +43,7 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注123册</el-button>
+      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注122223册</el-button>
       <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
     <el-dialog
