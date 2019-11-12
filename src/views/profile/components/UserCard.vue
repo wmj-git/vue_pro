@@ -8,7 +8,7 @@
       <div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           <div>Hello</div>
-          {{ user.role.zhName }}
+          {{ user.role.description }}
         </pan-thumb>
       </div>
       <div class="box-center">
@@ -18,7 +18,7 @@
             <el-option
               v-for="item in user.roles"
               :key="item.id"
-              :label="item.zhName"
+              :label="item.description"
               :value="item.id"
             />
           </el-select>
