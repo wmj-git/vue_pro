@@ -34,9 +34,9 @@
           <span>{{ scope.row[info.key] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="访客性别">
+      <el-table-column label="设备类型">
         <template slot-scope="scope">
-          {{ scope.row.sex === 2 ? '女' : '男' }}
+          <span>{{ scope.row.type === 3 ? '监控摄像头' : '人脸识别门禁' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
@@ -61,22 +61,30 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="访客姓名" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="设备名称" prop="tel" :label-width="formLabelWidth">
           <el-input v-model="temp.name" clearable />
         </el-form-item>
-        <el-form-item label="身份证号" prop="introduction" :label-width="formLabelWidth">
-          <el-input v-model="temp.idCardNo" clearable />
+        <el-form-item label="设备类型" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.type" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="来访时间" prop="introduction" :label-width="formLabelWidth">
-          <el-date-picker
-            v-model="temp.visitingTime"
-            type="datetime"
-            placeholder="选择日期时间"
-            format
-          />
+        <el-form-item label="描述" prop="introduction" :label-width="formLabelWidth">
+          <el-input v-model="temp.description" clearable />
         </el-form-item>
-        <el-form-item label="性别" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.sex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
+        <el-form-item label="纬度" prop="latitude" :label-width="formLabelWidth">
+          <el-input v-model="temp.latitude" clearable />
+        </el-form-item>
+        <el-form-item label="经度" prop="longitude" :label-width="formLabelWidth">
+          <el-input v-model="temp.longitude" clearable />
+        </el-form-item>
+        <el-form-item label="学校组织编码" prop="siOrgCode" :label-width="formLabelWidth">
+          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -84,22 +92,6 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="学校组织编码" prop="siOrgCode" :label-width="formLabelWidth">
-          <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
-            <el-option
-              v-for="item in schoolOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="联系方式" prop="tel" :label-width="formLabelWidth">
-          <el-input v-model="temp.tel" clearable />
-        </el-form-item>
-        <el-form-item label="备注信息" prop="tel" :label-width="formLabelWidth">
-          <el-input v-model="temp.remark" clearable />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -110,36 +102,41 @@
   </div>
 </template>
 <script>
-import { fetchList, addList, editList, delList, schoolInfo } from '@/api/schoolService/visitorRecord'
+import { fetchList, addList, editList, delList } from '@/api/schoolService/deviceInfo'
+import { schoolInfo } from '@/api/schoolService/schoolDept' // 学校组织编码
 export default {
-  name: 'VisitorRecord',
+  name: 'DeviceInfo',
   data() {
     return {
       tableDataEnd: null,
       tableHeader: [
         {
-          label: '访客姓名',
+          label: '设备名称',
           key: 'name'
         },
         {
-          label: '身份识别号',
-          key: 'idCardNo'
+          label: '描述',
+          key: 'description'
+        },
+        /* {
+          label: '安装高度',
+          key: 'deviceHeight'
         },
         {
-          label: '来访时间',
-          key: 'visitingDate'
-        },
+          label: '设备编号',
+          key: 'deviceNumber'
+        },*/
         {
-          label: '学校组织编码',
+          label: '学校组织代码',
           key: 'siOrgCode'
         },
         {
-          label: '访客联系方式',
-          key: 'tel'
+          label: '纬度',
+          key: 'latitude'
         },
         {
-          label: '备注',
-          key: 'remark'
+          label: '经度',
+          key: 'longitude'
         }
       ],
       pageOne: false,
@@ -154,26 +151,26 @@ export default {
       },
       temp: {
         name: '',
-        idCardNo: '',
-        sex: '',
+        type: '',
+        description: '',
         siOrgCode: '',
-        remark: '',
-        tel: '',
-        visitingTime: ''
+        floorId: '',
+        latitude: '',
+        longitude: ''
       },
-      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
-      schoolOptions: [], // 添加学校组织编码
       dialogFormVisible: false,
+      itemFormVisible: false, // 字段显示与隐藏
       dialogStatus: '',
       formLabelWidth: '100px',
+      inputFilter: '',
       multipleSelection: [],
-      classId: '', // 查询家长
-      tName: '', // 根据访客姓名查询教师
-      ids: [] // 已选中需要删除的id(数组)
+      ids: [], // 删除id
+      statusOptions: [], // 学校组织编码
+      typeOptions: [{ label: '人脸识别门禁', value: 3 }, { label: '监控摄像头', value: 4 }] // 设备类型
     }
   },
   created() {
-    this.getSection()
+    this.getSectionList()
     this.getList()
   },
   methods: {
@@ -188,22 +185,22 @@ export default {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
       }
-      if (this.tName) {
-        obj.name = this.tName
+      if (this.pName) {
+        obj.pName = this.pName
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
       })
     },
-    // 获取学校id
-    getSection() {
+    // 获取学校组织编码
+    getSectionList() {
       const optionsArr = []
       schoolInfo().then(response => {
         response.data.list.forEach((_val) => {
           optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
         })
-        this.schoolOptions = optionsArr
+        this.statusOptions = optionsArr
       })
     },
     currentSel(val) {
@@ -220,6 +217,7 @@ export default {
     // 添加弹框
     handleCreate() {
       this.resetTemp()
+      this.itemFormVisible = true
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
       this.$nextTick(() => {
@@ -238,7 +236,7 @@ export default {
         this.ids.push(val.id)
         console.log('ids', val.id)
       })
-      if (this.ids.length > 0) {
+      if (this.ids.length >= 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -270,12 +268,8 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'visitingTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           addList(this.temp).then((res) => {
+            console.log('temp:', this.temp)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -290,31 +284,11 @@ export default {
         }
       })
     },
-    checkTime(i) {
-      if (i < 10) {
-        i = '0' + i
-      }
-      return i
-    },
     // 修改功能
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          /* for (const j in this.temp) { // 寻找时间字段后再转换
-            if (j === 'visitingTime') {
-              var date = new Date(this.temp[j])
-              var dateTime = date.getFullYear() + '-' + this.checkTime(date.getMonth() + 1) + '-' + this.checkTime(date.getDate() +
-                this.checkTime(date.getHours()) + this.checkTime(date.getMinutes()) + ':' + this.checkTime(date.getSeconds()))
-              console.log('da', dateTime)
-            }
-          }*/
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'visitingTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
-          console.log('修改:', this.temp)
           editList(tempData).then(() => {
             for (const v of this.tableDataEnd) {
               if (v.id === this.temp.id) {

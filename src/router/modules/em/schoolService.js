@@ -109,6 +109,15 @@ const schoolService = {
         title: '访客管理',
         icon: 'chart'
       }
+    },
+    {
+      path: 'deviceInfo',
+      component: () => import('@/views/em/school-service/deviceInfo'),
+      name: 'DeviceInfo',
+      meta: {
+        title: '设备管理',
+        icon: 'chart'
+      }
     }
   ]
 }
