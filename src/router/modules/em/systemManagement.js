@@ -66,7 +66,7 @@ const systemManagement = {
         title: '角色管理',
         icon: 'chart',
         roles: ['developer', 'admin', 'editor'],
-        noCache: false,
+        noCache: true,
         affix: false,
         breadcrumb: true,
         'system_id': 'systemManagement_role-manage',
@@ -165,7 +165,36 @@ const systemManagement = {
                 'fn': '',
                 'fn_type': ''
               }
+            },
+            {
+              id: 11213,
+              pid: 1121,
+              weight: 200,
+              path: 'ElButton3',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'ElButton',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '获取角色权限',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'systemManagement_role-manage_EmButtonGroup_item3',
+                'system_type': 'ElButton',
+                'type': 'primary',
+                'size': '',
+                'class': '',
+                'disabled': false,
+                'control_type': 'tree',
+                'control_id': 'systemManagement_role-manage_emTree',
+                'fn': 'getRoutePermission',
+                'fn_type': ''
+              }
             }
+
           ]
         },
         {
@@ -190,7 +219,7 @@ const systemManagement = {
             'propsChildren': 'children',
             'propsLabel': 'zhName',
             'checkbox': false,
-            'expandAll': false,
+            'expandAll': true,
             'buttons': true,
             'treeDataType': 'query',
             'treeDataUrl': '/user/role/selectRole',

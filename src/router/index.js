@@ -6,6 +6,9 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+/* 公用页面模板 */
+import demo from './modules/demo/index'
+
 /* 菜单数据 */
 import systemManagement from './modules/em/systemManagement' // 系统管理
 import schoolService from './modules/em/schoolService' // 学校服务
@@ -99,7 +102,8 @@ export const constantRoutes = [
         meta: { title: '用户信息', icon: 'user', noCache: true }
       }
     ]
-  }
+  },
+  demo
 ]
 
 /**

@@ -99,15 +99,15 @@ export default {
       paramsData: 'none'
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
-    }
-  },
   computed: {
     ...mapGetters([
       'permission_routes'
     ])
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    }
   },
   created() {
     this.init()
@@ -165,6 +165,10 @@ export default {
         this.setCheckedKeys()
       }
     },
+    filterNode(value, data) {
+      if (!value) return true
+      return data[this.defaultProps.label].indexOf(value) !== -1
+    },
     treeDataFn() {
       let _tree = []
       switch (this.set.treeDataType) {
@@ -190,12 +194,19 @@ export default {
           break
       }
     },
-    filterNode(value, data) {
-      if (!value) return true
-      return data[this.defaultProps.label].indexOf(value) !== -1
+    SuccessFn() {
+      switch (this.set.appendSuccess) {
+        case 'permissions':
+          // 更新权限
+          /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
+            _this.treeDataFn()
+          })*/
+          break
+        default :
+          this.treeDataFn()
+      }
     },
     append(node, data) {
-      const _this = this
       if (data.id) {
         data.id = ''
       }
@@ -208,16 +219,7 @@ export default {
             message: response.message,
             type: 'success'
           })
-        }
-        switch (_this.set.appendSuccess) {
-          case 'permissions':
-            // 更新权限
-            /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
-              _this.treeDataFn()
-            })*/
-            break
-          default :
-            _this.treeDataFn()
+          this.SuccessFn()
         }
       })
     },
@@ -227,7 +229,7 @@ export default {
       update({
         url: this.set.updateUrl,
         // params: node.params
-        params: { 'id': 22, 'name': 'root', 'zhName': '超级管理员12323213', 'roleCode': 'CODE_ROOT', 'orgId': 1, 'orgType': 2, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 200, 'pid': 0 }
+        params: { 'id': 29, 'name': 'root123', 'zhName': '1运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
@@ -235,16 +237,7 @@ export default {
             type: 'success'
           })
         }
-        switch (_this.set.appendSuccess) {
-          case 'permissions':
-            // 更新权限
-            /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
-              _this.treeDataFn()
-            })*/
-            break
-          default :
-            _this.treeDataFn()
-        }
+        _this.SuccessFn()
       })
     },
     remove(node, data) {
@@ -261,9 +254,6 @@ export default {
         _val.push(_data.id)
         return _val
       }
-
-      console.log('node', removeFn(data), data)
-
       const _this = this
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         cancelButtonText: '取消',
@@ -272,32 +262,23 @@ export default {
       }).then(() => {
         del({
           url: this.set.removeUrl,
-          params: {
-            id: data.id
-          }
-          // params: removeFn(data)
+          params: removeFn(data)
         }).then(function(response) {
           _this.$message({
             message: response.message,
             type: 'success'
           })
-          switch (_this.set.appendSuccess) {
-            case 'permissions':
-              // 更新权限
-              /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
-                _this.treeDataFn()
-              })*/
-              break
-            default :
-              _this.treeDataFn()
-          }
+          _this.SuccessFn()
         })
       }).catch(() => {
-        this.$message({
+        _this.$message({
           type: 'info',
           message: '已取消删除'
         })
       })
+    },
+    getRoutePermission(){
+
     },
     handleNodeClick(data) {
       console.log(data)
