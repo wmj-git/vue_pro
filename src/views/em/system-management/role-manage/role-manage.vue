@@ -97,12 +97,12 @@ export default {
       console.log('_route：', _route, 'permission_routes：', _permissionRoutes)
 
       this.id = _meta.system_id
-      this.verticalPercent = _meta.verticalPercent
-      this.horizontalPercent = _meta.horizontalPercent
-      this.buttonGroup = _meta.buttonGroup
-      this.tree = _meta.tree
-      this.form_L = _meta.form_L
-      this.form_R = _meta.form_R
+      this.set.verticalPercent = _meta.verticalPercent
+      this.set.horizontalPercent = _meta.horizontalPercent
+      this.set.buttonGroup = _meta.buttonGroup
+      this.set.tree = _meta.tree
+      this.set.form_L = _meta.form_L
+      this.set.form_R = _meta.form_R
 
       const Tree = new FilterTree({
         treeData: _permissionRoutes,
@@ -112,7 +112,7 @@ export default {
       const _data = Tree.getData()
       console.log('_data：', _data)
 
-      if (_data[0] && _data[0].length === 1 && _data[0].children) {
+      if (_data.length === 1 && _data[0].children) {
         _data[0].children.forEach((_item) => {
           switch (_item.meta.system_type) {
             case 'EmButtonGroup':

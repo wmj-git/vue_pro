@@ -1,68 +1,114 @@
 <template>
   <div class="tree-container">
-    <el-card>
-      <el-tree :data="treeData" :props="defaultProps" />
+    <el-card class="box-card">
+      <el-row>
+        <el-col :span="48">
+          <p class="head_title">{{ set.title }}</p>
+          <el-input
+            v-model="filterText"
+            placeholder="输入关键字"
+          />
+          <el-tree
+            ref="tree"
+            :data="treeData"
+            :props="defaultProps"
+            node-key="id"
+            :show-checkbox="set.checkbox"
+            :default-expand-all="set.expandAll"
+            :expand-on-click-node="false"
+            :filter-node-method="filterNode"
+            draggable
+            @node-click="handleNodeClick"
+            @check-change="handleCheckChange"
+            @node-drag-end="handleDragEnd"
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span :title="node.label" class="em-tree-text">{{ node.label }}</span>
+              <span v-if="set.buttons">
+                <el-button
+                  class="em-btn-gradient em-btn-uniform-gradient"
+                  size="mini"
+                  @click="() => append(node,data)"
+                >
+                  复制
+                </el-button>
+                <el-button
+                  class="em-btn-gradient em-btn-uniform-gradient"
+                  size="mini"
+                  @click="() => remove(node, data)"
+                >
+                  删除
+                </el-button>
+              </span>
+            </span>
+          </el-tree>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
 <script>
-
+import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-// import { toTree } from '@/utils/tool'
+
+import { toTree, ParamsToObj } from '@/utils/tool'
+import { queryCheckedKeys, updateCheckedKeys, query, add, del, update } from '@/api/system-management/role-manage'
+
 export default {
   name: 'EmTree',
   components: {
   },
+  props: ['data'],
   data() {
     return {
       id: '',
       set: {
+        title: '',
+        expandAll: true,
+        buttons: false,
+        appendUrl: '',
+        appendSuccess: '',
+        removeUrl: '',
+        updateUrl: '',
+        checkbox: false,
+        treeDataType: '',
+        treeDataUrl: '',
+        treeDataParams_OBJ: '',
+        checkedKeysType: '',
+        checkedKeysUrl: '',
+        checkedKeysParams_OBJ: '',
+        updateCheckedType: '',
+        updateCheckedUrl: '',
+        updateCheckedParams_OBJ: ''
       },
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
+      treeData: [],
+      filterText: '',
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
+      },
+      setFn: {
+        // 点击节点时交互的对象
+        handleNodeClickType: '',
+        handleNodeClickControlId: '',
+        handleNodeClickFn: '',
+
+        handleCheckChange: '',
+        handleDragEnd: ''
+      },
+      paramsData: 'none'
     }
   },
-  props: ["data"],
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'permission_routes'
+    ])
+  },
   created() {
     this.init()
     vueBus.$on(this.id, obj => {
@@ -75,12 +121,297 @@ export default {
     vueBus.$off(this.id)
   },
   methods: {
+    fn(_fn, _obj) {
+      const _controlType = _obj.control_type ? _obj.control_type : ''
+      switch (_controlType) {
+        case 'win':
+          break
+        default:
+          this[_fn](_obj)
+      }
+    },
     init() {
-      const _route = this.$route.meta
-      console.log('path：', this.$route.path, '$route:', this.$route)
-      console.log('_route：', _route)
-      // this.id = this.data.systemId
+      const _meta = this.data.meta
+      console.log('_meta：', _meta)
+
+      this.id = _meta.system_id
+      this.set.title = _meta.title
+      this.set.expandAll = _meta.expandAll
+      this.set.checkbox = _meta.checkbox
+      this.set.buttons = _meta.buttons
+      this.set.appendUrl = _meta.appendUrl
+      this.set.appendSuccess = _meta.appendSuccess
+      this.set.removeUrl = _meta.removeUrl
+      this.set.updateUrl = _meta.updateUrl
+      this.set.treeDataType = _meta.treeDataType ? _meta.treeDataType : 'query'
+      this.set.treeDataUrl = _meta.treeDataUrl ? _meta.treeDataUrl : ''
+      this.set.treeDataParams_OBJ = _meta.treeDataParams_OBJ ? _meta.treeDataParams_OBJ : 'none'
+      this.set.checkedKeysType = _meta.checkedKeysType ? _meta.checkedKeysType : ''
+      this.set.checkedKeysUrl = _meta.checkedKeysUrl ? _meta.checkedKeysUrl : ''
+      this.set.checkedKeysParams_OBJ = _meta.checkedKeysParams_OBJ ? _meta.checkedKeysParams_OBJ : 'none'
+      this.set.updateCheckedType = _meta.updateCheckedType ? _meta.updateCheckedType : ''
+      this.set.updateCheckedUrl = _meta.updateCheckedUrl ? _meta.updateCheckedUrl : ''
+      this.set.updateCheckedParams_OBJ = _meta.updateCheckedParams_OBJ ? _meta.updateCheckedParams_OBJ : 'none'
+
+      this.setFn.handleNodeClickType = _meta.handleNodeClickType ? _meta.handleNodeClickType : ''
+      this.setFn.handleNodeClickControlId = _meta.handleNodeClickControlId ? _meta.handleNodeClickControlId : ''
+      this.setFn.handleNodeClickFn = _meta.handleNodeClickFn ? _meta.handleNodeClickFn : ''
+
+      this.defaultProps.children = _meta.propsChildren
+      this.defaultProps.label = _meta.propsLabel
+
+      this.treeDataFn()
+      if (this.set.checkbox) {
+        this.setCheckedKeys()
+      }
+    },
+    treeDataFn() {
+      let _tree = []
+      switch (this.set.treeDataType) {
+        case 'permissions':
+          _tree = this.permission_routes
+          this.treeData = []
+          this.treeData = this.treeData.concat(toTree(_tree))
+          break
+        case 'query':
+          query({
+            'url': this.set.treeDataUrl,
+            'params': this.set.treeDataParams_OBJ
+          }).then((response) => {
+            console.log(response)
+            if (response.statusCode === 200) {
+              response.data.forEach((_obj) => {
+                _tree.push(_obj)
+              })
+              this.treeData = []
+              this.treeData = this.treeData.concat(toTree(_tree))
+            }
+          })
+          break
+      }
+    },
+    filterNode(value, data) {
+      if (!value) return true
+      return data[this.defaultProps.label].indexOf(value) !== -1
+    },
+    append(node, data) {
+      const _this = this
+      if (data.id) {
+        data.id = ''
+      }
+      add({
+        url: this.set.appendUrl,
+        params: data
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+        switch (_this.set.appendSuccess) {
+          case 'permissions':
+            // 更新权限
+            /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
+              _this.treeDataFn()
+            })*/
+            break
+          default :
+            _this.treeDataFn()
+        }
+      })
+    },
+    update(node) {
+      console.log('node', node)
+      const _this = this
+      update({
+        url: this.set.updateUrl,
+        // params: node.params
+        params: { 'id': 22, 'name': 'root', 'zhName': '超级管理员12323213', 'roleCode': 'CODE_ROOT', 'orgId': 1, 'orgType': 2, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 200, 'pid': 0 }
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+        switch (_this.set.appendSuccess) {
+          case 'permissions':
+            // 更新权限
+            /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
+              _this.treeDataFn()
+            })*/
+            break
+          default :
+            _this.treeDataFn()
+        }
+      })
+    },
+    remove(node, data) {
+      // 获取子集id
+      function removeFn(_data) {
+        let _val = []
+        if (_data.children) {
+          _val.push(_data.id)
+          _data.children.forEach((_item) => {
+            _val = _val.concat(removeFn(_item))
+          })
+          return _val
+        }
+        _val.push(_data.id)
+        return _val
+      }
+
+      console.log('node', removeFn(data), data)
+
+      const _this = this
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning'
+      }).then(() => {
+        del({
+          url: this.set.removeUrl,
+          params: {
+            id: data.id
+          }
+          // params: removeFn(data)
+        }).then(function(response) {
+          _this.$message({
+            message: response.message,
+            type: 'success'
+          })
+          switch (_this.set.appendSuccess) {
+            case 'permissions':
+              // 更新权限
+              /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
+                _this.treeDataFn()
+              })*/
+              break
+            default :
+              _this.treeDataFn()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleNodeClick(data) {
+      console.log(data)
+      switch (this.setFn.handleNodeClickType) {
+        case 'form':
+          vueBus.$emit(this.setFn.handleNodeClickControlId, {
+            fn: this.setFn.handleNodeClickFn,
+            obj: this.data,
+            data: data
+          })
+          break
+        default:
+      }
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+
+      /* if (dropType === "inner") {
+         draggingNode.data.parentId = dropNode.data.id;
+       } else {
+         draggingNode.data.parentId = dropNode.data.parentId;
+       }
+       update(draggingNode.data).then((response) => {
+         console.log(response);
+         this.$message(response.message);
+       });*/
+
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      // console.log(data, checked, indeterminate);
+      // console.log("getCheckedKeys",this.$refs.tree.getCheckedKeys());
+    },
+    updateCheckedKeys() {
+      console.log(this.$refs.tree.getCheckedKeys())
+      const _CheckedKeys = this.$refs.tree.getCheckedKeys()
+
+      this.paramsData['CheckedKeys'] = _CheckedKeys
+
+      let _params = {}
+      const stringToData = new ParamsToObj(this.set.updateCheckedParams_OBJ,
+        {
+          splitVal: '_',
+          typeVal: 'params'
+        })
+      _params = stringToData.getData()
+
+      for (const _k in _params) {
+        const _key = _params[_k]
+        if (this.paramsData[_key]) {
+          _params[_k] = this.paramsData[_key]
+        }
+      }
+
+      updateCheckedKeys({
+        'url': this.set.updateCheckedUrl,
+        'params': _params
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+        this.setCheckedKeys()
+      })
+    },
+    getCheckedKeys() {
+      return this.$refs.tree.getCheckedKeys()
+    },
+    setCheckedKeys(_obj) {
+      if (_obj) {
+        // 表格传过来的行数据
+        this.paramsData = _obj.row
+      }
+
+      if (this.paramsData === 'none') {
+        return
+      }
+
+      const _this = this
+      switch (this.set.checkedKeysType) {
+        case 'table':
+          var _param = {}
+          var _paramsToObj = new ParamsToObj(this.set.checkedKeysParams_OBJ,
+            {
+              splitVal: '_',
+              typeVal: 'params'
+            })
+          _param = _paramsToObj.getData()
+          for (const _k in _param) {
+            const _key = _param[_k]
+            if (this.paramsData[_key]) {
+              _param[_k] = this.paramsData[_key]
+            }
+          }
+
+          queryCheckedKeys({
+            'url': this.set.checkedKeysUrl,
+            'params': _param
+          }).then((response) => {
+            console.log(response)
+            if (response.statusCode === 200) {
+              const _Keys = []
+              response.data.forEach(function(_obj) {
+                if (_obj.checked) {
+                  _Keys.push(_obj.id)
+                }
+              })
+              _this.$refs.tree.setCheckedKeys(_Keys)
+            }
+          })
+          break
+      }
     }
+
   }
 }
 </script>

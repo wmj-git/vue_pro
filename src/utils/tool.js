@@ -1,5 +1,5 @@
 // 树型数据转换
-export function treeWeight(_nodes) {
+function treeWeight(_nodes) {
   function compare(obj1, obj2) {
     const val1 = obj1.weight
     const val2 = obj2.weight
@@ -24,12 +24,12 @@ export function treeWeight(_nodes) {
   return datalist
 }
 
-export function treeStructure(_nodes) {
+function treeStructure(_nodes) {
   const nodes = _nodes
 
   // sort
   function cmp(a, b) {
-    return a.pId - b.pId
+    return a.pid - b.pid
   }
 
   nodes.sort(cmp)
@@ -37,7 +37,7 @@ export function treeStructure(_nodes) {
   const midObj = {}
   // 从后向前遍历
   for (let i = nodes.length - 1; i >= 0; i--) {
-    const nowPid = nodes[i].pId
+    const nowPid = nodes[i].pid
     const nowId = nodes[i].id
     // 建立当前节点的父节点的children 数组
     if (midObj[nowPid]) {
@@ -116,6 +116,7 @@ tm2.run();
 tm2.stop();
 */
 
+// 树形数据提取数据
 export class FilterTree {
   constructor(_val) {
     this.treeData = _val.treeData
@@ -163,3 +164,40 @@ export class FilterTree {
     return this.filter(this.treeData, this.value)
   }
 }
+
+// 参数数据提取
+export class ParamsToObj {
+  constructor(obj, set) {
+    this.obj = obj
+    this.splitVal = set.splitVal
+    this.typeVal = set.typeVal
+  }
+
+  setData(obj, set) {
+    this.obj = obj
+    this.splitVal = set.splitVal
+    this.typeVal = set.typeVal
+  }
+
+  getData() {
+    const _data = {}
+    for (const k in this.obj) {
+      const _params = k.split(this.splitVal)
+      if (_params[0] === this.typeVal) {
+        _data[_params[1]] = this.obj[k]
+      }
+    }
+    return _data
+  }
+}
+
+/* let _obj={
+  data1:"123",
+  p_data:""
+};
+let paramsToObj=new ParamsToObj(_obj,
+  {
+    splitVal:"_",
+    typeVal:"p"
+  });
+paramsToObj.getData();*/

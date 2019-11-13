@@ -1,23 +1,23 @@
 <template>
   <div class="buttonGroup-container">
     <div :class="set.class">
-      <template v-if="set.groupType==='none'">
+      <template v-if="set.groupType==='default'">
         <el-row>
           <el-button
             v-for="(btn,index) in group"
             :key="index"
-            :ref="btn.system_id"
-            :size="btn.size"
-            :type="btn.type"
-            :icon="btn.icon"
-            :disabled="btn.disabled"
-            :plain="btn.plain ? btn.plain : false "
-            :round="btn.round ? btn.round : false "
-            :circle="btn.circle ? btn.circle : false "
-            :class="btn.class ? btn.class : ''"
-            @click="fn(btn.fn,{'btn':btn,'control_type':btn.control_type})"
+            :ref="btn.meta.system_id"
+            :size="btn.meta.size"
+            :type="btn.meta.type"
+            :icon="btn.meta.icon"
+            :disabled="btn.meta.disabled"
+            :plain="btn.meta.plain ? btn.meta.plain : false "
+            :round="btn.meta.round ? btn.meta.round : false "
+            :circle="btn.meta.circle ? btn.meta.circle : false "
+            :class="btn.meta.class ? btn.meta.class : ''"
+            @click="fn(btn.meta.fn,{'btn':btn,'control_type':btn.meta.control_type})"
           >
-            {{ btn.title }}
+            {{ btn.meta.title }}
           </el-button>
         </el-row>
       </template>
@@ -26,18 +26,18 @@
           <el-button
             v-for="(btn,index) in group"
             :key="index"
-            :ref="btn.system_id"
-            :size="btn.size"
-            :type="btn.type"
-            :icon="btn.icon"
-            :disabled="btn.disabled"
-            :plain="btn.plain ? btn.plain : false "
-            :round="btn.round ? btn.round : false "
-            :circle="btn.circle ? btn.circle : false "
-            :class="btn.class ? btn.class : ''"
-            @click="fn(btn.fn,{'btn':btn,'control_type':btn.control_type})"
+            :ref="btn.meta.system_id"
+            :size="btn.meta.size"
+            :type="btn.meta.type"
+            :icon="btn.meta.icon"
+            :disabled="btn.meta.disabled"
+            :plain="btn.meta.plain ? btn.meta.plain : false "
+            :round="btn.meta.round ? btn.meta.round : false "
+            :circle="btn.meta.circle ? btn.meta.circle : false "
+            :class="btn.meta.class ? btn.meta.class : ''"
+            @click="fn(btn.meta.fn,{'btn':btn,'control_type':btn.meta.control_type})"
           >
-            {{ btn.title }}
+            {{ btn.meta.title }}
           </el-button>
         </el-button-group>
       </template>
@@ -71,7 +71,6 @@ export default {
     })
   },
   mounted() {
-
   },
   beforeDestroy() {
     vueBus.$off(this.id)
@@ -80,8 +79,12 @@ export default {
     fn(_fn, _obj) {
       const _controlType = _obj.control_type ? _obj.control_type : ''
       switch (_controlType) {
-        case 'win':
-
+        case 'tree':
+          console.log('_obj', _obj)
+          vueBus.$emit(_obj.btn.meta.control_id, {
+            fn: _fn,
+            data: _obj.btn
+          })
           break
         case 'component':
 
@@ -94,14 +97,15 @@ export default {
       }
     },
     init() {
-      this.id = this.data.system_id
-      this.set.groupType = this.data.groupType ? this.data.groupType : 'none'
-      this.set.class = this.data.class
+      const _meta = this.data.meta
+      this.id = _meta.system_id
+      this.set.groupType = _meta.groupType ? _meta.groupType : 'default'
+      this.set.class = _meta.class
       // 获取行按钮数据
       if (this.data.children) {
         const _group = []
         this.data.children.forEach(function(_obj) {
-          if (_obj.system_type === 'win_component_buttonGroup_item') {
+          if (_obj.meta.system_type === 'ElButton') {
             _group.push(_obj)
           }
         })
