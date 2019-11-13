@@ -51,8 +51,8 @@
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
 
-import { toTree, ParamsToObj } from '@/utils/tool'
-import { queryCheckedKeys, updateCheckedKeys, query, add, del, update } from '@/api/system-management/role-manage'
+import { toTree, ParamsToObj, dataInitFn } from '@/utils/tool'
+import { queryCheckedKeys, updateCheckedKeys, getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
 
 export default {
   name: 'EmTree',
@@ -70,16 +70,17 @@ export default {
         appendSuccess: '',
         removeUrl: '',
         updateUrl: '',
+        routePermissionUrl: '',
         checkbox: false,
-        treeDataType: '',
+        treeDataType: 'query',
         treeDataUrl: '',
-        treeDataParams_OBJ: '',
+        treeDataParams_OBJ: {},
         checkedKeysType: '',
         checkedKeysUrl: '',
-        checkedKeysParams_OBJ: '',
+        checkedKeysParams_OBJ: {},
         updateCheckedType: '',
         updateCheckedUrl: '',
-        updateCheckedParams_OBJ: ''
+        updateCheckedParams_OBJ: {}
       },
       treeData: [],
       filterText: '',
@@ -95,8 +96,7 @@ export default {
 
         handleCheckChange: '',
         handleDragEnd: ''
-      },
-      paramsData: 'none'
+      }
     }
   },
   computed: {
@@ -132,30 +132,10 @@ export default {
     },
     init() {
       const _meta = this.data.meta
-      console.log('_meta：', _meta)
-
       this.id = _meta.system_id
-      this.set.title = _meta.title
-      this.set.expandAll = _meta.expandAll
-      this.set.checkbox = _meta.checkbox
-      this.set.buttons = _meta.buttons
-      this.set.appendUrl = _meta.appendUrl
-      this.set.appendSuccess = _meta.appendSuccess
-      this.set.removeUrl = _meta.removeUrl
-      this.set.updateUrl = _meta.updateUrl
-      this.set.treeDataType = _meta.treeDataType ? _meta.treeDataType : 'query'
-      this.set.treeDataUrl = _meta.treeDataUrl ? _meta.treeDataUrl : ''
-      this.set.treeDataParams_OBJ = _meta.treeDataParams_OBJ ? _meta.treeDataParams_OBJ : 'none'
-      this.set.checkedKeysType = _meta.checkedKeysType ? _meta.checkedKeysType : ''
-      this.set.checkedKeysUrl = _meta.checkedKeysUrl ? _meta.checkedKeysUrl : ''
-      this.set.checkedKeysParams_OBJ = _meta.checkedKeysParams_OBJ ? _meta.checkedKeysParams_OBJ : 'none'
-      this.set.updateCheckedType = _meta.updateCheckedType ? _meta.updateCheckedType : ''
-      this.set.updateCheckedUrl = _meta.updateCheckedUrl ? _meta.updateCheckedUrl : ''
-      this.set.updateCheckedParams_OBJ = _meta.updateCheckedParams_OBJ ? _meta.updateCheckedParams_OBJ : 'none'
-
-      this.setFn.handleNodeClickType = _meta.handleNodeClickType ? _meta.handleNodeClickType : ''
-      this.setFn.handleNodeClickControlId = _meta.handleNodeClickControlId ? _meta.handleNodeClickControlId : ''
-      this.setFn.handleNodeClickFn = _meta.handleNodeClickFn ? _meta.handleNodeClickFn : ''
+      this.set = dataInitFn(this.set, _meta)
+      console.log('_tree：', this.set)
+      this.setFn = dataInitFn(this.setFn, _meta)
 
       this.defaultProps.children = _meta.propsChildren
       this.defaultProps.label = _meta.propsLabel
@@ -229,7 +209,7 @@ export default {
       update({
         url: this.set.updateUrl,
         // params: node.params
-        params: { 'id': 29, 'name': 'root123', 'zhName': '1运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
+        params: { 'id': 29, 'name': 'root123', 'zhName': '2运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
@@ -277,8 +257,19 @@ export default {
         })
       })
     },
-    getRoutePermission(){
-
+    getRoutePermission() {
+      const _this = this
+      getRoutePermission({
+        'url': this.set.routePermissionUrl,
+        params: 1
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          _this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+      })
     },
     handleNodeClick(data) {
       console.log(data)
@@ -311,86 +302,11 @@ export default {
       // console.log("getCheckedKeys",this.$refs.tree.getCheckedKeys());
     },
     updateCheckedKeys() {
-      console.log(this.$refs.tree.getCheckedKeys())
-      const _CheckedKeys = this.$refs.tree.getCheckedKeys()
-
-      this.paramsData['CheckedKeys'] = _CheckedKeys
-
-      let _params = {}
-      const stringToData = new ParamsToObj(this.set.updateCheckedParams_OBJ,
-        {
-          splitVal: '_',
-          typeVal: 'params'
-        })
-      _params = stringToData.getData()
-
-      for (const _k in _params) {
-        const _key = _params[_k]
-        if (this.paramsData[_key]) {
-          _params[_k] = this.paramsData[_key]
-        }
-      }
-
-      updateCheckedKeys({
-        'url': this.set.updateCheckedUrl,
-        'params': _params
-      }).then((response) => {
-        if (response.statusCode === 200) {
-          this.$message({
-            message: response.message,
-            type: 'success'
-          })
-        }
-        this.setCheckedKeys()
-      })
     },
     getCheckedKeys() {
       return this.$refs.tree.getCheckedKeys()
     },
     setCheckedKeys(_obj) {
-      if (_obj) {
-        // 表格传过来的行数据
-        this.paramsData = _obj.row
-      }
-
-      if (this.paramsData === 'none') {
-        return
-      }
-
-      const _this = this
-      switch (this.set.checkedKeysType) {
-        case 'table':
-          var _param = {}
-          var _paramsToObj = new ParamsToObj(this.set.checkedKeysParams_OBJ,
-            {
-              splitVal: '_',
-              typeVal: 'params'
-            })
-          _param = _paramsToObj.getData()
-          for (const _k in _param) {
-            const _key = _param[_k]
-            if (this.paramsData[_key]) {
-              _param[_k] = this.paramsData[_key]
-            }
-          }
-
-          queryCheckedKeys({
-            'url': this.set.checkedKeysUrl,
-            'params': _param
-          }).then((response) => {
-            console.log(response)
-            if (response.statusCode === 200) {
-              const _Keys = []
-              response.data.forEach(function(_obj) {
-                if (_obj.checked) {
-                  _Keys.push(_obj.id)
-                }
-              })
-              _this.$refs.tree.setCheckedKeys(_Keys)
-            }
-          })
-          break
-      }
     }
 
   }

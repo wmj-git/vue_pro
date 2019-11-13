@@ -52,8 +52,7 @@ export function update(obj) { // 树结构数据修改
 
 export function getRoutePermission(obj) { // 获取角色权限数据
   return request({
-    url: obj.url,
-    method: 'put',
-    data: obj.params
+    url: obj.url + '/' + obj.params,
+    method: 'get'
   })
 }
