@@ -359,8 +359,6 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleCurrentChange(val) {
-    },
     handleExcel() {
       this.$refs.mychild.changeDialogVisible()
     }

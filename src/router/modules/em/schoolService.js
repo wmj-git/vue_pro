@@ -118,6 +118,15 @@ const schoolService = {
         title: '设备管理',
         icon: 'chart'
       }
+    },
+    {
+      path: 'tabsTable',
+      component: () => import('@/components/tabsTable/tabsTable'),
+      name: 'TabsTable',
+      meta: {
+        title: 'TabsTable',
+        icon: 'chart'
+      }
     }
   ]
 }
