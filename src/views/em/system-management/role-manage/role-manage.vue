@@ -41,8 +41,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-import { FilterTree } from '@/utils/tool'
+import { FilterTree, dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
+
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'
@@ -66,10 +67,12 @@ export default {
         form_L: false,
         form_R: false
       },
-      buttonGroupItem: '',
-      treeItem: '',
-      form_L_item: '',
-      form_R_item: ''
+      children: {
+        buttonGroupItem: '',
+        treeItem: '',
+        form_L_item: '',
+        form_R_item: ''
+      }
     }
   },
   computed: {
@@ -93,16 +96,11 @@ export default {
       const _route = this.$route
       const _meta = _route.meta
       const _permissionRoutes = this.permission_routes
-
       console.log('_route：', _route, 'permission_routes：', _permissionRoutes)
 
       this.id = _meta.system_id
-      this.set.verticalPercent = _meta.verticalPercent
-      this.set.horizontalPercent = _meta.horizontalPercent
-      this.set.buttonGroup = _meta.buttonGroup
-      this.set.tree = _meta.tree
-      this.set.form_L = _meta.form_L
-      this.set.form_R = _meta.form_R
+      this.set = dataInitFn(this.set, _meta)
+      console.log('set：', this.set)
 
       const Tree = new FilterTree({
         treeData: _permissionRoutes,
@@ -112,22 +110,26 @@ export default {
       const _data = Tree.getData()
       console.log('_data：', _data)
       if (_data.length === 1 && 'children' in _data[0]) {
-        _data[0].children.forEach((_item) => {
-          switch (_item.meta.system_type) {
-            case 'EmButtonGroup':
-              this.buttonGroupItem = _item
-              break
-            case 'EmForm_L':
-              this.form_L_item = _item
-              break
-            case 'EmForm_R':
-              this.form_R_item = _item
-              break
-            case 'EmTree':
-              this.treeItem = _item
-              break
-          }
-        })
+        this.children = childrenInitFn(this.children, _data)
+
+        if (_data.length === 1 && ('children' in _data[0])) {
+          _data[0].children.forEach((_item) => {
+            switch (_item.meta.system_type) {
+              case 'EmButtonGroup':
+                this.buttonGroupItem = _item
+                break
+              case 'EmForm_L':
+                this.form_L_item = _item
+                break
+              case 'EmForm_R':
+                this.form_R_item = _item
+                break
+              case 'EmTree':
+                this.treeItem = _item
+                break
+            }
+          })
+        }
       }
     }
   }

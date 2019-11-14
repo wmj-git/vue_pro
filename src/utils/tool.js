@@ -200,3 +200,31 @@ let paramsToObj=new ParamsToObj(_obj,
     typeVal:"p"
   });
 paramsToObj.getData();*/
+
+export function dataInitFn(_set, _data) {
+  for (const _k in _set) {
+    if (_k in _data) {
+      _set[_k] = _data[_k]
+    }
+  }
+  return { ..._set }
+}
+
+export function childrenInitFn(_children, _data) {
+  function fn(_k, _data) {
+    const _group = []
+    _data.children.forEach(function(_obj) {
+      if (_obj.meta.system_type === _k) {
+        _group.push(_obj)
+      }
+    })
+    return _group
+  }
+  if ('children' in _data) {
+    for (const _k in _children) {
+      const _ar = fn(_k, _data)
+      _children[_k] = _children[_k].concat(_ar)
+    }
+  }
+  return { ..._children }
+}

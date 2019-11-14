@@ -4,7 +4,7 @@
       <template v-if="set.groupType==='default'">
         <el-row>
           <el-button
-            v-for="(btn,index) in group"
+            v-for="(btn,index) in children.buttonGroup"
             :key="index"
             :ref="btn.meta.system_id"
             :size="btn.meta.size"
@@ -24,7 +24,7 @@
       <template v-else-if="set.groupType==='group'">
         <el-button-group>
           <el-button
-            v-for="(btn,index) in group"
+            v-for="(btn,index) in children.buttonGroup"
             :key="index"
             :ref="btn.meta.system_id"
             :size="btn.meta.size"
@@ -49,7 +49,7 @@
 
 <script>
 import vueBus from '@/utils/vueBus'
-
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 export default {
   name: 'EmButtonGroup',
   components: {},
@@ -58,10 +58,12 @@ export default {
     return {
       id: '',
       set: {
-        groupType: '',
+        groupType: 'default',
         class: ''
       },
-      group: []
+      children: {
+        buttonGroup: []
+      }
     }
   },
   created() {
@@ -99,18 +101,9 @@ export default {
     init() {
       const _meta = this.data.meta
       this.id = _meta.system_id
-      this.set.groupType = _meta.groupType ? _meta.groupType : 'default'
-      this.set.class = _meta.class
+      this.set = dataInitFn(this.set, _meta)
       // 获取行按钮数据
-      if (this.data.children) {
-        const _group = []
-        this.data.children.forEach(function(_obj) {
-          if (_obj.meta.system_type === 'ElButton') {
-            _group.push(_obj)
-          }
-        })
-        this.group = _group
-      }
+      this.children = childrenInitFn(this.children, this.data)
     },
     // 路由指向
     routerFn(_obj) {

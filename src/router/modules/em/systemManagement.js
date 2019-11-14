@@ -127,7 +127,7 @@ const systemManagement = {
                 affix: false,
                 breadcrumb: false,
                 'system_id': 'systemManagement_role-manage_EmButtonGroup_item1',
-                'system_type': 'ElButton',
+                'system_type': 'buttonGroup',
                 'type': 'primary',
                 'size': '',
                 'class': '',
@@ -155,7 +155,7 @@ const systemManagement = {
                 affix: false,
                 breadcrumb: false,
                 'system_id': 'systemManagement_role-manage_EmButtonGroup_item2',
-                'system_type': 'ElButton',
+                'system_type': 'buttonGroup',
                 'type': 'primary',
                 'size': '',
                 'class': '',
@@ -183,7 +183,7 @@ const systemManagement = {
                 affix: false,
                 breadcrumb: false,
                 'system_id': 'systemManagement_role-manage_EmButtonGroup_item3',
-                'system_type': 'ElButton',
+                'system_type': 'buttonGroup',
                 'type': 'primary',
                 'size': '',
                 'class': '',
@@ -194,7 +194,6 @@ const systemManagement = {
                 'fn_type': ''
               }
             }
-
           ]
         },
         {
@@ -234,6 +233,7 @@ const systemManagement = {
             'appendSuccess': '',
             'removeUrl': '/user/role/deleteRole',
             'updateUrl': '/user/role/updateRole',
+            'routePermissionUrl': '/user/role/getResources',
             'control_type': '',
             'control_id': '',
             'fn': '',
