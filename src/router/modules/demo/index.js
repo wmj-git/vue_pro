@@ -181,7 +181,7 @@ const index = {
             },
             'dialogStatus': '',
             'dialogFormVisible': false,
-            'temp': {
+            temp: {
               name: '',
               address: '',
               orgCode: '',

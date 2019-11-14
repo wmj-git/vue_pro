@@ -43,6 +43,7 @@
   </div>
 </template>
 <script>
+import vueBus from '@/utils/vueBus'
 import { fetchList, delList } from '@/api/schoolService/classInfo'
 export default {
   name: 'EmTable',
@@ -67,6 +68,9 @@ export default {
   created() {
     this.init()
     this.getList()
+    vueBus.$on('queryAll', () => {
+      this.getList() // 触发该方法即可
+    })
   },
   methods: {
     init() {

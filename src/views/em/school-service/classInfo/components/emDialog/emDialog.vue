@@ -2,10 +2,10 @@
   <div class="emDialog-container">
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="班级名称" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="班级名称" prop="" :label-width="formLabelWidth">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="学校组织编码" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="学校组织编码" prop="" :label-width="formLabelWidth">
           <el-select v-model="temp.siOrgCode" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in statusOptions"
@@ -15,7 +15,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="结业状态" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="结业状态" prop="" :label-width="formLabelWidth">
           <el-select v-model="temp.graduateStatus" class="filter-item" clearable placeholder="Please select" @change="currentSel">
             <el-option
               v-for="item in graduateStatus"
@@ -25,10 +25,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="界别" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="界别" prop="" :label-width="formLabelWidth">
           <el-input v-model="temp.boundary" />
         </el-form-item>
-        <el-form-item label="年级" prop="name" :label-width="formLabelWidth">
+        <el-form-item label="年级" prop="" :label-width="formLabelWidth">
           <el-input v-model="temp.gradeName" />
         </el-form-item>
       </el-form>
@@ -110,6 +110,7 @@ export default {
       this.dialogStatus = 'create'
     },
     createData() {
+      vueBus.$emit('queryAll')
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const obj = {
