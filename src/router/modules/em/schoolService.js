@@ -13,12 +13,64 @@ const schoolService = {
   children: [
     {
       path: 'schoolInfo',
-      component: () => import('@/views/em/school-service/schoolInfo'),
-      name: 'schoolInfo',
+      component: () => import('@/views/em/school-service/schoolInfo/schoolInfo'),
+      name: 'SchoolInfo',
       meta: {
         title: '学校管理',
-        icon: 'chart'
-      }
+        roles: ['developer', 'admin', 'editor'],
+        icon: 'chart',
+        'system_id': 'schoolService_schoolInfo_SchoolInfo',
+        'system_type': 'SchoolInfo'
+      },
+      children: [
+        {
+          path: 'emButton',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'EmButton',
+          hidden: true,
+          meta: {
+            title: '操作按钮组',
+            icon: 'el-icon-plus',
+            roles: ['developer', 'admin', 'editor'],
+            'system_id': 'schoolService_emButton_EmButton',
+            'system_type': 'EmButton'
+          },
+          children: [
+            {
+              path: 'emButton',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'EmButton',
+              hidden: true,
+              meta: {
+                title: '添加',
+                type: 'primary',
+                icon: 'el-icon-plus',
+                size: 'mini',
+                roles: ['developer', 'admin', 'editor'],
+                'system_id': 'schoolService_emButton_EmButton1',
+                'system_type': 'EmButton',
+                'fn': 'handleCreate'
+              }
+            },
+            {
+              path: 'emButton',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'EmButton',
+              hidden: true,
+              meta: {
+                title: '删除',
+                type: 'danger',
+                size: 'mini',
+                icon: 'el-icon-delete',
+                roles: ['developer', 'admin', 'editor'],
+                'system_id': 'schoolService_emButton_EmButton2',
+                'system_type': 'EmButton',
+                'fn': 'handleDelete'
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       path: 'schoolDept',
@@ -116,15 +168,6 @@ const schoolService = {
       name: 'DeviceInfo',
       meta: {
         title: '设备管理',
-        icon: 'chart'
-      }
-    },
-    {
-      path: 'tabsTable',
-      component: () => import('@/components/tabsTable/tabsTable'),
-      name: 'TabsTable',
-      meta: {
-        title: 'TabsTable',
         icon: 'chart'
       }
     }

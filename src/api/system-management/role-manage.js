@@ -1,7 +1,4 @@
 import request from '@/utils/request'
-import store from '@/store'
-import { encrypt, Encrypt } from '@/utils/RSAUtil'
-
 export function queryCheckedKeys(obj) { // 获取多选框数据
   return request({
     url: obj.url,

@@ -120,8 +120,10 @@ export default {
         value: _meta.system_id
       })
       const _data = Tree.getData()
+
       if (_data.length > 0) {
         this.children = childrenInitFn(this.children, _data[0])
+
       }
       console.log('_data：', _data)
       console.log('children：', this.children)

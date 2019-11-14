@@ -51,8 +51,8 @@
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
 
-import { toTree, ParamsToObj, dataInitFn } from '@/utils/tool'
-import { queryCheckedKeys, updateCheckedKeys, getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
+import { toTree, dataInitFn } from '@/utils/tool'
+import { getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
 
 export default {
   name: 'EmTree',
