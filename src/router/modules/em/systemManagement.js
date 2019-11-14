@@ -102,7 +102,7 @@ const systemManagement = {
             breadcrumb: false,
             'system_id': 'systemManagement_role-manage_EmButtonGroup',
             'system_type': 'EmButtonGroup',
-            'groupType': 'default',
+            'groupType': 'group',
             'class': '',
             'control_type': '',
             'control_id': '',

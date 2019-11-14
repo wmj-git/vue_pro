@@ -130,7 +130,6 @@ export class FilterTree {
     switch (this.key.length) {
       case 1:
         if (this.key[0] in tmp) {
-          console.log('_has', tmp[this.key[0]], _value)
           _has = tmp[this.key[0]] === _value ? 1 : 0
         } else {
           _has = false
@@ -139,7 +138,6 @@ export class FilterTree {
       case 2:
         if ((this.key[0] in tmp) && (this.key[1] in tmp[this.key[0]])) {
           _has = tmp[this.key[0]][this.key[1]] === _value ? 1 : 0
-          console.log(_has)
         } else {
           _has = false
         }

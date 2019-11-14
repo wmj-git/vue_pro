@@ -110,7 +110,7 @@ export default {
         value: _meta.system_id
       })
       const _data = Tree.getData()
-
+      console.log('_data：', _data)
       if (_data.length === 1 && 'children' in _data[0]) {
         _data[0].children.forEach((_item) => {
           switch (_item.meta.system_type) {
