@@ -113,7 +113,8 @@
                 :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
               />
             </el-form-item>
-            <el-button v-else-if="item.meta.itemType==='button'"
+            <el-button
+              v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
               :icon="item.meta.icon"
               :class="item.meta.class"
@@ -249,13 +250,20 @@ export default {
     },
     selectInputKey(_val, _obj) {
       const _this = this
-      console.log('_val:', _val)
-      console.log('selectInputKey:', _obj)
       _obj.options_OBJ.data.forEach((_item) => {
         if (_item.value !== _val) {
           _this.Form[_item.value] = ''
         }
       })
+    },
+    setForm(_obj) { // 设置表单值
+      console.log('setForm', _obj)
+      const _data = _obj.data
+      this.Form = dataInitFn(this.Form, _data)
+    },
+    getForm() {
+      console.log('Form:', this.Form)
+      return this.Form
     },
     onSubmit() {
       console.log('submit!', this.Form)
