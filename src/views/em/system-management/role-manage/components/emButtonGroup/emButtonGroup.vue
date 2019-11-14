@@ -41,7 +41,6 @@
           </el-button>
         </el-button-group>
       </template>
-
     </div>
   </div>
 
@@ -53,7 +52,14 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 export default {
   name: 'EmButtonGroup',
   components: {},
-  props: ['data'],
+  props: {
+    data: {
+      type: Object,
+      default: () => {
+        return { }
+      }
+    }
+  },
   data() {
     return {
       id: '',

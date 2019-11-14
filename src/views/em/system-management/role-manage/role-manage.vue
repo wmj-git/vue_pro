@@ -1,15 +1,23 @@
 <template>
   <div class="role-container">
     <el-card v-if="set.buttonGroup">
-      <em-button-group :data="buttonGroupItem" />
+      <el-row>
+        <template v-for="(item,index) in children.buttonGroupItem">
+          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-button-group :data="item" />
+          </el-col>
+        </template>
+      </el-row>
     </el-card>
     <split-pane split="vertical" :min-percent="20" :default-percent="Number(set.verticalPercent)">
       <template slot="paneL">
         <div style="overflow: auto;height: 100%;">
-          <el-row>
-            <el-col :span="48">
-              <em-tree v-if="set.tree" :data="treeItem" />
-            </el-col>
+          <el-row v-if="set.tree">
+            <template v-for="(item,index) in children.treeItem">
+              <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+                <em-tree :data="item" />
+              </el-col>
+            </template>
           </el-row>
         </div>
       </template>
@@ -17,19 +25,23 @@
         <split-pane split="horizontal" :min-percent="20" :default-percent="Number(set.horizontalPercent)">
           <template slot="paneL">
             <div style="overflow: auto;height: 100%;">
-              <el-row>
-                <el-col :span="48">
-                  <em-form v-if="set.form_L" :data="form_L_item" />
-                </el-col>
+              <el-row v-if="set.form_L">
+                <template v-for="(item,index) in children.form_L_item">
+                  <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+                    <em-form :data="item" />
+                  </el-col>
+                </template>
               </el-row>
             </div>
           </template>
           <template slot="paneR">
             <div style="overflow: auto;height: 100%;">
-              <el-row>
-                <el-col :span="48">
-                  <em-form v-if="set.form_R" :data="form_R_item" />
-                </el-col>
+              <el-row v-if="set.form_R">
+                <template v-for="(item,index) in children.form_R_item">
+                  <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+                    <em-form :data="item" />
+                  </el-col>
+                </template>
               </el-row>
             </div>
           </template>
@@ -41,7 +53,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-import { FilterTree, dataInitFn,  childrenInitFn} from '@/utils/tool'
+import { FilterTree, dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
 import emTree from './components/emTree/emTree'
@@ -68,10 +80,10 @@ export default {
         form_R: false
       },
       children: {
-        buttonGroupItem: '',
-        treeItem: '',
-        form_L_item: '',
-        form_R_item: ''
+        buttonGroupItem: [],
+        treeItem: [],
+        form_L_item: [],
+        form_R_item: []
       }
     }
   },
@@ -108,26 +120,11 @@ export default {
         value: _meta.system_id
       })
       const _data = Tree.getData()
-      this.children = childrenInitFn(this.children, _data)
-
-      if (_data.length === 1 && ('children' in _data[0])) {
-        _data[0].children.forEach((_item) => {
-          switch (_item.meta.system_type) {
-            case 'EmButtonGroup':
-              this.buttonGroupItem = _item
-              break
-            case 'EmForm_L':
-              this.form_L_item = _item
-              break
-            case 'EmForm_R':
-              this.form_R_item = _item
-              break
-            case 'EmTree':
-              this.treeItem = _item
-              break
-          }
-        })
+      if (_data.length > 0) {
+        this.children = childrenInitFn(this.children, _data[0])
       }
+      console.log('_data：', _data)
+      console.log('children：', this.children)
     }
   }
 }

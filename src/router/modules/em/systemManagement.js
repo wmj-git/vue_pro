@@ -71,12 +71,12 @@ const systemManagement = {
         breadcrumb: true,
         'system_id': 'systemManagement_role-manage',
         'system_type': 'RoleManage',
-        verticalPercent: '30',
-        horizontalPercent: '90',
-        buttonGroup: true,
-        tree: true,
-        form_L: true,
-        form_R: false,
+        'verticalPercent': '30',
+        'horizontalPercent': '90',
+        'buttonGroup': true,
+        'tree': true,
+        'form_L': true,
+        'form_R': false,
         'control_type': '',
         'control_id': '',
         'fn': '',
@@ -101,7 +101,9 @@ const systemManagement = {
             affix: false,
             breadcrumb: false,
             'system_id': 'systemManagement_role-manage_EmButtonGroup',
-            'system_type': 'EmButtonGroup',
+            'system_type': 'buttonGroupItem',
+            'offset': '',
+            'span': '48',
             'groupType': 'default',
             'class': '',
             'control_type': '',
@@ -214,7 +216,9 @@ const systemManagement = {
             affix: false,
             breadcrumb: false,
             'system_id': 'systemManagement_role-manage_emTree',
-            'system_type': 'EmTree',
+            'system_type': 'treeItem',
+            'offset': '',
+            'span': '48',
             'propsChildren': 'children',
             'propsLabel': 'zhName',
             'checkbox': false,
@@ -251,31 +255,254 @@ const systemManagement = {
           hidden: true,
           alwaysShow: false,
           meta: {
-            title: 'Menu 1-2-2',
+            title: '属性设置',
+            icon: 'chart',
+            roles: ['developer', 'admin', 'editor'],
+            noCache: false,
+            affix: false,
+            breadcrumb: false,
             'system_id': 'nav_systemManage_permissions_win_emForm',
-            'system_type': 'win_component_form',
-            'paneType': 'paneR',
-            'winOffset': 0,
-            'winSpan': 48,
-            'component': 'emForm',
+            'system_type': 'form_L_item',
+            'offset': '',
+            'span': '48',
+            'labelPosition': 'left',
             'labelWidth': '80px',
-            'class': 'form-table',
+            'statusIcon': true,
+            'class': '',
             'control_type': '',
             'control_id': '',
             'fn': '',
             'fn_type': ''
-          }
-        },
-        {
-          id: 1124,
-          pid: 112,
-          path: 'role-manage_form_R',
-          component: () => import('@/views/demo/index.vue'),
-          name: '',
-          hidden: true,
-          meta: {
-            title: 'Menu 1-2-2'
-          }
+          },
+          children: [
+            {
+              id: 11231,
+              pid: 1123,
+              weight: 200,
+              path: 'input1',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '输入框',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem1',
+                'system_type': 'formItem',
+                'offset': '',
+                'span': '16',
+                'itemType': 'input',
+                'valueKey': 'id',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              }
+            },
+            {
+              id: 11232,
+              pid: 1123,
+              weight: 200,
+              path: 'input2',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '文本域',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem2',
+                'system_type': 'formItem',
+                'offset': '',
+                'span': '16',
+                'itemType': 'textarea',
+                'valueKey': 'jh',
+                'defaultValue': '123',
+                'placeholder': '内容',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'autosize_OBJ': {
+                  'minRows': 1, 'maxRows': 6
+                },
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              }
+            },
+            {
+              id: 11233,
+              pid: 1123,
+              weight: 200,
+              path: 'input3',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '下拉框',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem3',
+                'system_type': 'formItem',
+                'offset': '',
+                'span': '16',
+                'itemType': 'select',
+                'valueKey': 'kl',
+                'defaultValue': '',
+                'placeholder': '请选择一项',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'options_OBJ': {
+                  'data': [
+                    { 'label': '是', 'value': true },
+                    { 'label': '否', 'value': false }
+                  ]
+                },
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              }
+            },
+            {
+              id: 11234,
+              pid: 1123,
+              weight: 200,
+              path: 'input4',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '复合输入',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem4',
+                'system_type': 'formItem',
+                'offset': '',
+                'span': '24',
+                'itemType': 'selectInput',
+                'valueKey': 'kj1',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'selectWidth': '100px',
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'options_OBJ': {
+                  'data': [
+                    { 'label': '字段1', 'value': 'kj1' },
+                    { 'label': '字段2', 'value': 'kj2' }
+                  ]
+                },
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              }
+            },
+            {
+              id: 11235,
+              pid: 1123,
+              weight: 200,
+              path: 'input5',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '开关',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem5',
+                'system_type': 'formItem',
+                'offset': '',
+                'span': '8',
+                'itemType': 'switch',
+                'valueKey': 'jack',
+                'defaultValue': false,
+                'disabled': false,
+                'activeColor': '#124',
+                'inactiveColor': '#fde',
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': false, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              }
+            },
+            {
+              id: 11236,
+              pid: 1123,
+              weight: 200,
+              path: 'input6',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '按钮',
+                icon: 'el-icon-star-off',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'nav_systemManage_permissions_win_emForm_formItem6',
+                'system_type': 'formItem',
+                'offset': '0',
+                'span': '36',
+                'itemType': 'button',
+                'primary': '',
+                'class': '',
+                'disabled': false,
+                'control_type': '',
+                'control_id': '',
+                'fn': 'onSubmit',
+                'fn_type': ''
+              }
+            }
+          ]
         }
       ]
     },

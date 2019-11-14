@@ -58,7 +58,14 @@ export default {
   name: 'EmTree',
   components: {
   },
-  props: ['data'],
+  props: {
+    data: {
+      type: Object,
+      default: () => {
+        return { }
+      }
+    }
+  },
   data() {
     return {
       id: '',
