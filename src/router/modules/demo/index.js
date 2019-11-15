@@ -291,7 +291,7 @@ const index = {
               hidden: true,
               alwaysShow: false,
               meta: {
-                title: '展开',
+                title: '表单提交',
                 icon: 'chart',
                 roles: ['developer', 'admin', 'editor'],
                 noCache: false,
@@ -303,10 +303,10 @@ const index = {
                 'size': '',
                 'class': '',
                 'disabled': false,
-                'control_type': 'tree',
-                'control_id': 'systemManagement_role-manage_emTree',
-                'fn': '',
-                'fn_type': ''
+                'control_type': 'form',
+                'control_id': 'nav_systemManage_permissions_win_emForm1',
+                'fn': 'onSubmit',
+                'fn_type': 'default'
               }
             },
             {
@@ -379,6 +379,10 @@ const index = {
             'removeUrl': '/user/role/deleteRole',
             'updateUrl': '/user/role/updateRole',
             'routePermissionUrl': '/user/role/getResources',
+            'handleNodeClickControlType': 'RoleManage_EmTree_handleNodeClickControlType--RoleManage_EmForm_setForm',
+            'handleNodeClickControlId': 'nav_systemManage_permissions_win_emForm1',
+            'handleNodeClickFn': 'setForm',
+            'handleNodeClickFnType': 'RoleManage_EmForm_setForm',
             'control_type': '',
             'control_id': '',
             'fn': '',
@@ -662,7 +666,7 @@ const index = {
             noCache: false,
             affix: false,
             breadcrumb: false,
-            'system_id': 'nav_systemManage_permissions_win_emForm',
+            'system_id': 'nav_systemManage_permissions_win_emForm1',
             'system_type': 'form_L_item',
             'offset': '',
             'span': '48',
@@ -698,7 +702,7 @@ const index = {
                 'span': '16',
                 'itemType': 'input',
                 'valueKey': 'id',
-                'defaultValue': '',
+                'defaultValue': 'none',
                 'placeholder': '',
                 'disabled': true,
                 'validate_OBJ': {
@@ -734,7 +738,7 @@ const index = {
                 'span': '16',
                 'itemType': 'input',
                 'valueKey': 'name',
-                'defaultValue': '',
+                'defaultValue': '12321',
                 'placeholder': '',
                 'disabled': false,
                 'validate_OBJ': {
@@ -770,43 +774,7 @@ const index = {
                 'span': '16',
                 'itemType': 'input',
                 'valueKey': 'zhName',
-                'defaultValue': '',
-                'placeholder': '',
-                'disabled': false,
-                'validate_OBJ': {
-                  'data': [
-                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
-                  ]
-                },
-                'control_type': '',
-                'control_id': '',
-                'fn': '',
-                'fn_type': ''
-              }
-            },
-            {
-              id: 11234,
-              pid: 1123,
-              weight: 200,
-              path: 'input4',
-              component: () => import('@/views/demo/index.vue'),
-              name: 'input',
-              hidden: true,
-              alwaysShow: false,
-              meta: {
-                title: '中文名称',
-                icon: 'chart',
-                roles: ['developer', 'admin', 'editor'],
-                noCache: false,
-                affix: false,
-                breadcrumb: false,
-                'system_id': 'nav_systemManage_permissions_win_emForm_formItem4',
-                'system_type': 'formItem',
-                'offset': '',
-                'span': '16',
-                'itemType': 'input',
-                'valueKey': 'zhName',
-                'defaultValue': '',
+                'defaultValue': '123',
                 'placeholder': '',
                 'disabled': false,
                 'validate_OBJ': {
@@ -902,7 +870,7 @@ const index = {
               hidden: true,
               alwaysShow: false,
               meta: {
-                title: '权重',
+                title: '父级ID',
                 icon: 'chart',
                 roles: ['developer', 'admin', 'editor'],
                 noCache: false,
@@ -913,7 +881,7 @@ const index = {
                 'offset': '',
                 'span': '16',
                 'itemType': 'input',
-                'valueKey': 'weight',
+                'valueKey': 'pid',
                 'defaultValue': '',
                 'placeholder': '',
                 'disabled': false,
@@ -991,10 +959,10 @@ const index = {
                 'primary': '',
                 'class': '',
                 'disabled': false,
-                'control_type': '',
-                'control_id': '',
-                'fn': 'onSubmit',
-                'fn_type': ''
+                'control_type': 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update',
+                'control_id': 'systemManagement_role-manage_emTree',
+                'fn': 'update',
+                'fn_type': 'RoleManage_EmTree_update'
               }
             },
             {
@@ -1021,9 +989,9 @@ const index = {
                 'primary': '',
                 'class': '',
                 'disabled': false,
-                'control_type': '',
+                'control_type': 'default',
                 'control_id': '',
-                'fn': '',
+                'fn': 'onReset',
                 'fn_type': ''
               }
             }

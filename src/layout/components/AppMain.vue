@@ -21,7 +21,10 @@ export default {
     key() {
       return this.$route.path
     }
+  },
+  created() {
   }
+
 }
 </script>
 

@@ -51,9 +51,9 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import vueBus from '@/utils/vueBus'
-import { FilterTree, dataInitFn, childrenInitFn } from '@/utils/tool'
+import { emMixin, emPage } from '@/utils/mixins'
+// import vueBus from '@/utils/vueBus'
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
 import emTree from './components/emTree/emTree'
@@ -68,9 +68,9 @@ export default {
     emForm,
     emButtonGroup
   },
+  mixins: [emMixin, emPage],
   data() {
     return {
-      id: '',
       set: {
         verticalPercent: '30',
         horizontalPercent: '50',
@@ -87,45 +87,19 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'permission_routes'
-    ])
-  },
   created() {
     this.init()
-    vueBus.$on(this.id, obj => {
-      this[obj.fn](obj)
-    })
   },
   mounted() {
+    console.log('page')
   },
   beforeDestroy() {
-    vueBus.$off(this.id)
   },
   methods: {
     init() {
-      const _route = this.$route
-      const _meta = _route.meta
-      const _permissionRoutes = this.permission_routes
-      console.log('_route：', _route, 'permission_routes：', _permissionRoutes)
-
-      this.id = _meta.system_id
-      this.set = dataInitFn(this.set, _meta)
-      console.log('set：', this.set)
-
-      const Tree = new FilterTree({
-        treeData: _permissionRoutes,
-        key: ['meta', 'system_id'],
-        value: _meta.system_id
-      })
-      const _data = Tree.getData()
-
-      if (_data.length > 0) {
-        this.children = childrenInitFn(this.children, _data[0])
-
-      }
-      console.log('_data：', _data)
+      this.set = dataInitFn(this.set, this.meta)
+      this.children = childrenInitFn(this.children, this.componentData)
+      console.log('_data：', this.$data)
       console.log('children：', this.children)
     }
   }

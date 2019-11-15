@@ -45,7 +45,7 @@
     </el-card>-->
     <el-card>
       <el-form
-        :ref="id"
+        :ref="system_id"
         :class="set.class"
         :label-position="set.labelPosition"
         :label-width="set.labelWidth"
@@ -120,7 +120,7 @@
               :class="item.meta.class"
               :disabled="item.meta.disabled"
               :type="item.meta.primary ? item.meta.primary : 'primary'"
-              @click="fn(item)"
+              @click="fn(item, {})"
             >
               {{ item.meta.title }}
             </el-button>
@@ -131,24 +131,16 @@
   </div>
 </template>
 <script>
-
+import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 
 export default {
   name: 'EmForm',
   components: {},
-  props: {
-    data: {
-      type: Object,
-      default: () => {
-        return { }
-      }
-    }
-  },
+  mixins: [emMixin],
   data() {
     return {
-      id: '',
       set: {
         labelPosition: '',
         labelWidth: '',
@@ -174,44 +166,52 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on(this.id, obj => {
-      this[obj.fn](obj)
-    })
   },
   mounted() {
   },
   beforeDestroy() {
-    vueBus.$off(this.id)
   },
   methods: {
-    fn(_item) {
-      const _fn = _item.meta.fn ? _item.meta.fn : ''
-      const _controlType = _item.meta.control_type ? _item.meta.control_type : ''
+    fn(_obj, _data) {
+      const _fn = _obj.meta.fn
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'tree':
-          console.log('_obj', _item)
-          vueBus.$emit(_item.meta.control_id, {
-            fn: _fn,
-            data: _item
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              console.log('_obj', {
+                meta: _obj.meta,
+                data: this.getForm()
+              })
+              vueBus.$emit(_controlId, {
+                meta: _obj.meta,
+                node: this.getForm()
+              })
+            } else {
+              console.log('error submit!!')
+              return false
+            }
           })
           break
         case 'component':
 
           break
-        case 'router':
-
+        case 'default':
+          this[_fn](_obj.meta)
           break
         default:
-          this[_fn](_item.meta)
+          this.$message({
+            message: '(control_type)参数无效',
+            type: 'error'
+          })
       }
     },
     init() {
-      const _meta = this.data.meta
-      this.id = _meta.system_id
-      this.set = dataInitFn(this.set, _meta)
+      this.set = dataInitFn(this.set, this.meta)
       console.log('form：', this.set)
       // 获取行按钮数据
-      this.children = childrenInitFn(this.children, this.data)
+      this.children = childrenInitFn(this.children, this.componentData)
       console.log('form-children：', this.children)
       // 处理验证和数据
       this.defaultFn(this.children.formItem)
@@ -265,8 +265,19 @@ export default {
       console.log('Form:', this.Form)
       return this.Form
     },
-    onSubmit() {
-      console.log('submit!', this.Form)
+    onSubmit() { // 表单提交
+      const _this = this
+      this.$refs[this.system_id].validate((valid) => {
+        if (valid) {
+          console.log('submit!', _this.Form)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    onReset() { // 重置
+      this.$refs[this.system_id].resetFields()
     }
   }
 }

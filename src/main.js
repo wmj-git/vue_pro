@@ -41,7 +41,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
+
+import './utils/mixins' // mixins
 
 new Vue({
   el: '#app',

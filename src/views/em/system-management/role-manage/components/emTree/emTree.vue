@@ -48,6 +48,7 @@
   </div>
 </template>
 <script>
+import { emMixin } from '@/utils/mixins'
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
 
@@ -58,14 +59,7 @@ export default {
   name: 'EmTree',
   components: {
   },
-  props: {
-    data: {
-      type: Object,
-      default: () => {
-        return { }
-      }
-    }
-  },
+  mixins: [emMixin],
   data() {
     return {
       id: '',
@@ -97,9 +91,10 @@ export default {
       },
       setFn: {
         // 点击节点时交互的对象
-        handleNodeClickType: '',
+        handleNodeClickControlType: '',
         handleNodeClickControlId: '',
         handleNodeClickFn: '',
+        handleNodeClickFnType: '',
 
         handleCheckChange: '',
         handleDragEnd: ''
@@ -118,34 +113,40 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on(this.id, obj => {
-      this[obj.fn](obj)
-    })
   },
   mounted() {
   },
   beforeDestroy() {
-    vueBus.$off(this.id)
   },
   methods: {
-    fn(_fn, _obj) {
-      const _controlType = _obj.control_type ? _obj.control_type : ''
+    fn(_obj, _data) {
+      const _fn = _obj.meta.fn
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'win':
+        case 'RoleManage_EmTree_handleNodeClickControlType--RoleManage_EmForm_setForm':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: _data
+          })
+          break
+        case 'default':
+          this[_fn](_obj.meta)
           break
         default:
-          this[_fn](_obj)
+          this.$message({
+            message: '(control_type)参数无效',
+            type: 'error'
+          })
       }
     },
     init() {
-      const _meta = this.data.meta
-      this.id = _meta.system_id
-      this.set = dataInitFn(this.set, _meta)
+      this.set = dataInitFn(this.set, this.meta)
       console.log('_tree：', this.set)
-      this.setFn = dataInitFn(this.setFn, _meta)
+      this.setFn = dataInitFn(this.setFn, this.meta)
 
-      this.defaultProps.children = _meta.propsChildren
-      this.defaultProps.label = _meta.propsLabel
+      this.defaultProps.children = this.meta.propsChildren
+      this.defaultProps.label = this.meta.propsLabel
 
       this.treeDataFn()
       if (this.set.checkbox) {
@@ -215,8 +216,8 @@ export default {
       const _this = this
       update({
         url: this.set.updateUrl,
-        // params: node.params
-        params: { 'id': 29, 'name': 'root123', 'zhName': '2运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
+        params: node
+        // params: { 'id': 29, 'name': 'root123', 'zhName': '2运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
@@ -279,17 +280,12 @@ export default {
       })
     },
     handleNodeClick(data) {
-      console.log(data)
-      switch (this.setFn.handleNodeClickType) {
-        case 'form':
-          vueBus.$emit(this.setFn.handleNodeClickControlId, {
-            fn: this.setFn.handleNodeClickFn,
-            obj: this.data,
-            data: data
-          })
-          break
-        default:
-      }
+      const _componentData = this.componentData
+      _componentData.meta.control_type = _componentData.meta.handleNodeClickControlType
+      _componentData.meta.control_id = _componentData.meta.handleNodeClickControlId
+      _componentData.meta.fn = _componentData.meta.handleNodeClickFn
+      _componentData.meta.fn_type = _componentData.meta.handleNodeClickFnType
+      this.fn(_componentData, data)
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
 
