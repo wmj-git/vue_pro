@@ -57,11 +57,15 @@ export const emMixin = {
         case 'RoleManage_EmTree_update':
           this[_fn](_obj.node)
           break
+        case 'RoleManage_EmTree_getRoutePermission':
+          this[_fn](_obj.id)
+          break
         case 'RoleManage_EmForm_setForm':
           this[_fn]({
             data: _obj.data
           })
           break
+
         default:
           Message({
             message: '(fn_type)参数无效',

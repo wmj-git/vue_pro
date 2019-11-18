@@ -3,11 +3,11 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
+/* Layout(二级菜单) */
 import Layout from '@/layout'
 
 /* 公用页面模板 */
-import demo from './modules/demo/index'
+import demo from '@/router/modules/demo/index'
 
 /* 菜单数据 */
 import systemManagement from './modules/em/systemManagement' // 系统管理

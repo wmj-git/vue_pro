@@ -72,6 +72,7 @@ export default {
         removeUrl: '',
         updateUrl: '',
         routePermissionUrl: '',
+        setRoutePermissionUrl: '',
         checkbox: false,
         treeDataType: 'query',
         treeDataUrl: '',
@@ -265,11 +266,29 @@ export default {
         })
       })
     },
-    getRoutePermission() {
+    getRoutePermission(_id) {
       const _this = this
       getRoutePermission({
         'url': this.set.routePermissionUrl,
-        params: 1
+        params: _id
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          console.log('getRoutePermission', response)
+          _this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+      })
+    },
+    setRoutePermission(_id, _ids) {
+      const _this = this
+      getRoutePermission({
+        'url': this.set.setRoutePermissionUrl,
+        params: {
+          id: _id,
+          ids: _ids
+        }
       }).then((response) => {
         if (response.statusCode === 200) {
           _this.$message({

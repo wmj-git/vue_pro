@@ -194,8 +194,19 @@ export default {
             }
           })
           break
-        case 'component':
-
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_getRoutePermission':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              const _Form = this.getForm()
+              vueBus.$emit(_controlId, {
+                meta: _obj.meta,
+                id: _Form.id
+              })
+            } else {
+              console.log('error submit!!')
+              return false
+            }
+          })
           break
         case 'default':
           this[_fn](_obj.meta)
