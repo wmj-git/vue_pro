@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout(二级菜单) */
+/* Layout(主界面布局) */
 import Layout from '@/layout'
 
 /* 公用页面模板 */
@@ -104,6 +104,8 @@ export const constantRoutes = [
     ]
   },
   demo
+  // systemManagement,
+  // schoolService
 ]
 
 /**

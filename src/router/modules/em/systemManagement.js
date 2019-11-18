@@ -32,7 +32,7 @@ const systemManagement = {
       pid: 11,
       weight: 200,
       path: 'account-manage',
-      component: () => import('@/views/em/system-management/account-manage/account-manage'),
+      component: () => import('@/views/em/system-management/account-manage'),
       redirect: '',
       name: 'AccountManage',
       hidden: false,

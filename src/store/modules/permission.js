@@ -1,9 +1,10 @@
+
 import { asyncRoutes, constantRoutes } from '@/router'
 import { asyncRoutesList } from '@/api/role'
 import { toTree } from '@/utils/tool'
-/* Layout(二级菜单) */
 import Layout from '@/layout'
-
+import demo from '@/views/demo/index.vue'
+import AccountManage from '@/views/em/system-management/account-manage'
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -38,6 +39,18 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 
+const state = {
+  routes: [],
+  addRoutes: []
+}
+
+const mutations = {
+  SET_ROUTES: (state, routes) => {
+    state.addRoutes = routes
+    state.routes = constantRoutes.concat(routes)
+  }
+}
+
 // 后台获取路由列表
 function getAsyncRoutes(_asyncRoutes) {
   let _AsyncRoutes = []
@@ -56,46 +69,35 @@ function getAsyncRoutes(_asyncRoutes) {
         _node.pid = _item.pid
         _node.weight = _item.weight
         const _str = _item.component
-        if (_str.substr(0, 1) === '@') {
-          _node.component = () => import(_str)
+        if (_str === 'AccountManage') {
+          _node.component = AccountManage
         } else if (_str === 'Layout') {
           _node.component = Layout
         } else {
-          _node.component = () => import('@/views/demo/index.vue')
+          _node.component = demo
         }
         _AsyncRoutes.push(_node)
       }
     }
   })
-  console.log('getAsyncRoutes---', _AsyncRoutes)
   _AsyncRoutes = toTree(_AsyncRoutes)
   return _AsyncRoutes
 }
-
-const state = {
-  routes: [],
-  addRoutes: []
-}
-
-const mutations = {
-  SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes
-    state.routes = constantRoutes.concat(routes)
-  }
+async function ff() {
+  let _asyncRoutes = []
+  await asyncRoutesList().then((response) => {
+    if (response.statusCode === 200) {
+      _asyncRoutes = _asyncRoutes.concat(response.data)
+    }
+  })
+  _asyncRoutes = getAsyncRoutes(_asyncRoutes)
+  _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
+  return _asyncRoutes
 }
 
 const actions = {
   async generateRoutes({ commit }, roles) {
-    let _asyncRoutes = []
-    await asyncRoutesList().then((response) => {
-      if (response.statusCode === 200) {
-        _asyncRoutes = _asyncRoutes.concat(response.data)
-        console.log('getAsyncRoutes', response)
-      }
-    })
-    _asyncRoutes = getAsyncRoutes(_asyncRoutes)
-    _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
-    console.log('getAsyncRoutes---123', _asyncRoutes)
+    const _asyncRoutes = await ff()
     const AsyncRoutes = _asyncRoutes.length > 1 ? _asyncRoutes : asyncRoutes
     return new Promise((resolve) => {
       let accessedRoutes
