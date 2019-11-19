@@ -78,6 +78,7 @@ export default {
       this.fn = val
       // 添加数据
       if (val === 'handleCreate') {
+        console.log('++')
         this.$refs.em_dialog.changeDialogVisible()
         this.$refs.em_dialog.titleCreate()
         // 删除行

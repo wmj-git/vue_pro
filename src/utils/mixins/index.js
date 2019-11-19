@@ -62,6 +62,9 @@ export const emMixin = {
             data: _obj.data
           })
           break
+        case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
+          this[_fn](_obj)
+          break
         default:
           Message({
             message: '(fn_type)参数无效',

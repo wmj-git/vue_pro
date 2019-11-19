@@ -194,6 +194,301 @@ const index = {
       ]
     },
     {
+      path: 'parentInfo',
+      component: () => import('@/views/em/school-service/parentInfo/parentInfo'),
+      name: 'ParentInfo',
+      meta: {
+        title: '家长管理',
+        icon: 'chart',
+        'system_id': 'schoolService_parentInfo_ParentInfo',
+        'system_type': 'ParentInfo'
+      },
+      children: [
+        {
+          path: 'emButton',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'EmButton',
+          hidden: true,
+          meta: {
+            title: '操作按钮组',
+            icon: 'el-icon-plus',
+            roles: ['developer', 'admin', 'editor'],
+            'system_id': 'schoolService_parentInfo_emButton_EmButton',
+            'system_type': 'buttonGroupItem',
+            'control_type': '',
+            'control_id': '',
+            'fn': '',
+            'fn_type': ''
+          },
+          children: [
+            {
+              path: 'emButton',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'EmButton',
+              hidden: true,
+              meta: {
+                title: '添加',
+                type: 'primary',
+                icon: 'el-icon-plus',
+                size: 'mini',
+                roles: ['developer', 'admin', 'editor'],
+                'system_id': 'schoolService_parentInfo_emButton_EmButton1',
+                'system_type': 'buttonGroup',
+                'control_type': 'dialog',
+                'control_id': 'schoolService_classInfo_EmDialog', // 弹框显示的system_id
+                'fn': 'changeDialogVisible', // 直接调用弹框显示的方法
+                'fn_type': 'ParentInfo_EmForm_addForm'
+              }
+            },
+            {
+              path: 'emButton',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'EmButton',
+              hidden: true,
+              meta: {
+                title: '删除',
+                type: 'danger',
+                size: 'mini',
+                icon: 'el-icon-delete',
+                roles: ['developer', 'admin', 'editor'],
+                'system_id': 'schoolService_parentInfo_emButton_EmButton2',
+                'system_type': 'buttonGroup',
+                'control_type': 'table',
+                'control_id': 'schoolService_parent-Info_emTable',
+                'fn': 'handleDelete',
+                'fn_type': 'ParentInfo_EmTable_deleteData'
+              }
+            }
+          ]
+        }, // 操作按钮
+        {
+          path: 'emTable',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'EmTable',
+          hidden: true,
+          meta: {
+            title: '表格',
+            icon: '',
+            'system_id': 'schoolService_classInfo_EmTable',
+            'system_type': 'dataItem',
+            'queryUrl': '/school/parent/queryAllByPage',
+            'updateUrl': '/school/parent/update',
+            'removeUrl': '/school/parent/deletes',
+            tableHeader: [
+              {
+                label: '家长姓名',
+                key: 'parentName'
+              },
+              {
+                label: '家长年龄',
+                key: 'parentAge'
+              },
+              {
+                label: '家长电话',
+                key: 'parentTel'
+              }
+            ],
+            pageOne: false,
+            total: 0,
+            ids: [],
+            listQuery: {
+              page: 1,
+              limit: 10
+            }
+          }
+        }, // 表格
+        {
+          path: 'emDialog',
+          component: () => import('@/views/demo/index.vue'),
+          name: 'EmDialog',
+          hidden: true,
+          meta: {
+            'title': '弹框',
+            'icon': '',
+            'span': '48',
+            'labelPosition': 'left',
+            'labelWidth': '80px',
+            'system_id': 'schoolService_classInfo_EmDialog',
+            'system_type': 'formItem',
+            'selectUrl': '/school/student/queryAllByPage',
+            'appendUrl': '/school/parent/add',
+            'control_type': '',
+            'control_id': '',
+            'fn': '',
+            'fn_type': '',
+            'changeDialogVisibleControlType': 'ParentInfo_dialogShowControlType_changeDialogVisible',
+            'changeDialogVisibleControlId': 'ParentInfo_dialogShow_changeDialogVisible',
+            'changeDialogVisibleControlFn': 'changeDialogVisible',
+            'changeDialogVisibleControlFnType': 'ParentInfo_EmDialog_changeDialogVisible',
+            textMap: {
+              update: '修改家长信息',
+              create: '添加家长信息'
+            },
+            'dialogStatus': '',
+            temp: {
+              name: '',
+              address: '',
+              orgCode: '',
+              siOrgCode: '',
+              tel: '',
+              gradeName: ''
+            }
+          },
+          children: [
+            {
+              path: 'input1',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              meta: {
+                'title': '家长姓名',
+                'icon': '',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'schoolService_parentInfo_input1',
+                'system_type': 'formItem',
+                'span': '20',
+                'itemType': 'input',
+                'valueKey': 'parentName',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                }
+              }
+            },
+            {
+              path: 'select1',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'select',
+              hidden: true,
+              meta: {
+                'title': '家长性别',
+                'icon': '',
+                'selectWidth': '80px',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'schoolService_parentInfo_input1',
+                'system_type': 'formItem',
+                'span': '20',
+                'offset': '1',
+                'itemType': 'select',
+                'valueKey': 'parentSex',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'options_OBJ': {
+                  'data': [
+                    { 'label': '女', 'value': 2 },
+                    { 'label': '男', 'value': 3 }
+                  ]
+                }
+              }
+            },
+            {
+              path: 'select2',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'select',
+              hidden: true,
+              meta: {
+                'title': '学生id',
+                'icon': '',
+                'selectWidth': '80px',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'schoolService_parentInfo_input1',
+                'system_type': 'formItem',
+                'span': '20',
+                'offset': '1',
+                'itemType': 'select',
+                'valueKey': 'studentIds',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                },
+                'options_OBJ': {
+                  'data': []
+                }
+              }
+            },
+            {
+              path: 'input2',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              meta: {
+                'title': '家长年龄',
+                'icon': '',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'schoolService_parentInfo_input1',
+                'system_type': 'formItem',
+                'span': '20',
+                'itemType': 'input',
+                'valueKey': 'parentAge',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                }
+              }
+            },
+            {
+              path: 'input3',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'input',
+              hidden: true,
+              meta: {
+                'title': '联系方式',
+                'icon': '',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'schoolService_parentInfo_input1',
+                'system_type': 'formItem',
+                'span': '20',
+                'offset': '1',
+                'itemType': 'input',
+                'valueKey': 'parentTel',
+                'defaultValue': '',
+                'placeholder': '',
+                'disabled': false,
+                'validate_OBJ': {
+                  'data': [
+                    { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                  ]
+                }
+              }
+            }
+          ]
+        } // 弹框
+      ]
+    },
+    {
       id: 112,
       pid: 11,
       weight: 200,
