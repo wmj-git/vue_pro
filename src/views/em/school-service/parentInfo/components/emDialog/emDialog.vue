@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -84,37 +84,6 @@
           </el-col>
         </template>
       </el-form>
-      <!--<el-form ref="dataForm" :model="temp" :inline="true">
-        <el-form-item label="家长姓名" prop="" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentName" />
-        </el-form-item>
-        <el-form-item label="学生id" prop="" :label-width="formLabelWidth">
-          <el-select v-model="temp.studentIds" class="filter-item" clearable placeholder="Please select" @change="currentSel">
-            <el-option
-              v-for="item in studentOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="家长性别" prop="" :label-width="formLabelWidth">
-          <el-select v-model="temp.parentSex" class="filter-item" clearable placeholder="Please select" @change="currentSel">
-            <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="家长年龄" prop="" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentAge" />
-        </el-form-item>
-        <el-form-item label="联系方式" prop="" :label-width="formLabelWidth">
-          <el-input v-model="temp.parentTel" />
-        </el-form-item>
-      </el-form>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
@@ -139,14 +108,14 @@ export default {
         status: true,
         labelWidth: '',
         statusIcon: '',
-        labelPosition: ''
+        labelPosition: '',
+        textMap: {}
       },
       children: {
         formItem: []
       },
       temp: {},
       rules: {}, // 验证数据
-      textMap: {},
       formLabelWidth: '120px',
       dialogFormVisible: false,
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
@@ -156,6 +125,9 @@ export default {
   },
   created() {
     this.init()
+    vueBus.$on('update', () => {
+      this.updateDialogVisible()
+    })
   },
   beforeDestroy() {
   },
@@ -198,22 +170,21 @@ export default {
           break
       }
     },
-    // 弹框显示
+    // 添加数据显示
     changeDialogVisible() {
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+    },
+    // 修改数据弹框
+    updateDialogVisible() {
+      this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
     },
-    titleUpdate() {
-      this.dialogStatus = 'update'
-    },
-    titleCreate() {
-      this.dialogStatus = 'create'
-    },
     createData() {
-      vueBus.$emit('queryAll')
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           const obj = {
             url: this.set.appendUrl,

@@ -121,8 +121,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleEdit(row) {
-      this.temp = Object.assign({}, row)
+    handleEdit(row, temp) {
+      vueBus.$emit('update')
+      temp = Object.assign({}, row)
       console.log('选择', this.temp)
     },
     // 删除选中行

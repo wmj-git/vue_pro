@@ -175,7 +175,7 @@ const index = {
               { label: '在读', value: 1 },
               { label: '结业', value: 0 },
               { label: '遣散', value: -1 }],
-            textMap: {
+            'textMap': {
               update: '修改班级',
               create: '添加班级'
             },
@@ -320,7 +320,7 @@ const index = {
             'changeDialogVisibleControlId': 'ParentInfo_dialogShow_changeDialogVisible',
             'changeDialogVisibleControlFn': 'changeDialogVisible',
             'changeDialogVisibleControlFnType': 'ParentInfo_EmDialog_changeDialogVisible',
-            textMap: {
+            'textMap': {
               update: '修改家长信息',
               create: '添加家长信息'
             },
