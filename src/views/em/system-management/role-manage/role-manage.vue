@@ -50,7 +50,7 @@
     </split-pane>
     <!--容器类显示-->
     <template v-for="(item,index) in children.ContainerBox">
-      <component :is="item.componentType" :key="index" :data="item" />
+      <component :is="item.meta.componentType" :key="index" :data="item" />
     </template>
   </div>
 </template>
@@ -64,6 +64,7 @@ import splitPane from 'vue-splitpane'
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'
+import emDialog from './components/emDialog/emDialog'
 
 export default {
   name: 'RoleManage',
@@ -71,7 +72,8 @@ export default {
     splitPane,
     emTree,
     emForm,
-    emButtonGroup
+    emButtonGroup,
+    emDialog
   },
   mixins: [emMixin, emPage],
   data() {
@@ -97,7 +99,7 @@ export default {
     this.init()
   },
   mounted() {
-    console.log('page')
+
   },
   beforeDestroy() {
   },
@@ -105,8 +107,7 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      console.log('_data：', this.$data)
-      console.log('children：', this.children)
+      console.log('EmDialog123：', this.$data)
     }
   }
 }
