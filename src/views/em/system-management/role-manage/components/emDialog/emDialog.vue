@@ -1,8 +1,8 @@
 <template>
   <div class="emDialog">
     <el-dialog
-      :close-on-click-modal="false"
       v-el-drag-dialog
+      :close-on-click-modal="true"
       :title="set.title"
       :modal="set.modal"
       :visible.sync="set.dialogVisible"
@@ -19,12 +19,6 @@
         </template>
       </el-row>
     </el-dialog>
-    <div v-el-drag-dialog class="em-win">
-      <div class="el-dialog__header">
-        水电费第三方
-      </div>
-      去问问
-    </div>
   </div>
 </template>
 
@@ -34,12 +28,14 @@ import { emMixin } from '@/utils/mixins'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import emButtonGroup from '../emButtonGroup/emButtonGroup'
+import emTree from '../emTree/emTree'
 
 export default {
   name: 'EmDialog',
   directives: { elDragDialog },
   components: {
-    emButtonGroup
+    emButtonGroup,
+    emTree
   },
   mixins: [emMixin],
   data() {
@@ -81,12 +77,13 @@ export default {
       }
     },
     openFn(_val) {
-      if (_val && 'meta' in _val) {
+      this.set.dialogVisible = true
+      /* if (_val && 'meta' in _val) {
         this.set = dataInitFn(this.set, _val.meta)
       }
       if (_val && 'children' in _val) {
         this.children = childrenInitFn(this.children, _val)
-      }
+      }*/
     },
     closeFn(_val) {
       this.set.dialogVisible = false

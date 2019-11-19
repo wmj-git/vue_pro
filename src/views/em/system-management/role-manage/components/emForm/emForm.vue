@@ -155,10 +155,6 @@ export default {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
-              console.log('_obj', {
-                meta: _obj.meta,
-                data: this.getForm()
-              })
               vueBus.$emit(_controlId, {
                 meta: _obj.meta,
                 node: this.getForm()
@@ -183,6 +179,20 @@ export default {
             }
           })
           break
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_openFn':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              const _Form = this.getForm()
+              vueBus.$emit(_controlId, {
+                meta: _obj.meta,
+                Form: _Form
+              })
+            } else {
+              console.log('error submit!!')
+              return false
+            }
+          })
+          break
         case 'default':
           this[_fn](_obj.meta)
           break
@@ -195,10 +205,8 @@ export default {
     },
     init() {
       this.set = dataInitFn(this.set, this.meta)
-      console.log('form：', this.set)
       // 获取行按钮数据
       this.children = childrenInitFn(this.children, this.componentData)
-      console.log('form-children：', this.children)
       // 处理验证和数据
       this.defaultFn(this.children.formItem)
     },
@@ -243,12 +251,10 @@ export default {
       })
     },
     setForm(_obj) { // 设置表单值
-      console.log('setForm', _obj)
       const _data = _obj.data
       this.Form = dataInitFn(this.Form, _data)
     },
     getForm() {
-      console.log('Form:', this.Form)
       return this.Form
     },
     onSubmit() { // 表单提交
@@ -264,9 +270,6 @@ export default {
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
-    },
-    ff(_val) { // 重置
-      return false
     }
   }
 }

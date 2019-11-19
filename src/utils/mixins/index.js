@@ -68,6 +68,11 @@ export const emMixin = {
         case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
           this[_fn](_obj)
           break
+        case 'RoleManage_EmDialog_openFn':
+          this[_fn]({
+            meta: _meta
+          })
+          break
         default:
           Message({
             message: '(fn_type)参数无效',
