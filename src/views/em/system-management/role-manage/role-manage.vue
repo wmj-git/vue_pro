@@ -48,6 +48,10 @@
         </split-pane>
       </template>
     </split-pane>
+    <!--容器类显示-->
+    <template v-for="(item,index) in children.ContainerBox">
+      <component :is="item.componentType" :key="index" :data="item" />
+    </template>
   </div>
 </template>
 <script>
@@ -56,6 +60,7 @@ import { emMixin, emPage } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
+// import emTree from './components/emTree/emTree'
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'
@@ -83,7 +88,8 @@ export default {
         buttonGroupItem: [],
         treeItem: [],
         form_L_item: [],
-        form_R_item: []
+        form_R_item: [],
+        ContainerBox: []
       }
     }
   },

@@ -1,4 +1,8 @@
+
 import { asyncRoutes, constantRoutes } from '@/router'
+import { asyncRoutesList } from '@/api/role'
+import { toTree } from '@/utils/tool'
+import componentMap from '@/utils/componentMap'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -34,11 +38,6 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 
-// 后台获取路由列表
-export function getAsyncRoutes() {
-  return
-}
-
 const state = {
   routes: [],
   addRoutes: []
@@ -51,17 +50,61 @@ const mutations = {
   }
 }
 
+// 后台获取路由列表
+function getAsyncRoutes(_asyncRoutes) {
+  let _AsyncRoutes = []
+  _asyncRoutes.forEach((_item) => {
+    let _extData = null
+    if ('extData' in _item && _item.extData) {
+      _extData = _item.extData
+      _extData = _extData.replace(/\\n/g, '')// 去掉换行
+      _extData = _extData.replace(/\s*/g, '')// 去掉空格
+
+      if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
+        const _node = JSON.parse(_extData)
+        _node.api_data = { ..._item }
+
+        _node.id = _item.id
+        _node.pid = _item.pid
+        _node.weight = _item.weight
+        const _str = _item.component
+        if (_str && _str !== '') {
+          _node.component = componentMap[_str]
+        } else {
+          _node.component = componentMap['Demo']
+        }
+        _AsyncRoutes.push(_node)
+      }
+    }
+  })
+  _AsyncRoutes = toTree(_AsyncRoutes)
+  return _AsyncRoutes
+}
+async function ff() {
+  let _asyncRoutes = []
+  await asyncRoutesList().then((response) => {
+    if (response.statusCode === 200) {
+      _asyncRoutes = _asyncRoutes.concat(response.data)
+    }
+  })
+  _asyncRoutes = getAsyncRoutes(_asyncRoutes)
+  _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
+  return _asyncRoutes
+}
+
 const actions = {
-  generateRoutes({ commit }, roles) {
-    // asyncRoutes = getAsyncRoutes()
-    return new Promise(resolve => {
+  async generateRoutes({ commit }, roles) {
+    const _asyncRoutes = await ff()
+    const AsyncRoutes = _asyncRoutes.length > 1 ? _asyncRoutes : asyncRoutes
+    return new Promise((resolve) => {
       let accessedRoutes
       if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
+        accessedRoutes = AsyncRoutes || []
       } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+        accessedRoutes = filterAsyncRoutes(AsyncRoutes, roles)
       }
       commit('SET_ROUTES', accessedRoutes)
+      console.log('accessedRoutes', accessedRoutes)
       resolve(accessedRoutes)
     })
   }

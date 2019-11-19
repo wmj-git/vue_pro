@@ -3,14 +3,13 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
+/* Layout(主界面布局) */
 import Layout from '@/layout'
 
 /* 公用页面模板 */
-import demo from './modules/demo/index'
+import demo from '@/router/modules/demo/index'
 
 /* 菜单数据 */
-import systemManagement from './modules/em/systemManagement' // 系统管理
 import schoolService from './modules/em/schoolService' // 学校服务
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -103,7 +102,8 @@ export const constantRoutes = [
       }
     ]
   },
-  demo
+  demo,
+  schoolService
 ]
 
 /**
@@ -112,7 +112,6 @@ export const constantRoutes = [
  */
 
 export const asyncRoutes = [
-  systemManagement,
   schoolService,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

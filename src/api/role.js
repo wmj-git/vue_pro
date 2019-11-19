@@ -8,6 +8,13 @@ export function fetchList(obj) {
   })
 }
 
+export function asyncRoutesList() { // 获取数据
+  return request({
+    url: '/user/resources/selectResources',
+    method: 'get'
+  })
+}
+
 export function getRoles() {
   return request({
     url: '/roles',
@@ -37,3 +44,4 @@ export function deleteRole(id) {
     method: 'delete'
   })
 }
+

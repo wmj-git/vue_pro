@@ -1,48 +1,5 @@
 <template>
   <div class="form-container">
-    <!--<el-card>
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="活动区域">
-          <el-select v-model="form.region" placeholder="请选择活动区域" value="">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="活动时间">
-          <el-col :span="11">
-            <el-date-picker v-model="form.date1" type="date" placeholder="选择日期" style="width: 100%;" />
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-time-picker v-model="form.date2" placeholder="选择时间" style="width: 100%;" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="即时配送">
-          <el-switch v-model="form.delivery" />
-        </el-form-item>
-        <el-form-item label="活动性质">
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type" />
-            <el-checkbox label="地推活动" name="type" />
-            <el-checkbox label="线下主题活动" name="type" />
-            <el-checkbox label="单纯品牌曝光" name="type" />
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="特殊资源">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="线上品牌商赞助" />
-            <el-radio label="线下场地免费" />
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="活动形式">
-          <el-input v-model="form.desc" type="textarea" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>-->
     <el-card>
       <el-form
         :ref="system_id"
@@ -113,13 +70,21 @@
                 :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
               />
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <div class="json-item">
+                <json-editor
+                  :ref="item.meta.system_id"
+                  v-model="Form[item.meta.valueKey]"
+                />
+              </div>
+            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
               :icon="item.meta.icon"
               :class="item.meta.class"
               :disabled="item.meta.disabled"
-              :type="item.meta.primary ? item.meta.primary : 'primary'"
+              :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
               @click="fn(item, {})"
             >
               {{ item.meta.title }}
@@ -135,9 +100,13 @@ import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 
+import JsonEditor from '@/components/JsonEditor'
+
 export default {
   name: 'EmForm',
-  components: {},
+  components: {
+    JsonEditor
+  },
   mixins: [emMixin],
   data() {
     return {
@@ -151,17 +120,23 @@ export default {
       rules: {}, // 验证数据
       children: {
         formItem: []
-      },
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
       }
+    }
+  },
+  watch: {
+    Form(val) {
+      for (const _k in val) {
+        let _extData = val[_k]
+        if (typeof (_extData) === 'string') {
+          _extData = _extData.replace(/\\n/g, '')// 去掉换行
+          _extData = _extData.replace(/\s*/g, '')// 去掉空格
+          if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
+            val[_k] = JSON.parse(_extData)
+          }
+        }
+      }
+      console.log('Form', val)
+      return val
     }
   },
   created() {
@@ -194,8 +169,19 @@ export default {
             }
           })
           break
-        case 'component':
-
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_getRoutePermission':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              const _Form = this.getForm()
+              vueBus.$emit(_controlId, {
+                meta: _obj.meta,
+                id: _Form.id
+              })
+            } else {
+              console.log('error submit!!')
+              return false
+            }
+          })
           break
         case 'default':
           this[_fn](_obj.meta)
@@ -278,6 +264,9 @@ export default {
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
+    },
+    ff(_val) { // 重置
+      return false
     }
   }
 }
