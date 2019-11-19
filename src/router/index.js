@@ -10,7 +10,6 @@ import Layout from '@/layout'
 import demo from '@/router/modules/demo/index'
 
 /* 菜单数据 */
-import systemManagement from './modules/em/systemManagement' // 系统管理
 import schoolService from './modules/em/schoolService' // 学校服务
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -103,9 +102,8 @@ export const constantRoutes = [
       }
     ]
   },
-  demo
-  // systemManagement,
-  // schoolService
+  demo,
+  schoolService
 ]
 
 /**
@@ -114,7 +112,6 @@ export const constantRoutes = [
  */
 
 export const asyncRoutes = [
-  systemManagement,
   schoolService,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

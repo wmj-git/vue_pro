@@ -18,6 +18,7 @@
             :expand-on-click-node="false"
             :filter-node-method="filterNode"
             draggable
+            :style="{maxHeight:set.maxHeight}"
             @node-click="handleNodeClick"
             @check-change="handleCheckChange"
             @node-drag-end="handleDragEnd"
@@ -65,6 +66,7 @@ export default {
       id: '',
       set: {
         title: '',
+        maxHeight: '',
         expandAll: true,
         buttons: false,
         appendUrl: '',

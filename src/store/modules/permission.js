@@ -2,9 +2,8 @@
 import { asyncRoutes, constantRoutes } from '@/router'
 import { asyncRoutesList } from '@/api/role'
 import { toTree } from '@/utils/tool'
-import Layout from '@/layout'
-import demo from '@/views/demo/index.vue'
-import AccountManage from '@/views/em/system-management/account-manage'
+import componentMap from '@/utils/componentMap'
+
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -69,12 +68,10 @@ function getAsyncRoutes(_asyncRoutes) {
         _node.pid = _item.pid
         _node.weight = _item.weight
         const _str = _item.component
-        if (_str === 'AccountManage') {
-          _node.component = AccountManage
-        } else if (_str === 'Layout') {
-          _node.component = Layout
+        if (_str && _str !== '') {
+          _node.component = componentMap[_str]
         } else {
-          _node.component = demo
+          _node.component = componentMap['Demo']
         }
         _AsyncRoutes.push(_node)
       }
