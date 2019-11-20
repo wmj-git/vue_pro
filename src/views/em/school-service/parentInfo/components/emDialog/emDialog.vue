@@ -16,6 +16,7 @@
               <el-input
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
+                clearable
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
@@ -43,6 +44,7 @@
               <el-input
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
+                clearable
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
                 type="textarea"
@@ -61,26 +63,6 @@
                 </template>
               </el-select>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <el-switch
-                :ref="item.meta.system_id"
-                v-model="temp[item.meta.valueKey]"
-                :disabled="item.meta.disabled"
-                :active-color="item.meta.activeColor ? item.meta.activeColor : '#111c95'"
-                :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
-              />
-            </el-form-item>
-            <el-button
-              v-else-if="item.meta.itemType==='button'"
-              :ref="item.meta.system_id"
-              :icon="item.meta.icon"
-              :class="item.meta.class"
-              :disabled="item.meta.disabled"
-              :type="item.meta.primary ? item.meta.primary : 'primary'"
-              @click="fn(item, {})"
-            >
-              {{ item.meta.title }}
-            </el-button>
           </el-col>
         </template>
       </el-form>
@@ -116,10 +98,10 @@ export default {
       },
       temp: {},
       rules: {}, // 验证数据
+      itemFormVisible: true, // 学生id在修改时不显示
       formLabelWidth: '120px',
       dialogFormVisible: false,
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
-      studentOptions: [], // 添加学生id
       dialogStatus: ''
     }
   },
@@ -156,15 +138,7 @@ export default {
     fn(_obj) {
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'ParentInfo_dialogShowControlType_changeDialogVisible':
-          console.log('弹框显示')
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            trigger: this.changeDialogVisible()
-          })
-          break
         case 'default':
           this[_fn](_obj.meta)
           break
@@ -179,6 +153,8 @@ export default {
     updateDialogVisible() {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.itemFormVisible = false
+      return this.temp
     },
     changeDialogHidden() {
       this.dialogFormVisible = false

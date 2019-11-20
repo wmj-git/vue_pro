@@ -1,7 +1,8 @@
 <template>
   <div class="school-container">
+    <el-input v-model="inputFilter" placeholder="请输入家长姓名" clearable />
     <el-table
-      :data="tableDataEnd"
+      :data="tableDataEnd "
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
@@ -20,11 +21,6 @@
       >
         <template slot-scope="scope">
           <span>{{ scope.row[info.key] }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="家长性别">
-        <template slot-scope="scope">
-          {{ scope.row.parentSex === 2 ? '女' : '男' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
@@ -69,35 +65,46 @@ export default {
       pageOne: false,
       total: 0,
       listQuery: {},
-      ids: []
+      ids: [],
+      inputFilter: '' // 模糊查询关键字
+    }
+  },
+  watch: {
+    tableDataEnd: {
+      handler: function(val) {
+        val.forEach((_item) => {
+          for (const _k in _item) {
+            switch (_k) {
+              case 'parentSex':
+                if (typeof _item[_k] === 'number') {
+                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
+                }
+                break
+            }
+          }
+        })
+        return val
+      },
+      deep: true
     }
   },
   created() {
     this.init()
     this.getList()
-    vueBus.$on('queryAll', () => {
-      this.getList() // 触发该方法即可
-    })
   },
   methods: {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      /*   const _meta = this.data.meta
-      this.tableHeader = _meta.tableHeader // 表头
-      this.pageOne = _meta.pageOne
-      this.total = _meta.total
-      this.listQuery = _meta.listQuery
-      this.set.queryUrl = _meta.queryUrl // 查询
-      this.set.appendUrl = _meta.appendUrl // 添加
-      this.set.updateUrl = _meta.updateUrl // 修改
-      this.set.removeUrl = _meta.removeUrl // 删除
-      this.ids = _meta.ids*/
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
       console.log(this.listQuery)
+      this.getList()
+    },
+    // 查询
+    handleFilter() {
       this.getList()
     },
     // 渲染数据
@@ -110,7 +117,7 @@ export default {
         }
       }
       if (this.inputFilter) {
-        obj.name = this.inputFilter
+        obj.parentName = this.inputFilter
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
@@ -121,9 +128,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleEdit(row, temp) {
+    handleEdit(row) {
       vueBus.$emit('update')
-      temp = Object.assign({}, row)
+      this.temp = Object.assign({}, row)
       console.log('选择', this.temp)
     },
     // 删除选中行
@@ -166,3 +173,6 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  @import "emTable";
+</style>

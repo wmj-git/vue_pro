@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     fn(_fn, _obj) {
-      console.log('_fn', _fn, '_obj', _obj)
       const _controlType = _obj.control_type ? _obj.control_type : ''
       const _controlId = _obj.btn.meta.control_id
       switch (_controlType) {
@@ -48,7 +47,7 @@ export default {
           break
         case 'table':
           vueBus.$emit(_controlId, {
-            meta: _obj.meta
+            meta: _obj.btn.meta
           })
           break
         case 'component':
