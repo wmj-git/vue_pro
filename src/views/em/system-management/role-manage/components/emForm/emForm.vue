@@ -98,7 +98,7 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
-import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
 
 import JsonEditor from '@/components/JsonEditor'
 
@@ -127,7 +127,7 @@ export default {
     Form(val) {
       for (const _k in val) {
         let _extData = val[_k]
-        if (typeof (_extData) === 'string') {
+        if (typeof (_extData) === 'string' && _k === 'extData') {
           _extData = _extData.replace(/\\n/g, '')// 去掉换行
           _extData = _extData.replace(/\s*/g, '')// 去掉空格
           if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
@@ -151,13 +151,14 @@ export default {
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
+      const _Form = this.getForm()
       switch (_controlType) {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
               vueBus.$emit(_controlId, {
                 meta: _obj.meta,
-                node: this.getForm()
+                node: _Form
               })
             } else {
               console.log('error submit!!')
@@ -165,10 +166,9 @@ export default {
             }
           })
           break
-        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_getRoutePermission':
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_updateCheckedKeys':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
-              const _Form = this.getForm()
               vueBus.$emit(_controlId, {
                 meta: _obj.meta,
                 id: _Form.id
@@ -185,8 +185,9 @@ export default {
               const _Form = this.getForm()
               vueBus.$emit(_controlId, {
                 meta: _obj.meta,
-                Form: _Form
+                data: _Form
               })
+              this.controlGroupFn(_obj)
             } else {
               console.log('error submit!!')
               return false
@@ -201,6 +202,34 @@ export default {
             message: '(control_type)参数无效',
             type: 'error'
           })
+      }
+    },
+    controlGroupFn(_obj) {
+      const _this = this
+      let tm1 = null
+      if ('controlGroup' in _obj.meta) {
+        _obj.meta.controlGroup.forEach((_item) => {
+          switch (_item.control_type) {
+            case 'TimeFn':
+              tm1 = new TimeFn('t1', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  set: _item.fn_set,
+                  data: _this.getForm()
+                })
+              }, () => {
+                return false
+              }, 200)
+              tm1.run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                set: _item.fn_set,
+                data: _this.getForm()
+              })
+          }
+        })
       }
     },
     init() {

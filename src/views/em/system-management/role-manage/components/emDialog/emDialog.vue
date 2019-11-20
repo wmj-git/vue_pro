@@ -24,9 +24,10 @@
 
 <script>
 // import vueBus from '@/utils/vueBus'
+import { mapGetters } from 'vuex'
 import { emMixin } from '@/utils/mixins'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn, FilterTree } from '@/utils/tool'
 import emButtonGroup from '../emButtonGroup/emButtonGroup'
 import emTree from '../emTree/emTree'
 
@@ -46,12 +47,18 @@ export default {
         appendToBody: true,
         title: '标题',
         modal: true,
-        width: '380px'
+        width: '380px',
+        childrenId: 'none'
       },
       children: {
         ContainerItem: []
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'permission_routes'
+    ])
   },
   created() {
     this.init()
@@ -63,29 +70,43 @@ export default {
 
   },
   methods: {
-    fn(_obj, _data) {
-
-    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
-      this.children = childrenInitFn(this.children, this.componentData)
-      console.log('EmDialog：', this.$data)
+      if (!(this.set.clear)) {
+        this.children = childrenInitFn(this.children, this.componentData)
+      }
+    },
+    childrenFn(_val) {
+      const _permissionRoutes = this.permission_routes
+      const Tree = new FilterTree({
+        treeData: _permissionRoutes,
+        key: ['meta', 'system_id'],
+        value: _val
+      })
+      const _data = Tree.getData()
+      if (_data.length > 0) {
+        return _data[0]
+      }
     },
     clear() {
       if (this.set.clear) {
         this.children.ContainerItem.splice(0, this.children.ContainerItem.length)
+        if (this.set.childrenId === 'none') {
+          this.children = childrenInitFn(this.children, this.childrenFn(this.system_id))
+        } else {
+          this.children = childrenInitFn(this.children, this.childrenFn(this.set.childrenId))
+        }
       }
     },
-    openFn(_val) {
-      this.set.dialogVisible = true
-      /* if (_val && 'meta' in _val) {
-        this.set = dataInitFn(this.set, _val.meta)
+    openFn(_obj) {
+      if (_obj && 'set' in _obj) {
+        this.set = dataInitFn(this.set, _obj.set)
+      } else {
+        this.set.dialogVisible = true
       }
-      if (_val && 'children' in _val) {
-        this.children = childrenInitFn(this.children, _val)
-      }*/
+      this.clear()
     },
-    closeFn(_val) {
+    closeFn() {
       this.set.dialogVisible = false
     }
   }

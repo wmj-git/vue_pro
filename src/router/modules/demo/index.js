@@ -541,7 +541,8 @@ const index = {
             'offset': '',
             'span': '48',
             'componentType': 'emDialog',
-            'width': '480',
+            'width': '480px',
+            clear: true,
             dialogVisible: false,
             modal: true,
             appendToBody: true,
@@ -553,8 +554,8 @@ const index = {
           },
           children: [
             {
-              id: 1122,
-              pid: 112,
+              id: 0,
+              pid: 1,
               weight: 200,
               path: 'EmTree',
               component: () => import('@/views/demo/index.vue'),
@@ -573,24 +574,18 @@ const index = {
                 'system_type': 'ContainerItem',
                 'offset': '',
                 'span': '48',
-                maxHeight: '380px',
+                'maxHeight': '380px',
                 'componentType': 'emTree',
                 'propsChildren': 'children',
-                'propsLabel': 'description',
+                'propsLabel': 'name',
                 'checkbox': true,
                 'expandAll': true,
-                'buttons': true,
+                'buttons': false,
                 'treeDataType': 'query',
-                'treeDataUrl': '/user/role/selectRole',
+                'treeDataUrl': '/user/resources/selectResources',
                 'treeDataParams_OBJ': {},
-                'checkedKeysType': '',
-                'checkedKeysUrl': '',
-                'checkedKeysParams_OBJ': {},
-                'updateCheckedType': '',
-                'updateCheckedUrl': '',
-                'updateCheckedParams_OBJ': {},
                 'routePermissionUrl': '/user/role/getResources',
-                'setRoutePermissionUrl': '',
+                'setRoutePermissionUrl': '/user/role/roleAddResources',
                 'control_type': '',
                 'control_id': '',
                 'fn': '',
@@ -617,8 +612,8 @@ const index = {
                 'system_id': 'systemManagement_role-manage_EmButtonGroup',
                 'system_type': 'ContainerItem',
                 'componentType': 'emButtonGroup',
-                'offset': '',
-                'span': '48',
+                'offset': '28',
+                'span': '20',
                 'groupType': 'default',
                 'class': '',
                 'control_type': '',
@@ -643,16 +638,17 @@ const index = {
                     noCache: false,
                     affix: false,
                     breadcrumb: false,
-                    'system_id': 'systemManagement_role-manage_EmButtonGroup_item1',
+                    'system_id': 'systemManagement_role-manage_emDialog1_EmButtonGroup_item1',
                     'system_type': 'buttonGroup',
                     'type': 'primary',
                     'size': '',
                     'class': '',
                     'disabled': false,
-                    'control_type': 'tree',
-                    'control_id': 'systemManagement_role-manage_emTree',
-                    'fn': 'update',
-                    'fn_type': ''
+                    'control_type': 'dialogClose',
+                    'control_id': 'systemManagement_role-manage_emDialog1',
+                    'fn': 'closeFn',
+                    'fn_type': 'RoleManage_EmDialog_closeFn',
+                    'fn_set': {}
                   }
                 },
                 {
@@ -671,7 +667,7 @@ const index = {
                     noCache: false,
                     affix: false,
                     breadcrumb: false,
-                    'system_id': 'systemManagement_role-manage_EmButtonGroup_item2',
+                    'system_id': 'systemManagement_role-manage_emDialog1_EmButtonGroup_item2',
                     'system_type': 'buttonGroup',
                     'type': 'primary',
                     'size': '',
@@ -679,8 +675,17 @@ const index = {
                     'disabled': false,
                     'control_type': 'form',
                     'control_id': 'nav_systemManage_permissions_win_emForm1',
-                    'fn': 'onSubmit',
-                    'fn_type': 'default'
+                    'fn': 'fn',
+                    'fn_type': 'RoleManage_EmForm_fn',
+                    'fn_set': {
+                      'meta': {
+                        'control_type': 'RoleManage_EmForm_ControlType--RoleManage_EmTree_updateCheckedKeys',
+                        'control_id': 'systemManagement_role-manage_emTree',
+                        'fn': 'updateCheckedKeys',
+                        'fn_type': 'RoleManage_EmTree_updateCheckedKeys',
+                        'fn_set': {}
+                      }
+                    }
                   }
                 }
               ]
@@ -705,7 +710,8 @@ const index = {
             affix: false,
             breadcrumb: false,
             'system_id': 'systemManagement_role-manage_EmButtonGroup',
-            'system_type': 'buttonGroupItem',
+            'system_type': 'buttonGroupItem_ContainerItem',
+            'componentType': 'emButtonGroup',
             'offset': '',
             'span': '48',
             'groupType': 'default',
@@ -1488,7 +1494,19 @@ const index = {
                 'control_id': 'systemManagement_role-manage_emDialog1',
                 'fn': 'openFn',
                 'fn_type': 'RoleManage_EmDialog_openFn',
-                'fn_set': {}
+                'fn_set': {
+                  dialogVisible: true,
+                  title: '分配权限'
+                },
+                'controlGroup': [
+                  {
+                    'control_type': 'TimeFn',
+                    'control_id': 'systemManagement_role-manage_emTree',
+                    'fn_type': 'RoleManage_EmTree_setCheckedKeys',
+                    'fn': 'setCheckedKeys',
+                    'fn_set': {}
+                  }
+                ]
               }
             }
           ]

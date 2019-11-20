@@ -49,7 +49,7 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
-import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
 export default {
   name: 'EmButtonGroup',
   components: {},
@@ -88,12 +88,13 @@ export default {
           break
         case 'form':
           vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
+            meta: _obj.meta
           })
           break
-        case 'component':
-
+        case 'dialogClose':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta
+          })
           break
         case 'default':
           this[_fn](_obj.meta)
@@ -103,6 +104,31 @@ export default {
             message: '(control_type)参数无效',
             type: 'error'
           })
+      }
+    },
+    controlGroupFn(_obj) {
+      let tm1 = null
+      if ('controlGroup' in _obj.meta) {
+        _obj.meta.controlGroup.forEach((_item) => {
+          switch (_item.control_type) {
+            case 'TimeFn':
+              tm1 = new TimeFn('t1', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  set: _item.fn_set
+                })
+              }, () => {
+                return false
+              }, 200)
+              tm1.run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                set: _item.fn_set
+              })
+          }
+        })
       }
     },
     init() {

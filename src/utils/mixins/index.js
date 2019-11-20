@@ -57,7 +57,10 @@ export const emMixin = {
         case 'RoleManage_EmTree_update':
           this[_fn](_obj.node)
           break
-        case 'RoleManage_EmTree_getRoutePermission':
+        case 'RoleManage_EmTree_setCheckedKeys':
+          this[_fn](_obj)
+          break
+        case 'RoleManage_EmTree_updateCheckedKeys':
           this[_fn](_obj.id)
           break
         case 'RoleManage_EmForm_setForm':
@@ -65,13 +68,30 @@ export const emMixin = {
             data: _obj.data
           })
           break
+        case 'RoleManage_EmForm_fn':
+          this[_fn](_obj.meta.fn_set, _obj.meta)
+          break
         case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
           this[_fn](_obj)
           break
         case 'RoleManage_EmDialog_openFn':
-          this[_fn]({
-            meta: _meta
-          })
+          if ('fn_set' in _meta) {
+            this[_fn]({
+              meta: _meta,
+              set: _meta.fn_set,
+              data: _obj.data
+            })
+          } else {
+            Message({
+              message: '(fn_set)参数无效',
+              type: 'error',
+              duration: 5 * 1000
+            })
+          }
+
+          break
+        case 'RoleManage_EmDialog_closeFn':
+          this[_fn]()
           break
         default:
           Message({

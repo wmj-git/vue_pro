@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
 
 import { toTree, dataInitFn } from '@/utils/tool'
-import { getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
+import { updateCheckedKeys, getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
 
 export default {
   name: 'EmTree',
@@ -63,7 +63,6 @@ export default {
   mixins: [emMixin],
   data() {
     return {
-      id: '',
       set: {
         title: '',
         maxHeight: '',
@@ -272,20 +271,27 @@ export default {
       const _this = this
       getRoutePermission({
         'url': this.set.routePermissionUrl,
-        params: _id
+        'params': _id
       }).then((response) => {
         if (response.statusCode === 200) {
-          console.log('getRoutePermission', response)
+          console.log('getRoutePermission', response.data)
+
           _this.$message({
             message: response.message,
             type: 'success'
           })
+          const _Keys = []
+          response.data.forEach(function(_obj) {
+            _Keys.push(_obj.id)
+          })
+          console.log('_Keys', _Keys)
+          _this.$refs.tree.setCheckedKeys(_Keys)
         }
       })
     },
-    setRoutePermission(_id, _ids) {
+    updateRoutePermission(_id, _ids) {
       const _this = this
-      getRoutePermission({
+      updateCheckedKeys({
         'url': this.set.setRoutePermissionUrl,
         params: {
           id: _id,
@@ -302,11 +308,13 @@ export default {
     },
     handleNodeClick(data) {
       const _componentData = this.componentData
-      _componentData.meta.control_type = _componentData.meta.handleNodeClickControlType
-      _componentData.meta.control_id = _componentData.meta.handleNodeClickControlId
-      _componentData.meta.fn = _componentData.meta.handleNodeClickFn
-      _componentData.meta.fn_type = _componentData.meta.handleNodeClickFnType
-      this.fn(_componentData, data)
+      if (_componentData.meta.handleNodeClickControlType) {
+        _componentData.meta.control_type = _componentData.meta.handleNodeClickControlType
+        _componentData.meta.control_id = _componentData.meta.handleNodeClickControlId
+        _componentData.meta.fn = _componentData.meta.handleNodeClickFn
+        _componentData.meta.fn_type = _componentData.meta.handleNodeClickFnType
+        this.fn(_componentData, data)
+      }
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
 
@@ -325,15 +333,16 @@ export default {
       // console.log(data, checked, indeterminate);
       // console.log("getCheckedKeys",this.$refs.tree.getCheckedKeys());
     },
-    updateCheckedKeys() {
+    updateCheckedKeys(_id) {
+      const _CheckedKeys = this.getCheckedKeys()
+      this.updateRoutePermission(_id, _CheckedKeys)
     },
     getCheckedKeys() {
       return this.$refs.tree.getCheckedKeys()
     },
-    setCheckedKeys(_obj) {
-
+    setCheckedKeys(_val) {
+      this.getRoutePermission(_val.data.id)
     }
-
   }
 }
 </script>
