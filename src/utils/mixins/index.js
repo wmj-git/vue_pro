@@ -46,7 +46,6 @@ export const emMixin = {
       if (!(_obj && 'meta' in _obj)) {
         return
       }
-      console.log('receiverFn', _obj)
       const _fn = _obj.meta.fn
       const _fn_type = _obj.meta.fn_type
       const _meta = _obj.meta
@@ -65,7 +64,13 @@ export const emMixin = {
             data: _obj.data
           })
           break
+        case 'ParentInfo_EmForm_queryData': // 查询
+          this[_fn](_obj)
+          break
         case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
+          this[_fn](_obj)
+          break
+        case 'ParentInfo_EmTable_deleteData':
           this[_fn](_obj)
           break
         case 'RoleManage_EmDialog_openFn':

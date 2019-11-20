@@ -198,7 +198,7 @@ const index = {
       component: () => import('@/views/em/school-service/parentInfo/parentInfo'),
       name: 'ParentInfo',
       meta: {
-        title: '家长管理',
+        title: '表格操作',
         icon: 'chart',
         'system_id': 'schoolService_parentInfo_ParentInfo',
         'system_type': 'ParentInfo'
@@ -227,15 +227,34 @@ const index = {
               name: 'EmButton',
               hidden: true,
               meta: {
+                title: '查询',
+                type: 'primary',
+                icon: 'el-icon-search',
+                size: 'mini',
+                roles: ['developer', 'admin', 'editor'],
+                'system_id': 'schoolService_parentInfo_emButton_EmButton1',
+                'system_type': 'buttonGroup',
+                'control_type': 'table',
+                'control_id': 'schoolService_parentInfo_EmTable',
+                'fn': 'handleFilter',
+                'fn_type': 'ParentInfo_EmForm_queryData'
+              }
+            },
+            {
+              path: 'emButton',
+              component: () => import('@/views/demo/index.vue'),
+              name: 'EmButton',
+              hidden: true,
+              meta: {
                 title: '添加',
                 type: 'primary',
                 icon: 'el-icon-plus',
                 size: 'mini',
                 roles: ['developer', 'admin', 'editor'],
-                'system_id': 'schoolService_parentInfo_emButton_EmButton1',
+                'system_id': 'schoolService_parentInfo_emButton_EmButton2',
                 'system_type': 'buttonGroup',
                 'control_type': 'dialog',
-                'control_id': 'schoolService_classInfo_EmDialog', // 弹框显示的system_id
+                'control_id': 'schoolService_parentInfo_EmDialog', // 弹框显示的system_id
                 'fn': 'changeDialogVisible', // 直接调用弹框显示的方法
                 'fn_type': 'ParentInfo_EmForm_addForm'
               }
@@ -251,11 +270,11 @@ const index = {
                 size: 'mini',
                 icon: 'el-icon-delete',
                 roles: ['developer', 'admin', 'editor'],
-                'system_id': 'schoolService_parentInfo_emButton_EmButton2',
+                'system_id': 'schoolService_parentInfo_emButton_EmButton3',
                 'system_type': 'buttonGroup',
                 'control_type': 'table',
-                'control_id': 'schoolService_parent-Info_emTable',
-                'fn': 'handleDelete',
+                'control_id': 'schoolService_parentInfo_EmTable', // 删除选中行（调用emTable中的方法）
+                'fn': 'remove',
                 'fn_type': 'ParentInfo_EmTable_deleteData'
               }
             }
@@ -269,7 +288,7 @@ const index = {
           meta: {
             title: '表格',
             icon: '',
-            'system_id': 'schoolService_classInfo_EmTable',
+            'system_id': 'schoolService_parentInfo_EmTable',
             'system_type': 'dataItem',
             'queryUrl': '/school/parent/queryAllByPage',
             'updateUrl': '/school/parent/update',
@@ -286,6 +305,10 @@ const index = {
               {
                 label: '家长电话',
                 key: 'parentTel'
+              },
+              {
+                label: '家长性别',
+                key: 'parentSex'
               }
             ],
             pageOne: false,
@@ -308,18 +331,14 @@ const index = {
             'span': '48',
             'labelPosition': 'left',
             'labelWidth': '80px',
-            'system_id': 'schoolService_classInfo_EmDialog',
+            'system_id': 'schoolService_parentInfo_EmDialog',
             'system_type': 'formItem',
-            'selectUrl': '/school/student/queryAllByPage',
+            'selectUrl': '/school/student/queryAllByPage', // 查找学生id
             'appendUrl': '/school/parent/add',
             'control_type': '',
             'control_id': '',
             'fn': '',
             'fn_type': '',
-            'changeDialogVisibleControlType': 'ParentInfo_dialogShowControlType_changeDialogVisible',
-            'changeDialogVisibleControlId': 'ParentInfo_dialogShow_changeDialogVisible',
-            'changeDialogVisibleControlFn': 'changeDialogVisible',
-            'changeDialogVisibleControlFnType': 'ParentInfo_EmDialog_changeDialogVisible',
             'textMap': {
               update: '修改家长信息',
               create: '添加家长信息'
@@ -350,6 +369,7 @@ const index = {
                 'system_id': 'schoolService_parentInfo_input1',
                 'system_type': 'formItem',
                 'span': '20',
+                'offset': '1',
                 'itemType': 'input',
                 'valueKey': 'parentName',
                 'defaultValue': '',
@@ -375,7 +395,7 @@ const index = {
                 noCache: false,
                 affix: false,
                 breadcrumb: false,
-                'system_id': 'schoolService_parentInfo_input1',
+                'system_id': 'schoolService_parentInfo_select1',
                 'system_type': 'formItem',
                 'span': '20',
                 'offset': '1',
@@ -444,6 +464,7 @@ const index = {
                 'system_id': 'schoolService_parentInfo_input1',
                 'system_type': 'formItem',
                 'span': '20',
+                'offset': '1',
                 'itemType': 'input',
                 'valueKey': 'parentAge',
                 'defaultValue': '',
