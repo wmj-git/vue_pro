@@ -6,7 +6,8 @@ const componentMap = {
   'Demo': () => import('@/views/demo/index'), // 子组件
   'RoleManage': () => import('@/views/em/system-management/role-manage/role-manage.vue'),
   'AccountManage': () => import('@/views/em/system-management/account-manage'),
-  'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo')
+  'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
+  'TeacherInfo': () => import('@/views/em/school-service/teacherInfo/teacherInfo')
 }
 
 export default componentMap

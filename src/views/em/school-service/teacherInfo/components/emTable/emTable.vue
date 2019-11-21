@@ -1,6 +1,6 @@
 <template>
   <div class="school-container">
-    <el-input v-model="inputFilter" placeholder="请输入家长姓名" clearable />
+    <el-input v-model="inputFilter" placeholder="请输入教师姓名" clearable />
     <el-table
       :data="tableDataEnd "
       style="width: 100%"
@@ -47,7 +47,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList } from '@/api/schoolService/classInfo'
+import { fetchList, delList } from '@/api/schoolService/teacherInfo'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -72,14 +72,20 @@ export default {
   watch: {
     tableDataEnd: {
       handler: function(val) {
+        console.log('数据', val)
         val.forEach((_item) => {
           for (const _k in _item) {
             switch (_k) {
-              case 'parentSex':
+              case 'sex':
+                console.log(_k)
                 if (typeof _item[_k] === 'number') {
                   _item[_k] = (_item[_k] === 2) ? '女' : '男'
                 }
                 break
+              case 'tncumbency':
+                if (typeof _item[_k] === 'number') {
+                  _item[_k] = (_item[_k] === 1) ? '在职' : (_item[_k] === 0) ? '离职' : '开除'
+                }
             }
           }
         })
@@ -91,9 +97,6 @@ export default {
   created() {
     this.init()
     this.getList()
-    vueBus.$on('query', () => {
-      this.getList()
-    })
   },
   methods: {
     init() {
@@ -132,7 +135,9 @@ export default {
       this.multipleSelection = val
     },
     handleEdit(row) {
-      vueBus.$emit('update', Object.assign({}, row)) // 当前选中行内容返回给表单
+      vueBus.$emit('update')
+      this.temp = Object.assign({}, row)
+      console.log('选择', this.temp)
     },
     // 删除选中行
     remove() {

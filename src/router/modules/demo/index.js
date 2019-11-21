@@ -334,7 +334,8 @@ const index = {
             'system_id': 'schoolService_parentInfo_EmDialog',
             'system_type': 'formItem',
             'selectUrl': '/school/student/queryAllByPage', // 查找学生id
-            'appendUrl': '/school/parent/add',
+            'appendUrl': '/school/parent/add', // 添加
+            'updateUrl': '/school/parent/update',
             'control_type': '',
             'control_id': '',
             'fn': '',
@@ -399,6 +400,7 @@ const index = {
                 'system_type': 'formItem',
                 'span': '20',
                 'offset': '1',
+                'itemFormVisible': true,
                 'itemType': 'select',
                 'valueKey': 'parentSex',
                 'defaultValue': '',
@@ -432,8 +434,10 @@ const index = {
                 breadcrumb: false,
                 'system_id': 'schoolService_parentInfo_input1',
                 'system_type': 'formItem',
+                'multiple': true,
                 'span': '20',
                 'offset': '1',
+                'itemFormVisible': true,
                 'itemType': 'select',
                 'valueKey': 'studentIds',
                 'defaultValue': '',

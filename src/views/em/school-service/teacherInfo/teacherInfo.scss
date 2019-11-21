@@ -1,0 +1,7 @@
+.parentInfo-container{
+  height: 100vh;
+  & .emButton{
+    margin: 10px;
+    overflow: auto;
+  }
+}
