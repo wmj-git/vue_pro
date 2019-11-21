@@ -1,6 +1,6 @@
 import { getResources } from '@/utils/auth'
 import { asyncRoutes, constantRoutes } from '@/router'
-// import { asyncRoutesList } from '@/api/role'
+import { asyncRoutesList } from '@/api/role'
 import { toTree } from '@/utils/tool'
 import componentMap from '@/utils/componentMap'
 
@@ -94,17 +94,32 @@ function getAsyncRoutes(_asyncRoutes) {
   return _asyncRoutes
 }*/
 
+/* async function ff() {
+  const _Resources = getResources()
+  let _asyncRoutes = []
+  _asyncRoutes = _asyncRoutes.concat(_Resources)
+  _asyncRoutes = getAsyncRoutes(_asyncRoutes)
+
+  _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
+  return _asyncRoutes
+}*/
+
 async function ff() {
   const _Resources = getResources()
   // console.log('_Resources', _Resources)
   let _asyncRoutes = []
-  /* await asyncRoutesList().then((response) => {
+  await asyncRoutesList().then((response) => {
     if (response.statusCode === 200) {
-      _asyncRoutes = _asyncRoutes.concat(response.data)
+      response.data.forEach((_item) => {
+        _Resources.filter((_obj) => {
+          if (_item.id === _obj.id) {
+            _asyncRoutes.push(_item)
+          }
+          return false
+        })
+      })
     }
   })
-  _asyncRoutes = getAsyncRoutes(_asyncRoutes)*/
-  _asyncRoutes = _asyncRoutes.concat(_Resources)
   _asyncRoutes = getAsyncRoutes(_asyncRoutes)
 
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
