@@ -51,7 +51,7 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
               />
             </el-form-item>
-            <el-form-item v-show="item.meta.itemFormVisible" v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='select'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
@@ -156,8 +156,18 @@ export default {
     },
     // 修改数据弹框
     updateDialogVisible() {
+      for (const _k in this.children.formItem) {
+        switch (this.children.formItem[_k].meta.valueKey) {
+          case 'studentIds':
+            this.children.formItem[_k].meta.itemFormVisible = false
+            break
+        }
+      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs[this.system_id].resetFields()
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -188,6 +198,7 @@ export default {
       })
     },
     updateData() {
+      vueBus.$emit('query')
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           const obj = {
@@ -203,10 +214,6 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
-            this.$nextTick(() => {
-              this.$refs[this.system_id].resetFields()
-            })
             this.$notify({
               title: 'Success',
               message: '修改成功',
