@@ -156,15 +156,18 @@ export default {
     },
     // 修改数据弹框
     updateDialogVisible() {
-      for (const i in this.children.formItem) {
-        switch (this.children.formItem[i].meta.valueKey) {
+      for (const _k in this.children.formItem) {
+        switch (this.children.formItem[_k].meta.valueKey) {
           case 'studentIds':
-            this.children.formItem[i].meta.itemFormVisible = false
+            this.children.formItem[_k].meta.itemFormVisible = false
             break
         }
       }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs[this.system_id].resetFields()
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -195,6 +198,7 @@ export default {
       })
     },
     updateData() {
+      vueBus.$emit('query')
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           const obj = {
@@ -210,7 +214,6 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
             this.$notify({
               title: 'Success',
               message: '修改成功',
@@ -221,9 +224,6 @@ export default {
         }
       })
       this.dialogFormVisible = false
-      this.$nextTick(() => {
-        this.$refs[this.system_id].resetFields()
-      })
     },
     currentSel() {}
   }
