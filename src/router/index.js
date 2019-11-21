@@ -102,8 +102,8 @@ export const constantRoutes = [
       }
     ]
   },
-  demo
-  // schoolService
+  demo/*,
+  schoolService*/
 ]
 
 /**

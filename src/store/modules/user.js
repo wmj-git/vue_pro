@@ -1,5 +1,5 @@
 import { Login, GenerateAuth, Logout, RefreshToken, Register, GetCode } from '@/api/user'
-import { getToken, setToken, removeToken, setResources, getResources, removeResources,
+import { getToken, setToken, removeToken, setResources, removeResources,
   setUser, getUser, removeUser,
   getCurrentRole, setCurrentRole, removeCurrentRole,
   getRSAPublicKey, setRSAPublicKey, removeRSAPublicKey,
