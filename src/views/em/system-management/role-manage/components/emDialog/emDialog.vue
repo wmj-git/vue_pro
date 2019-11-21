@@ -84,6 +84,8 @@ export default {
         value: _val
       })
       const _data = Tree.getData()
+      // alert(_data.length)
+      console.log('childrenFn', _data)
       if (_data.length > 0) {
         return _data[0]
       }
