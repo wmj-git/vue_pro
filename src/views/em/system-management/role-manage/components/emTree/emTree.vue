@@ -198,13 +198,15 @@ export default {
       }
     },
     append(node, data) {
-      if ('id' in data) {
-        data.pid = data.id
-        data.id = ''
+      console.log(node, data)
+      const _data = JSON.parse(JSON.stringify(data))
+      if ('id' in _data) {
+        _data.pid = _data.id
+        _data.id = ''
       }
       add({
         url: this.set.appendUrl,
-        params: data
+        params: _data
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
