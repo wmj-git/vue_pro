@@ -78,14 +78,17 @@ service.interceptors.response.use(
       message = error.message
       if (_statusCode === 400) {
         message = '参数填写错误，请检查后重新提交！'
+      } else if (_statusCode === 301) {
+        return
       }
+      Message({
+        message,
+        type: 'error',
+        duration: 5 * 1000
+      })
     }
-
-    Message({
-      message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    // throw new Error(message)
+    console.log(message)
     return Promise.reject(error)
   }
 )
