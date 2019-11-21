@@ -31,7 +31,7 @@
                   size="mini"
                   @click="() => append(node,data)"
                 >
-                  添加
+                  复制
                 </el-button>
                 <el-button
                   class="em-btn-gradient em-btn-uniform-gradient"
@@ -51,7 +51,6 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import { mapGetters } from 'vuex'
-import { getResources } from '@/utils/auth'
 import vueBus from '@/utils/vueBus'
 
 import { toTree, dataInitFn } from '@/utils/tool'
@@ -164,7 +163,7 @@ export default {
       let _tree = []
       switch (this.set.treeDataType) {
         case 'permissions':
-          _tree = getResources()
+          _tree = this.permission_routes
           this.treeData = []
           this.treeData = this.treeData.concat(toTree(_tree))
           break
@@ -198,8 +197,7 @@ export default {
       }
     },
     append(node, data) {
-      if ('id' in data) {
-        data.pid = data.id
+      if (data.id) {
         data.id = ''
       }
       add({

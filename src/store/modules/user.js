@@ -1,5 +1,5 @@
 import { Login, GenerateAuth, Logout, RefreshToken, Register, GetCode } from '@/api/user'
-import { getToken, setToken, removeToken,
+import { getToken, setToken, removeToken, setResources, removeResources,
   setUser, getUser, removeUser,
   getCurrentRole, setCurrentRole, removeCurrentRole,
   getRSAPublicKey, setRSAPublicKey, removeRSAPublicKey,
@@ -76,6 +76,9 @@ function setUserData(commit, data) {
     commit('SET_NAME', data.user.username)
     commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
     commit('SET_INTRODUCTION', data.user.createDate)
+    if ('resources' in data) {
+      setResources(data.resources)
+    }
     setUser(data.user)
   }
 }
@@ -176,6 +179,7 @@ const actions = {
         removeExpires()
         commit('SET_ROLES', [])
         removeUser()
+        removeResources()
         removeCurrentRole()
         resetRouter()
         // reset visited views and cached views

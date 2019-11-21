@@ -213,8 +213,9 @@ export function dataInitFn(_set, _data) {
 export function childrenInitFn(_children, _data) {
   function fn(_k, _data) {
     const _group = []
+    const _M = new RegExp(_k)
     _data.children.forEach(function(_obj) {
-      if (_obj.meta.system_type === _k) {
+      if (_M.test(_obj.meta.system_type)) {
         _group.push(_obj)
       }
     })

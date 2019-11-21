@@ -31,6 +31,19 @@ export function removeUser() {
   return Cookies.remove(userKey)
 }
 
+export function getResources() {
+  const _data = sessionStorage.getItem('resourcesKey')
+  return JSON.parse(_data)
+}
+
+export function setResources(_data) {
+  return sessionStorage.setItem('resourcesKey', JSON.stringify(_data))
+}
+
+export function removeResources() {
+  return sessionStorage.removeItem('resourcesKey')
+}
+
 export function getCurrentRole() {
   return Cookies.get(_CurrentRole)
 }

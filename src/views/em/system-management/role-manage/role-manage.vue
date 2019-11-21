@@ -107,7 +107,6 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      console.log('EmDialog123：', this.$data)
     }
   }
 }
