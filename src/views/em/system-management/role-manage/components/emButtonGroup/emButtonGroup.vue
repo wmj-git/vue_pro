@@ -8,7 +8,7 @@
             :key="index"
             :ref="btn.meta.system_id"
             :size="btn.meta.size"
-            :type="btn.meta.type"
+            :type="btn.meta.buttonType"
             :icon="btn.meta.icon"
             :disabled="btn.meta.disabled"
             :plain="btn.meta.plain ? btn.meta.plain : false "

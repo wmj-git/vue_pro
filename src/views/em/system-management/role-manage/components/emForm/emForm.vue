@@ -124,19 +124,19 @@ export default {
     }
   },
   watch: {
-    Form(val) {
-      for (const _k in val) {
-        let _extData = val[_k]
-        if (typeof (_extData) === 'string' && _k === 'extData') {
-          _extData = _extData.replace(/\\n/g, '')// 去掉换行
-          _extData = _extData.replace(/\s*/g, '')// 去掉空格
-          if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
-            val[_k] = JSON.parse(_extData)
+    Form: {
+      handler: function(val) {
+        if ('regular' in val) {
+          let _path = val.path
+          _path = _path.replace(/\//g, '_')
+          if (_path.substr(0, 1) === '_') {
+            _path = _path.substr(1, _path.length)
           }
+          val.regular = _path
         }
-      }
-      console.log('Form', val)
-      return val
+        return val
+      },
+      deep: true
     }
   },
   created() {

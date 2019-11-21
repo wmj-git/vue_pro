@@ -693,7 +693,7 @@ const index = {
                     breadcrumb: false,
                     'system_id': 'systemManagement_role-manage_emDialog1_EmButtonGroup_item1',
                     'system_type': 'buttonGroup',
-                    'type': 'primary',
+                    'buttonType': 'primary',
                     'size': '',
                     'class': '',
                     'disabled': false,
