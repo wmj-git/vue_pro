@@ -634,7 +634,7 @@ const index = {
                 'checkbox': true,
                 'expandAll': true,
                 'buttons': false,
-                'treeDataType': 'permissions',
+                'treeDataType': 'query',
                 'treeDataUrl': '/user/resources/selectResources',
                 'treeDataParams_OBJ': {},
                 'routePermissionUrl': '/user/role/getResources',
