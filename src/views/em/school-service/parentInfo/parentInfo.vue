@@ -1,32 +1,26 @@
 <template>
   <div class="parentInfo-container">
-    <split-pane :min-percent="20" :default-percent="30" split="vertical">
+    <split-pane :min-percent="20" :default-percent="set.defaultPercent" :split="set.split">
       <template slot="paneL">
-        <div>
-          树
+        <div style="overflow: auto;height: 100%;">
+          <el-row>
+            <template v-for="(item,index) in children.paneL">
+              <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+                <component :is="item.meta.componentType" :key="index" :data="item" />
+              </el-col>
+            </template>
+          </el-row>
         </div>
       </template>
       <template slot="paneR">
-        <div class="emButton">
-          <template v-for="(item, index) in children.buttonGroupItem">
-            <el-col :key="index">
-              <em-button :data="item" />
-            </el-col>
-          </template>
-        </div>
-        <div class="emTable">
-          <template v-for="(item, data) in children.dataItem">
-            <el-row :key="data">
-              <em-table :data="item" />
-            </el-row>
-          </template>
-        </div>
-        <div class="emDialog">
-          <template v-for="(item, items) in children.formItem">
-            <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-              <em-dialog :data="item" />
-            </el-col>
-          </template>
+        <div style="overflow: auto;height: 100%;">
+          <el-row>
+            <template v-for="(item,index) in children.paneR">
+              <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+                <component :is="item.meta.componentType" :key="index" :data="item" />
+              </el-col>
+            </template>
+          </el-row>
         </div>
       </template>
     </split-pane>
@@ -36,22 +30,24 @@
 import { emMixin, emPage } from '@/utils/mixins'
 import splitPane from 'vue-splitpane'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
+
+import EmTableGroup from '@/views/em/school-service/parentInfo/components/emTableGroup/emTableGroup'
 import EmButton from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/parentInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/parentInfo/components/emDialog/emDialog'
 export default {
   name: 'ParentInfo',
-  components: { splitPane, EmDialog, EmTable, EmButton },
+  components: { splitPane, EmTableGroup, EmButton, EmTable, EmDialog },
   mixins: [emMixin, emPage],
   data() {
     return {
       set: {
-        verticalPercent: '30'
+        split: 'vertical', // 左右（vertical） ，上下（horizontal）
+        defaultPercent: '50'
       },
       children: {
-        buttonGroupItem: [],
-        formItem: [],
-        dataItem: []
+        paneL: [],
+        paneR: []
       }
     }
   },

@@ -361,7 +361,8 @@ export default {
     },
     handleExcel() {
       this.$refs.mychild.changeDialogVisible()
-    }
+    },
+    handleCurrentChange() {}
   }
 }
 </script>
