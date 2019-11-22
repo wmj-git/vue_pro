@@ -214,7 +214,7 @@ const index = {
             icon: 'el-icon-plus',
             roles: ['developer', 'admin', 'editor'],
             'system_id': 'schoolService_parentInfo_emButton_EmButton',
-            'system_type': 'buttonGroupItem',
+            'system_type': 'operateItem',
             'control_type': '',
             'control_id': '',
             'fn': '',
@@ -222,9 +222,9 @@ const index = {
           },
           children: [
             {
-              path: 'emButton',
+              path: 'emForm',
               component: () => import('@/views/demo/index.vue'),
-              name: 'EmButton',
+              name: 'EmForm',
               hidden: true,
               meta: {
                 title: '查询',
@@ -233,7 +233,7 @@ const index = {
                 size: 'mini',
                 roles: ['developer', 'admin', 'editor'],
                 'system_id': 'schoolService_parentInfo_emButton_EmButton1',
-                'system_type': 'buttonGroup',
+                'system_type': 'operateItem',
                 'control_type': 'table',
                 'control_id': 'schoolService_parentInfo_EmTable',
                 'fn': 'handleFilter',
@@ -241,9 +241,9 @@ const index = {
               }
             },
             {
-              path: 'emButton',
+              path: 'emForm',
               component: () => import('@/views/demo/index.vue'),
-              name: 'EmButton',
+              name: 'EmForm',
               hidden: true,
               meta: {
                 title: '添加',
@@ -252,7 +252,7 @@ const index = {
                 size: 'mini',
                 roles: ['developer', 'admin', 'editor'],
                 'system_id': 'schoolService_parentInfo_emButton_EmButton2',
-                'system_type': 'buttonGroup',
+                'system_type': 'operateItem',
                 'control_type': 'dialog',
                 'control_id': 'schoolService_parentInfo_EmDialog', // 弹框显示的system_id
                 'fn': 'changeDialogVisible', // 直接调用弹框显示的方法
@@ -260,9 +260,9 @@ const index = {
               }
             },
             {
-              path: 'emButton',
+              path: 'emForm',
               component: () => import('@/views/demo/index.vue'),
-              name: 'EmButton',
+              name: 'EmForm',
               hidden: true,
               meta: {
                 title: '删除',
@@ -271,7 +271,7 @@ const index = {
                 icon: 'el-icon-delete',
                 roles: ['developer', 'admin', 'editor'],
                 'system_id': 'schoolService_parentInfo_emButton_EmButton3',
-                'system_type': 'buttonGroup',
+                'system_type': 'operateItem',
                 'control_type': 'table',
                 'control_id': 'schoolService_parentInfo_EmTable', // 删除选中行（调用emTable中的方法）
                 'fn': 'remove',

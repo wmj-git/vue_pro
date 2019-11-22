@@ -51,13 +51,13 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='select'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
-                :multiple="item.meta.multiple"
+                multiple
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -78,7 +78,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList } from '@/api/schoolService/parentInfo'
+import { addList, schoolInfo } from '@/api/schoolService/teacherInfo'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
@@ -87,7 +87,6 @@ export default {
       id: '',
       set: {
         appendUrl: '',
-        updateUrl: '',
         selectUrl: '',
         status: true,
         labelWidth: '',
@@ -95,14 +94,12 @@ export default {
         labelPosition: '',
         textMap: {}
       },
-      multiple: {
-        type: Boolean
-      },
       children: {
         formItem: []
       },
       temp: {},
       rules: {}, // 验证数据
+      itemFormVisible: true, // 学生id在修改时不显示
       formLabelWidth: '120px',
       dialogFormVisible: false,
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
@@ -111,8 +108,7 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on('update', val => {
-      this.temp = val // 接收修改时的表单值
+    vueBus.$on('update', () => {
       this.updateDialogVisible()
     })
   },
@@ -123,16 +119,16 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
-      for (const i in this.children.formItem) {
+      for (var i = 0; i < this.children.formItem.length; i++) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'studentIds':
+          case 'siId':
             var optionsArr = []
             var obj = {
               url: this.set.selectUrl
             }
-            studentInfo(obj).then(response => {
+            schoolInfo(obj).then(response => {
               response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
+                optionsArr.push({ 'label': _val.name, 'value': _val.id })
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 下拉选项赋值
@@ -156,18 +152,10 @@ export default {
     },
     // 修改数据弹框
     updateDialogVisible() {
-      this.$nextTick(() => {
-        this.$refs[this.system_id].resetFields()
-      })
-      for (const _k in this.children.formItem) {
-        switch (this.children.formItem[_k].meta.valueKey) {
-          case 'studentIds':
-            this.children.formItem[_k].meta.itemFormVisible = false
-            break
-        }
-      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.itemFormVisible = false
+      return this.temp
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -180,16 +168,13 @@ export default {
             params: this.temp
           }
           addList(obj).then((res) => {
+            console.log('we', obj)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit('query')
-              this.$nextTick(() => {
-                this.$refs[this.system_id].resetFields()
-              })
             } else {
               this.$notify.error('添加失败')
             }
@@ -198,32 +183,6 @@ export default {
       })
     },
     updateData() {
-      vueBus.$emit('query')
-      this.$refs[this.system_id].validate((valid) => {
-        if (valid) {
-          const obj = {
-            url: this.set.updateUrl,
-            params: Object.assign({}, this.temp)
-          }
-          editList(obj).then(() => {
-            console.log('修改数据', this.temp)
-            for (const v of this.tableDataEnd) {
-              if (v.id === this.temp.id) {
-                const index = this.tableDataEnd.indexOf(v)
-                this.tableDataEnd.splice(index, 1, this.temp)
-                break
-              }
-            }
-            this.changeDialogHidden()
-            this.$notify({
-              title: 'Success',
-              message: '修改成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
       this.dialogFormVisible = false
     },
     currentSel() {}
