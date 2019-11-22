@@ -78,6 +78,14 @@
                 />
               </div>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <div class="json-item">
+                <json-editor
+                  :ref="item.meta.system_id"
+                  v-model="Form[item.meta.valueKey]"
+                />
+              </div>
+            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"

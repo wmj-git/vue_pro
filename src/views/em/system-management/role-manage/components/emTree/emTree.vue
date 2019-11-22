@@ -202,7 +202,10 @@ export default {
       const _data = JSON.parse(JSON.stringify(data))
       if ('id' in _data) {
         _data.pid = _data.id
-        _data.id = ''
+        delete _data.id
+      }
+      if ('extData' in _data) {
+        _data.extData = JSON.stringify(_data.extData)
       }
       add({
         url: this.set.appendUrl,

@@ -82,7 +82,7 @@ function getAsyncRoutes(_asyncRoutes) {
   _AsyncRoutes = toTree(_AsyncRoutes)
   return _AsyncRoutes
 }
-async function ff() {
+/* async function ff() {
   let _asyncRoutes = []
   await asyncRoutesList().then((response) => {
     if (response.statusCode === 200) {
@@ -92,7 +92,7 @@ async function ff() {
   _asyncRoutes = getAsyncRoutes(_asyncRoutes)
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
   return _asyncRoutes
-}
+}*/
 
 /* async function ff() {
   const _Resources = getResources()
@@ -104,7 +104,7 @@ async function ff() {
   return _asyncRoutes
 }*/
 
-/* async function ff() {
+ async function ff() {
   const _Resources = getResources()
   // console.log('_Resources', _Resources)
   let _asyncRoutes = []
@@ -124,7 +124,7 @@ async function ff() {
 
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
   return _asyncRoutes
-}*/
+}
 
 const actions = {
   async generateRoutes({ commit }, roles) {
