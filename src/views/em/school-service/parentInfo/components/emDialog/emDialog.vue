@@ -156,18 +156,18 @@ export default {
     },
     // 修改数据弹框
     updateDialogVisible() {
-      for (const _k in this.children.formItem) {
+      this.$nextTick(() => {
+        this.$refs[this.system_id].resetFields()
+      })
+      /* for (const _k in this.children.formItem) {
         switch (this.children.formItem[_k].meta.valueKey) {
           case 'studentIds':
             this.children.formItem[_k].meta.itemFormVisible = false
             break
         }
-      }
+      }*/
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs[this.system_id].resetFields()
-      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -206,6 +206,7 @@ export default {
             params: Object.assign({}, this.temp)
           }
           editList(obj).then(() => {
+            console.log('修改数据', this.temp)
             for (const v of this.tableDataEnd) {
               if (v.id === this.temp.id) {
                 const index = this.tableDataEnd.indexOf(v)

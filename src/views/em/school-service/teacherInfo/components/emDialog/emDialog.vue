@@ -78,7 +78,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo } from '@/api/schoolService/teacherInfo'
+import { addList, schoolInfo } from '@/api/schoolService/teacherInfo'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
@@ -121,14 +121,14 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (var i = 0; i < this.children.formItem.length; i++) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'studentIds':
+          case 'siId':
             var optionsArr = []
             var obj = {
               url: this.set.selectUrl
             }
-            studentInfo(obj).then(response => {
+            schoolInfo(obj).then(response => {
               response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
+                optionsArr.push({ 'label': _val.name, 'value': _val.id })
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 下拉选项赋值

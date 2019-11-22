@@ -69,9 +69,9 @@ export default {
       inputFilter: '' // 模糊查询关键字
     }
   },
-  watch: {
+  /* watch: {
     tableDataEnd: {
-      handler: function(val) {
+      handler: function(val, oldVal) {
         console.log('数据', val)
         val.forEach((_item) => {
           for (const _k in _item) {
@@ -93,7 +93,7 @@ export default {
       },
       deep: true
     }
-  },
+  },*/
   created() {
     this.init()
     this.getList()
