@@ -1,10 +1,10 @@
 <template>
   <div class="emTableGroup-container">
     <el-card :class="set.class" :shadow="set.shadow">
-      <div class="emButton">
-        <template v-for="(item, index) in children.buttonGroupItem">
+      <div class="emForm">
+        <template v-for="(item, index) in children.operateItem">
           <el-col :key="index">
-            <em-button :data="item" />
+            <em-form :data="item" />
           </el-col>
         </template>
       </div>
@@ -28,12 +28,12 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import EmButton from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/parentInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/parentInfo/components/emDialog/emDialog'
+import EmForm from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
 export default {
   name: 'EmTableGroup',
-  components: { EmDialog, EmTable, EmButton },
+  components: { EmForm, EmDialog, EmTable },
   mixins: [emMixin],
   data() {
     return {
@@ -42,7 +42,7 @@ export default {
         shadow: 'hover'
       },
       children: {
-        buttonGroupItem: [],
+        operateItem: [], // 表头操作表单
         formItem: [],
         dataItem: []
       }

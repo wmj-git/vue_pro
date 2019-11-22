@@ -1,6 +1,6 @@
 <template>
   <div class="parentInfo-container">
-    <split-pane :min-percent="20" :default-percent="set.defaultPercent" :split="set.split">
+    <split-pane :min-percent="20" :default-percent="Number(set.defaultPercent)" :split="set.split">
       <template slot="paneL">
         <div style="overflow: auto;height: 100%;">
           <el-row>
@@ -32,18 +32,18 @@ import splitPane from 'vue-splitpane'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 
 import EmTableGroup from '@/views/em/school-service/parentInfo/components/emTableGroup/emTableGroup'
-import EmButton from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
+import EmForm from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/parentInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/parentInfo/components/emDialog/emDialog'
 export default {
   name: 'ParentInfo',
-  components: { splitPane, EmTableGroup, EmButton, EmTable, EmDialog },
+  components: { splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
   mixins: [emMixin, emPage],
   data() {
     return {
       set: {
         split: 'vertical', // 左右（vertical） ，上下（horizontal）
-        defaultPercent: '50'
+        defaultPercent: 50
       },
       children: {
         paneL: [],

@@ -1,6 +1,5 @@
 <template>
   <div class="school-container">
-    <el-input v-model="inputFilter" placeholder="请输入家长姓名" clearable />
     <el-table
       :data="tableDataEnd "
       style="width: 100%"
