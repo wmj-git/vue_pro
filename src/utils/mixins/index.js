@@ -73,8 +73,12 @@ export const emMixin = {
               _extData = _extData.replace(/\s*/g, '')// 去掉空格
               if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
                 val[_k] = JSON.parse(_extData)
-                if ('system_id' in val.extData.meta) {
-                  val.extData.meta.system_id = 'system_id_' + val.id
+                try {
+                  if ('system_id' in val.extData.meta) {
+                    val.extData.meta.system_id = 'system_id_' + val.id
+                  }
+                } catch (err) {
+                  console.log(err)
                 }
               }
             }

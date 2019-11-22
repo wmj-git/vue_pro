@@ -28,10 +28,17 @@
 
     <div class="user-bio">
       <div class="user-education user-bio-section">
-        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>Education</span></div>
+        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>显示模式</span></div>
         <div class="user-bio-section-body">
           <div class="text-muted">
-            {{ user.email }}
+            <el-select v-model="changeRole" placeholder="请选择" @change="changeRolesFn">
+              <el-option
+                v-for="item in user.roles"
+                :key="item.id"
+                :label="item.description"
+                :value="item.id"
+              />
+            </el-select>
           </div>
         </div>
       </div>
