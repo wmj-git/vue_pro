@@ -16,9 +16,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: [], //
+  roles: [], // 用户所有角色
   displayMode: [], //
-  currentRole: '' // 当前
+  currentRole: '' // 当前角色对象
 }
 
 const mutations = {
