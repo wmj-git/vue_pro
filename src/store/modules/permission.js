@@ -1,4 +1,4 @@
-import { getResources } from '@/utils/auth'
+import { getCurrentRole, setResources } from '@/utils/auth'
 import { asyncRoutes, constantRoutes } from '@/router'
 import { asyncRoutesList } from '@/api/role'
 import { toTree } from '@/utils/tool'
@@ -82,29 +82,33 @@ function getAsyncRoutes(_asyncRoutes) {
   _AsyncRoutes = toTree(_AsyncRoutes)
   return _AsyncRoutes
 }
-/* async function ff() {
+async function ff() {
+  const _CurrentRole = getCurrentRole()
   let _asyncRoutes = []
-  await asyncRoutesList().then((response) => {
+  await asyncRoutesList({
+    url: '/user/role/getResources',
+    params: _CurrentRole.id
+  }).then((response) => {
     if (response.statusCode === 200) {
       _asyncRoutes = _asyncRoutes.concat(response.data)
+      setResources(_asyncRoutes)
     }
   })
   _asyncRoutes = getAsyncRoutes(_asyncRoutes)
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
   return _asyncRoutes
-}*/
+}
 
 /* async function ff() {
   const _Resources = getResources()
   let _asyncRoutes = []
   _asyncRoutes = _asyncRoutes.concat(_Resources)
   _asyncRoutes = getAsyncRoutes(_asyncRoutes)
-
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
   return _asyncRoutes
 }*/
 
- async function ff() {
+/* async function ff() {
   const _Resources = getResources()
   // console.log('_Resources', _Resources)
   let _asyncRoutes = []
@@ -124,20 +128,22 @@ function getAsyncRoutes(_asyncRoutes) {
 
   _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
   return _asyncRoutes
-}
+}*/
 
 const actions = {
-  async generateRoutes({ commit }, roles) {
+  async generateRoutes({ commit }, displayMode) {
     const _asyncRoutes = await ff()
     const AsyncRoutes = _asyncRoutes.length > 1 ? _asyncRoutes : asyncRoutes
+    console.log('AsyncRoutes', AsyncRoutes)
     // const AsyncRoutes = asyncRoutes
     return new Promise((resolve) => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
+      /* let accessedRoutes
+      if (roles.includes('default')) {
         accessedRoutes = AsyncRoutes || []
       } else {
-        accessedRoutes = filterAsyncRoutes(AsyncRoutes, roles)
-      }
+        accessedRoutes = filterAsyncRoutes(AsyncRoutes, displayMode)
+      }*/
+      const accessedRoutes = AsyncRoutes || []
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

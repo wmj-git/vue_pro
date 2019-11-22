@@ -8,9 +8,9 @@ export function fetchList(obj) {
   })
 }
 
-export function asyncRoutesList() { // 获取动态路由数据
+export function asyncRoutesList(obj) { // 获取动态路由数据(后台权限数据)
   return request({
-    url: '/user/resources/selectResources',
+    url: obj.url + '/' + obj.params,
     method: 'get'
   })
 }

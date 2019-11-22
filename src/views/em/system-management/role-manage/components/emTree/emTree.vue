@@ -186,12 +186,13 @@ export default {
       }
     },
     SuccessFn() {
+      const _this = this
       switch (this.set.appendSuccess) {
         case 'permissions':
           // 更新权限
-          /* _this.$store.dispatch('user/systemPermissions', {}).then(() => {
+          this.$store.dispatch('permission/generateRoutes', ['default']).then(() => {
             _this.treeDataFn()
-          })*/
+          })
           break
         default :
           this.treeDataFn()
@@ -226,7 +227,6 @@ export default {
       update({
         url: this.set.updateUrl,
         params: node
-        // params: { 'id': 29, 'name': 'root123', 'zhName': '2运营团队-超级管理员1', 'roleCode': '', 'orgId': 1, 'orgType': 1, 'description': '运营团队-超级管理员', 'dataStatus': 1, 'weight': 199, 'pid': 1 }
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({

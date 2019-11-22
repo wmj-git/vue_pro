@@ -20,15 +20,16 @@ export function removeToken() {
 }
 
 export function getUser() {
-  return Cookies.get(userKey)
+  const _data = sessionStorage.getItem(userKey)
+  return JSON.parse(_data)
 }
 
 export function setUser(_data) {
-  return Cookies.set(userKey, _data)
+  return sessionStorage.setItem(userKey, JSON.stringify(_data))
 }
 
 export function removeUser() {
-  return Cookies.remove(userKey)
+  return sessionStorage.removeItem(userKey)
 }
 
 export function getResources() {
@@ -45,15 +46,16 @@ export function removeResources() {
 }
 
 export function getCurrentRole() {
-  return Cookies.get(_CurrentRole)
+  const _data = sessionStorage.getItem(_CurrentRole)
+  return JSON.parse(_data)
 }
 
 export function setCurrentRole(_data) {
-  return Cookies.set(_CurrentRole, _data)
+  return sessionStorage.setItem(_CurrentRole, JSON.stringify(_data))
 }
 
 export function removeCurrentRole() {
-  return Cookies.remove(_CurrentRole)
+  return sessionStorage.removeItem(_CurrentRole)
 }
 
 export function getRSAPublicKey() {

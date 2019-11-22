@@ -16,8 +16,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: [],
-  currentRole: ''
+  roles: [], //
+  displayMode: [], //
+  currentRole: '' // 当前
 }
 
 const mutations = {
@@ -144,7 +145,7 @@ const actions = {
       if (!data) {
         reject('Verification failed, please Login again.')
       }
-      const { roleList, username, createDate } = JSON.parse(data)
+      const { roleList, username, createDate } = data
 
       const roles = []
       roleList.forEach(function(_item) {
@@ -155,14 +156,14 @@ const actions = {
       if (!roles || roles.length <= 0) {
         reject('getInfo: roles must be a non-null array!')
       }
-      const _currentRole = JSON.parse(getCurrentRole())
+      const _currentRole = getCurrentRole()
       commit('SET_ROLES', roles)
       commit('SET_CURRENTROLE', _currentRole)
       commit('SET_NAME', username)
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       commit('SET_INTRODUCTION', createDate)
 
-      resolve(_currentRole)
+      resolve(['default'])
     })
   },
   // user logout*
