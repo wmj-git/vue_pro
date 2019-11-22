@@ -71,7 +71,7 @@ export default {
   },
   watch: {
     tableDataEnd: {
-      handler: function(val) {
+      handler: function(val, oldVal) {
         val.forEach((_item) => {
           for (const _k in _item) {
             switch (_k) {

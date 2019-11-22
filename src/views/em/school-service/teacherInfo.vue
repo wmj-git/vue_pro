@@ -224,7 +224,7 @@ export default {
     handleEdit(row) {
       this.temp = Object.assign({}, row)
       this.dialogFormVisible = true
-      this.itemFormVisible = false
+      this.itemFormVisible = true
       this.dialogStatus = 'update'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
