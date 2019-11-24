@@ -1,14 +1,13 @@
 <template>
   <div class="emTableGroup-container">
-    <el-card>
-      <row>
-        <el-col span="48">
-          <em-form />
-        </el-col>
-        <el-col span="48">
-          <em-table />
-        </el-col>
-      </row>
+    <el-card :shadow="set.shadow">
+      <el-row>
+        <template v-for="(item,index) in children.tableGroupItem">
+          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <component :is="item.meta.componentType" :key="index" :data="item" />
+          </el-col>
+        </template>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -29,10 +28,10 @@ export default {
   data() {
     return {
       set: {
-        value: ''
+        shadow: 'hover'
       },
       children: {
-        componentItem: []
+        tableGroupItem: []
       }
     }
   },

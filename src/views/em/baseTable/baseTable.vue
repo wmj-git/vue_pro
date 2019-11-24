@@ -36,7 +36,6 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
 import emTree from './components/emTree/emTree'
-import emForm from './components/emForm/emForm'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'
 import emDialog from './components/emDialog/emDialog'
 import emTableGroup from './components/emTableGroup/emTableGroup'
@@ -46,7 +45,6 @@ export default {
   components: {
     splitPane,
     emTree,
-    emForm,
     emButtonGroup,
     emDialog,
     emTableGroup

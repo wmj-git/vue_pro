@@ -533,8 +533,8 @@ const index = {
         breadcrumb: true,
         'system_id': 'system_baseTable',
         'system_type': 'BaseTable',
-        'defaultPercent': '20',
-        'paneL': true,
+        'defaultPercent': '0',
+        'paneL': false,
         'paneR': true,
         'control_type': '',
         'control_id': '',
@@ -546,40 +546,10 @@ const index = {
           id: 0,
           pid: 0,
           weight: 200,
-          path: 'EmDialog',
+          path: 'EmTableGroup',
           component: () => import('@/views/demo/index.vue'),
           redirect: '',
-          name: 'EmDialog',
-          hidden: true,
-          alwaysShow: false,
-          meta: {
-            title: '权限-窗口',
-            icon: 'chart',
-            roles: ['default'],
-            noCache: false,
-            affix: false,
-            breadcrumb: false,
-            'system_id': 'system_baseTable_p1',
-            'system_type': 'paneL',
-            'componentType': 'emTree',
-            'offset': '',
-            'span': '48',
-            'control_type': '',
-            'control_id': '',
-            'fn': '',
-            'fn_type': '',
-            'fn_set': {}
-          },
-          children: []
-        },
-        {
-          id: 0,
-          pid: 0,
-          weight: 200,
-          path: 'EmDialog',
-          component: () => import('@/views/demo/index.vue'),
-          redirect: '',
-          name: 'EmDialog',
+          name: 'EmTableGroup',
           hidden: true,
           alwaysShow: false,
           meta: {
@@ -594,13 +564,265 @@ const index = {
             'componentType': 'emTableGroup',
             'offset': '',
             'span': '48',
+            'shadow': 'hover',
             'control_type': '',
             'control_id': '',
             'fn': '',
             'fn_type': '',
             'fn_set': {}
           },
-          children: []
+          children: [
+            {
+              id: 0,
+              pid: 0,
+              weight: 200,
+              path: 'system_baseTable_form_LL',
+              component: () => import('@/views/demo/index.vue'),
+              redirect: '',
+              name: 'system_baseTable_form_LL',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '表格表单',
+                icon: 'chart',
+                roles: ['default'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'system_baseTable_p2_emForm1',
+                'system_type': 'tableGroupItem',
+                'componentType': 'emForm',
+                'offset': '',
+                'span': '48',
+                'labelPosition': '',
+                'labelWidth': '',
+                'statusIcon': false,
+                'class': '',
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              },
+              children: [
+                {
+                  id: 11234,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input6',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '',
+                    icon: '',
+                    roles: ['default', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'nav_systemManage_permissions_win_emForm_formItem7',
+                    'system_type': 'formItem',
+                    'offset': '',
+                    'span': '8',
+                    'itemType': 'input',
+                    'valueKey': 'parentName',
+                    'defaultValue': '',
+                    'placeholder': '姓名',
+                    'disabled': false,
+                    'validate_OBJ': {
+                      'data': [
+                        { 'required': false, 'message': '请输入', 'trigger': 'change' }
+                      ]
+                    },
+                    'control_type': '',
+                    'control_id': '',
+                    'fn': '',
+                    'fn_type': '',
+                    'fn_set': {}
+                  }
+                },
+                {
+                  id: 11236,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input6',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '查询',
+                    icon: 'el-icon-star-off',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'nav_systemManage_permissions_win_emForm_formItem9',
+                    'system_type': 'formItem',
+                    'offset': '1',
+                    'span': '6',
+                    'itemType': 'button',
+                    'buttonType': '',
+                    'class': '',
+                    'disabled': false,
+                    'control_type': 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn',
+                    'control_id': 'system_baseTable_p2_emTable1',
+                    'fn': 'queryFn',
+                    'fn_type': 'BaseTable_EmTableGroup_EmTable_queryFn',
+                    'fn_set': {
+
+                    }
+                  }
+                },
+                {
+                  id: 11236,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input12',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '添加',
+                    icon: 'el-icon-star-off',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'nav_systemManage_permissions_win_emForm_formItem10',
+                    'system_type': 'formItem',
+                    'offset': '0',
+                    'span': '6',
+                    'itemType': 'button',
+                    'buttonType': '',
+                    'class': '',
+                    'disabled': false,
+                    'control_type': 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmDialog_openFn',
+                    'control_id': 'system_baseTable_p2_EmDialog1',
+                    'fn': 'openFn',
+                    'fn_type': 'BaseTable_EmDialog_openFn',
+                    'fn_set': {
+                      'title': '添加家长',
+                      'dialogVisible': true,
+                      'width': '540px'
+                    },
+                    'controlGroup': [
+                      {
+                        'fn': 'onReset',
+                        'fn_set': {},
+                        'fn_type': 'BaseTable_EmForm_onReset',
+                        'control_id': 'system_baseTable_p2_EmDialog1_emForm1',
+                        'control_type': 'TimeFn'
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              id: 0,
+              pid: 0,
+              weight: 200,
+              path: 'system_baseTable_table_LL',
+              component: () => import('@/views/demo/index.vue'),
+              redirect: '',
+              name: 'system_baseTable_table_LL',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '表格数据',
+                icon: 'chart',
+                roles: ['default'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'system_baseTable_p2_emTable1',
+                'system_type': 'tableGroupItem',
+                'componentType': 'emTable',
+                'offset': '',
+                'span': '48',
+                queryUrl: '/school/parent/queryAllByPage',
+                appendUrl: '/school/parent/add',
+                removeUrl: '/school/parent/deletes',
+                updateUrl: '/school/parent/update',
+                maxHeight: '280',
+                tableHeader: [
+                  {
+                    'label': 'id',
+                    'prop': 'id',
+                    'width': 100
+                  },
+                  {
+                    'label': '年龄',
+                    'prop': 'parentAge',
+                    'width': 100
+                  },
+                  {
+                    'label': '姓名',
+                    'prop': 'parentName',
+                    'width': 100
+                  },
+                  {
+                    'label': '性别',
+                    'prop': 'parentSex',
+                    'width': 100
+                  },
+                  {
+                    'label': '联系电话',
+                    'prop': 'parentTel',
+                    'width': ''
+                  }
+                ],
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              },
+              children: [
+                {
+                  id: 11236,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input12',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input12',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '编辑',
+                    icon: 'el-icon-star-off',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'system_baseTable_p2_emTable1_columnBtn1',
+                    'system_type': 'columnBtn',
+                    'control_type': 'BaseTable_EmTableGroup_EmTable_columnBtnClick--BaseTable_EmDialog_openFn',
+                    'control_id': 'system_baseTable_p2_EmDialog1',
+                    'fn': 'openFn',
+                    'fn_type': 'BaseTable_EmDialog_openFn',
+                    'fn_set': {
+                      'title': '编辑家长信息',
+                      'dialogVisible': true,
+                      'width': '540px'
+                    },
+                    'controlGroup': [
+                      {
+                        'fn': 'setForm',
+                        'fn_set': {
+                          type: 'tableColumnBtn'
+                        },
+                        'fn_type': 'BaseTable_EmForm_setForm',
+                        'control_id': 'system_baseTable_p2_EmDialog1_emForm1',
+                        'control_type': 'TimeFn'
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           id: 0,
@@ -613,13 +835,13 @@ const index = {
           hidden: true,
           alwaysShow: false,
           meta: {
-            title: '权限-窗口',
+            title: '添加-窗口',
             icon: 'chart',
             roles: ['default'],
             noCache: false,
             affix: false,
             breadcrumb: false,
-            'system_id': 'system_baseTable_p2',
+            'system_id': 'system_baseTable_p2_EmDialog1',
             'system_type': 'ContainerBox',
             'componentType': 'emDialog',
             'dialogVisible': false,
@@ -629,7 +851,252 @@ const index = {
             'fn_type': '',
             'fn_set': {}
           },
-          children: []
+          children: [
+            {
+              id: 1124,
+              pid: 112,
+              weight: 200,
+              path: 'role-manage_form_LL',
+              component: () => import('@/views/demo/index.vue'),
+              redirect: '',
+              name: '',
+              hidden: true,
+              alwaysShow: false,
+              meta: {
+                title: '属性设置',
+                icon: 'chart',
+                roles: ['developer', 'admin', 'editor'],
+                noCache: false,
+                affix: false,
+                breadcrumb: false,
+                'system_id': 'system_baseTable_p2_EmDialog1_emForm1',
+                'system_type': 'ContainerItem',
+                'componentType': 'emForm',
+                'offset': '',
+                'span': '48',
+                'labelPosition': 'top',
+                'labelWidth': '80px',
+                'statusIcon': true,
+                'class': '',
+                'control_type': '',
+                'control_id': '',
+                'fn': '',
+                'fn_type': ''
+              },
+              children: [
+                {
+                  id: 11231,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input1',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '年龄',
+                    icon: 'chart',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'system_baseTable_p2_EmDialog1_emForm1_emForm_formItem1',
+                    'system_type': 'formItem',
+                    'offset': '',
+                    'span': '16',
+                    'itemType': 'input',
+                    'valueKey': 'parentAge',
+                    'defaultValue': 123,
+                    'placeholder': '',
+                    'disabled': false,
+                    'validate_OBJ': {
+                      'data': [
+                        { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                      ]
+                    },
+                    'control_type': '',
+                    'control_id': '',
+                    'fn': '',
+                    'fn_type': ''
+                  }
+                },
+                {
+                  id: 11231,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input2',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input2',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '姓名',
+                    icon: 'chart',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'system_baseTable_p2_EmDialog1_emForm1_emForm_formItem2',
+                    'system_type': 'formItem',
+                    'offset': '',
+                    'span': '16',
+                    'itemType': 'input',
+                    'valueKey': 'parentName',
+                    'defaultValue': '姓名',
+                    'placeholder': '姓名',
+                    'disabled': false,
+                    'validate_OBJ': {
+                      'data': [
+                        { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                      ]
+                    },
+                    'control_type': '',
+                    'control_id': '',
+                    'fn': '',
+                    'fn_type': ''
+                  }
+                },
+                {
+                  id: 11233,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input3',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input3',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '性别',
+                    icon: 'chart',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'system_baseTable_p2_EmDialog1_emForm1_emForm_formItem3',
+                    'system_type': 'formItem',
+                    'offset': '',
+                    'span': '16',
+                    'itemType': 'select',
+                    'valueKey': 'parentSex',
+                    'defaultValue': 1,
+                    'placeholder': '请选择一项',
+                    'disabled': false,
+                    'validate_OBJ': {
+                      'data': [
+                        { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                      ]
+                    },
+                    'options_OBJ': {
+                      'data': [
+                        { 'label': '男', 'value': 1 },
+                        { 'label': '女', 'value': 2 }
+                      ]
+                    },
+                    'control_type': '',
+                    'control_id': '',
+                    'fn': '',
+                    'fn_type': ''
+                  }
+                },
+                {
+                  id: 11231,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input4',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input4',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '联系电话',
+                    icon: 'chart',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'system_baseTable_p2_EmDialog1_emForm1_emForm_formItem4',
+                    'system_type': 'formItem',
+                    'offset': '',
+                    'span': '48',
+                    'itemType': 'input',
+                    'valueKey': 'parentTel',
+                    'defaultValue': 123,
+                    'placeholder': '',
+                    'disabled': false,
+                    'validate_OBJ': {
+                      'data': [
+                        { 'required': true, 'message': '请输入', 'trigger': 'change' }
+                      ]
+                    },
+                    'control_type': '',
+                    'control_id': '',
+                    'fn': '',
+                    'fn_type': ''
+                  }
+                },
+                {
+                  id: 11236,
+                  pid: 1123,
+                  weight: 190,
+                  path: 'input12',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '取消',
+                    icon: 'el-icon-star-off',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'nav_systemManage_permissions_win_emForm_formItem10',
+                    'system_type': 'formItem',
+                    'offset': '6',
+                    'span': '12',
+                    'itemType': 'button',
+                    'buttonType': '',
+                    'class': '',
+                    'disabled': false,
+                    'control_type': 'BaseTable_EmForm_btnClick--BaseTable_EmDialog_closeFn',
+                    'control_id': 'system_baseTable_p2_EmDialog1',
+                    'fn': 'closeFn',
+                    'fn_type': 'BaseTable_EmDialog_closeFn'
+                  }
+                },
+                {
+                  id: 11236,
+                  pid: 1123,
+                  weight: 200,
+                  path: 'input6',
+                  component: () => import('@/views/demo/index.vue'),
+                  name: 'input',
+                  hidden: true,
+                  alwaysShow: false,
+                  meta: {
+                    title: '提交',
+                    icon: 'el-icon-star-off',
+                    roles: ['developer', 'admin', 'editor'],
+                    noCache: false,
+                    affix: false,
+                    breadcrumb: false,
+                    'system_id': 'nav_systemManage_permissions_win_emForm_formItem9',
+                    'system_type': 'formItem',
+                    'offset': '0',
+                    'span': '12',
+                    'itemType': 'button',
+                    'buttonType': '',
+                    'class': '',
+                    'disabled': false,
+                    'control_type': 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_updateFn',
+                    'control_id': 'system_baseTable_p2_emTable1',
+                    'fn': 'updateFn',
+                    'fn_type': 'BaseTable_EmTableGroup_EmTable_updateFn'
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     },

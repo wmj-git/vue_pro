@@ -49,7 +49,6 @@ export const emMixin = {
       const _fn = _obj.meta.fn
       const _fn_type = _obj.meta.fn_type
       const _meta = _obj.meta
-
       let val
       switch (_fn_type) {
         case 'default':
@@ -120,6 +119,56 @@ export const emMixin = {
           break
         case 'RoleManage_EmDialog_closeFn':
           this[_fn]()
+          break
+        case 'BaseTable_EmTableGroup_EmTable_queryFn':
+          this[_fn]({
+            Form: _obj.Form
+          })
+          break
+        case 'BaseTable_EmTableGroup_EmTable_addFn':
+          this[_fn]({
+            Form: _obj.Form
+          })
+          break
+        case 'BaseTable_EmTableGroup_EmTable_updateFn':
+          this[_fn]({
+            Form: _obj.Form
+          })
+          break
+        case 'BaseTable_EmDialog_openFn':
+          if ('fn_set' in _meta) {
+            this[_fn]({
+              meta: _meta,
+              set: _meta.fn_set,
+              data: _obj.data
+            })
+          } else {
+            Message({
+              message: '(fn_set)参数无效',
+              type: 'error',
+              duration: 5 * 1000
+            })
+          }
+
+          break
+        case 'BaseTable_EmDialog_closeFn':
+          this[_fn]()
+          break
+        case 'BaseTable_EmForm_onReset':
+          this[_fn]()
+          break
+        case 'BaseTable_EmForm_setForm':
+
+          if ('set' in _obj) {
+            if (_obj.set.type === 'tableColumnBtn') {
+              val = _obj.data.row
+            }
+          } else {
+            val = _obj.Form
+          }
+          this[_fn]({
+            Form: val
+          })
           break
         default:
           Message({

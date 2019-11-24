@@ -123,18 +123,6 @@ export default {
   },
   watch: {
     Form(val) {
-      for (const _k in val) {
-        let _extData = val[_k]
-        if (typeof (_extData) === 'string' && _k === 'extData') {
-          _extData = _extData.replace(/\\n/g, '')// 去掉换行
-          _extData = _extData.replace(/\s*/g, '')// 去掉空格
-          if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
-            val[_k] = JSON.parse(_extData)
-          }
-        }
-      }
-      console.log('Form', val)
-      return val
     }
   },
   created() {
@@ -151,12 +139,12 @@ export default {
       const _controlId = _obj.meta.control_id
       const _Form = this.getForm()
       switch (_controlType) {
-        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
+        case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
               vueBus.$emit(_controlId, {
                 meta: _obj.meta,
-                node: _Form
+                Form: _Form
               })
             } else {
               console.log('error submit!!')
@@ -164,20 +152,7 @@ export default {
             }
           })
           break
-        case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_updateCheckedKeys':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                id: _Form.id
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
-          })
-          break
-        case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_openFn':
+        case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmDialog_openFn':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
               const _Form = this.getForm()
@@ -278,7 +253,8 @@ export default {
       })
     },
     setForm(_obj) { // 设置表单值
-      const _data = _obj.data
+      const _data = _obj.Form
+      console.log('setForm', _data)
       this.Form = dataInitFn(this.Form, _data)
     },
     getForm() {
