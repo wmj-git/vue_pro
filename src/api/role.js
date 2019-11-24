@@ -15,3 +15,10 @@ export function asyncRoutesList(obj) { // 获取动态路由数据(后台权限�
   })
 }
 
+export function ChangeRoles(obj) {
+  return request({
+    url: '/jwt/auth/changeRole',
+    method: 'post',
+    params: obj
+  })
+}

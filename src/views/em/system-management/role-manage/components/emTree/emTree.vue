@@ -190,7 +190,7 @@ export default {
       switch (this.set.appendSuccess) {
         case 'permissions':
           // 更新权限
-          this.$store.dispatch('permission/generateRoutes', ['default']).then(() => {
+          this.$store.dispatch('permission/generateRoutes', this.$store.getters.displayMode).then(() => {
             _this.treeDataFn()
           })
           break

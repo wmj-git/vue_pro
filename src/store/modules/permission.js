@@ -99,37 +99,6 @@ async function ff() {
   return _asyncRoutes
 }
 
-/* async function ff() {
-  const _Resources = getResources()
-  let _asyncRoutes = []
-  _asyncRoutes = _asyncRoutes.concat(_Resources)
-  _asyncRoutes = getAsyncRoutes(_asyncRoutes)
-  _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
-  return _asyncRoutes
-}*/
-
-/* async function ff() {
-  const _Resources = getResources()
-  // console.log('_Resources', _Resources)
-  let _asyncRoutes = []
-  await asyncRoutesList().then((response) => {
-    if (response.statusCode === 200) {
-      response.data.forEach((_item) => {
-        _Resources.filter((_obj) => {
-          if (_item.id === _obj.id) {
-            _asyncRoutes.push(_item)
-          }
-          return false
-        })
-      })
-    }
-  })
-  _asyncRoutes = getAsyncRoutes(_asyncRoutes)
-
-  _asyncRoutes.push({ path: '*', redirect: '/404', hidden: true })
-  return _asyncRoutes
-}*/
-
 const actions = {
   async generateRoutes({ commit }, displayMode) {
     const _asyncRoutes = await ff()
@@ -137,13 +106,13 @@ const actions = {
     console.log('AsyncRoutes', AsyncRoutes)
     // const AsyncRoutes = asyncRoutes
     return new Promise((resolve) => {
-      /* let accessedRoutes
-      if (roles.includes('default')) {
+      let accessedRoutes
+      if (displayMode.includes('default')) {
         accessedRoutes = AsyncRoutes || []
       } else {
         accessedRoutes = filterAsyncRoutes(AsyncRoutes, displayMode)
-      }*/
-      const accessedRoutes = AsyncRoutes || []
+      }
+      // const accessedRoutes = AsyncRoutes || []
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

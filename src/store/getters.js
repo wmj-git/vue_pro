@@ -14,6 +14,7 @@ const getters = {
   name: state => state.user.name, // 用户名
   introduction: state => state.user.introduction, // 说明
   roles: state => state.user.roles, // 用户角色
+  displayMode: state => state.user.displayMode, // 当前显示模式
   currentRole: state => state.user.currentRole, // 当前角色
   permission_routes: state => state.permission.routes, // 用户的权限
   errorLogs: state => state.errorLog.logs

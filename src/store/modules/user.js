@@ -1,4 +1,5 @@
 import { Login, GenerateAuth, Logout, RefreshToken, Register, GetCode } from '@/api/user'
+import { ChangeRoles } from '@/api/role'
 import { getToken, setToken, removeToken, setResources, removeResources,
   setUser, getUser, removeUser,
   getCurrentRole, setCurrentRole, removeCurrentRole,
@@ -17,7 +18,7 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [], // 用户所有角色
-  displayMode: [], //
+  displayMode: ['default'], // 当前模式
   currentRole: '' // 当前角色对象
 }
 
@@ -47,6 +48,10 @@ const mutations = {
   SET_ROLES: (state, roles) => {
     state.roles = []
     state.roles = state.roles.concat(roles)
+  },
+  SET_DisplayMode: (state, displayMode) => {
+    state.displayMode = []
+    state.displayMode = state.roles.concat(displayMode)
   },
   SET_CURRENTROLE: (state, currentRole) => {
     setCurrentRole(currentRole)
@@ -163,7 +168,7 @@ const actions = {
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       commit('SET_INTRODUCTION', createDate)
 
-      resolve(['default'])
+      resolve()
     })
   },
   // user logout*
@@ -231,10 +236,19 @@ const actions = {
 
       commit('SET_TOKEN', token)
       setToken(token)
-
-      const { roles } = await dispatch('getInfo')
 */
+      const _user = getUser()
+      const _params = {
+        'phone': _user.phone,
+        'refreshAuthorization': state.refreshToken,
+        'roleId': role
+      }
 
+      ChangeRoles({
+        ChangeRolePo: _params
+      }).then((res) => {
+        console.log('ChangeRoles', res)
+      })
       state.roles.forEach(function(_role) {
         if (_role.id === role) {
           commit('SET_CURRENTROLE', _role)
@@ -243,7 +257,7 @@ const actions = {
 
       resetRouter()
       // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', [state.currentRole.name], { root: true })
+      const accessRoutes = await dispatch('permission/generateRoutes', state.displayMode, { root: true })
 
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)

@@ -8,7 +8,8 @@ const index = {
   alwaysShow: true,
   meta: {
     title: 'demo',
-    icon: 'component'
+    icon: 'component',
+    roles: ['developer', 'default'] // 显示模式
   },
   children: [
     {
@@ -20,7 +21,7 @@ const index = {
       meta: {
         title: 'demo',
         icon: 'chart',
-        roles: ['developer', 'admin', 'editor'], // 权限
+        roles: ['developer', 'default'], // 显示模式
         noCache: false, // 页面是否有缓存机制
         affix: false, // 是否固定在切换标签面板
         breadcrumb: false, // 是否显示在路由导航
@@ -517,8 +518,8 @@ const index = {
       id: 0,
       pid: 0,
       weight: 200,
-      path: 'baseTable',
-      component: () => import('@/views/demo/index.vue'),
+      path: 'BaseTable',
+      component: () => import('@/views/em/baseTable/baseTable'),
       redirect: '',
       name: 'BaseTable',
       hidden: false,
@@ -526,22 +527,111 @@ const index = {
       meta: {
         title: '基本表',
         icon: 'chart',
-        roles: ['developer', 'admin', 'editor'],
+        roles: ['default'],
         noCache: true,
         affix: false,
         breadcrumb: true,
         'system_id': 'system_baseTable',
         'system_type': 'BaseTable',
-        'verticalPercent': '30',
-        'horizontalPercent': '90',
-        'pan_L': true,
-        'pan_R': true,
+        'defaultPercent': '20',
+        'paneL': true,
+        'paneR': true,
         'control_type': '',
         'control_id': '',
         'fn': '',
         'fn_type': ''
       },
-      children: []
+      children: [
+        {
+          id: 0,
+          pid: 0,
+          weight: 200,
+          path: 'EmDialog',
+          component: () => import('@/views/demo/index.vue'),
+          redirect: '',
+          name: 'EmDialog',
+          hidden: true,
+          alwaysShow: false,
+          meta: {
+            title: '权限-窗口',
+            icon: 'chart',
+            roles: ['default'],
+            noCache: false,
+            affix: false,
+            breadcrumb: false,
+            'system_id': 'system_baseTable_p1',
+            'system_type': 'paneL',
+            'componentType': 'emTree',
+            'offset': '',
+            'span': '48',
+            'control_type': '',
+            'control_id': '',
+            'fn': '',
+            'fn_type': '',
+            'fn_set': {}
+          },
+          children: []
+        },
+        {
+          id: 0,
+          pid: 0,
+          weight: 200,
+          path: 'EmDialog',
+          component: () => import('@/views/demo/index.vue'),
+          redirect: '',
+          name: 'EmDialog',
+          hidden: true,
+          alwaysShow: false,
+          meta: {
+            title: '表数据',
+            icon: 'chart',
+            roles: ['default'],
+            noCache: false,
+            affix: false,
+            breadcrumb: false,
+            'system_id': 'system_baseTable_p2',
+            'system_type': 'paneR',
+            'componentType': 'emTableGroup',
+            'offset': '',
+            'span': '48',
+            'control_type': '',
+            'control_id': '',
+            'fn': '',
+            'fn_type': '',
+            'fn_set': {}
+          },
+          children: []
+        },
+        {
+          id: 0,
+          pid: 0,
+          weight: 200,
+          path: 'EmDialog',
+          component: () => import('@/views/demo/index.vue'),
+          redirect: '',
+          name: 'EmDialog',
+          hidden: true,
+          alwaysShow: false,
+          meta: {
+            title: '权限-窗口',
+            icon: 'chart',
+            roles: ['default'],
+            noCache: false,
+            affix: false,
+            breadcrumb: false,
+            'system_id': 'system_baseTable_p2',
+            'system_type': 'ContainerBox',
+            'componentType': 'emDialog',
+            'dialogVisible': false,
+            'control_type': '',
+            'control_id': '',
+            'fn': '',
+            'fn_type': '',
+            'fn_set': {}
+          },
+          children: []
+        }
+      ]
     },
     {
       id: 0,

@@ -31,12 +31,12 @@
         <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>显示模式</span></div>
         <div class="user-bio-section-body">
           <div class="text-muted">
-            <el-select v-model="changeRole" placeholder="请选择" @change="changeRolesFn">
+            <el-select v-model="set.modeValue" placeholder="请选择" @change="displayModeFn">
               <el-option
-                v-for="item in user.roles"
-                :key="item.id"
-                :label="item.description"
-                :value="item.id"
+                v-for="item in set.modeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </div>
@@ -89,12 +89,29 @@ export default {
   },
   data() {
     return {
-      changeRole: ''
+      set: {
+        changeRole: '',
+        modeValue: 'default',
+        modeOption: [
+          {
+            label: '默认',
+            value: 'default'
+          },
+          {
+            label: '管理模式',
+            value: 'admin'
+          },
+          {
+            label: '开发模式',
+            value: 'developer'
+          }
+        ]
+      }
     }
   },
   created() {
     this.init()
-    console.log('PanThumb', this.user, this.changeRole)
+    // console.log('PanThumb', this.user, this.changeRole)
   },
   mounted() {
   },
@@ -103,7 +120,12 @@ export default {
       this.changeRole = this.user.role.id
     },
     changeRolesFn() {
-      this.$store.dispatch('user/changeRoles', this.changeRole)
+      this.$store.dispatch('user/changeRoles', this.set.changeRole)
+    },
+    displayModeFn() {
+      this.$store.dispatch('permission/generateRoutes', [this.set.modeValue]).then(() => {
+        this.$store.commit('user/SET_DisplayMode', [this.set.modeValue])
+      })
     }
   }
 }
