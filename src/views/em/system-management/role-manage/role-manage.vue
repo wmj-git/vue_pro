@@ -60,7 +60,6 @@ import { emMixin, emPage } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
-// import emTree from './components/emTree/emTree'
 import emTree from './components/emTree/emTree'
 import emForm from './components/emForm/emForm'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'

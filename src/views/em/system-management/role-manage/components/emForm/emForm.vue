@@ -78,6 +78,9 @@
                 />
               </div>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <dropzone :id="item.meta.system_id" :url="item.meta.url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"></dropzone>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
                 <json-editor
@@ -109,11 +112,13 @@ import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
 
 import JsonEditor from '@/components/JsonEditor'
+import Dropzone from '@/components/Dropzone'
 
 export default {
   name: 'EmForm',
   components: {
-    JsonEditor
+    JsonEditor,
+    Dropzone
   },
   mixins: [emMixin],
   data() {
@@ -307,6 +312,15 @@ export default {
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
+    },
+    dropzoneS(file) {
+      console.log(file.name, this.Form)
+      console.log(file.name, this.Form)
+      this.$message({ message: 'Upload success', type: 'success' })
+    },
+    dropzoneR(file) {
+      console.log(file)
+      this.$message({ message: 'Delete success', type: 'success' })
     }
   }
 }

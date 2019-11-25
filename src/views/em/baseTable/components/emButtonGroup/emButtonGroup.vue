@@ -8,7 +8,7 @@
             :key="index"
             :ref="btn.meta.system_id"
             :size="btn.meta.size"
-            :type="btn.meta.type"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             :icon="btn.meta.icon"
             :disabled="btn.meta.disabled"
             :plain="btn.meta.plain ? btn.meta.plain : false "
@@ -28,14 +28,14 @@
             :key="index"
             :ref="btn.meta.system_id"
             :size="btn.meta.size"
-            :type="btn.meta.type"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             :icon="btn.meta.icon"
             :disabled="btn.meta.disabled"
             :plain="btn.meta.plain ? btn.meta.plain : false "
             :round="btn.meta.round ? btn.meta.round : false "
             :circle="btn.meta.circle ? btn.meta.circle : false "
             :class="btn.meta.class ? btn.meta.class : ''"
-            @click="fn(btn.meta.fn,{'btn':btn,'control_type':btn.meta.control_type})"
+            @click="fn(btn,{'btn':btn,'control_type':btn.meta.control_type})"
           >
             {{ btn.meta.title }}
           </el-button>
@@ -56,7 +56,6 @@ export default {
   mixins: [emMixin],
   data() {
     return {
-      id: '',
       set: {
         groupType: 'default',
         class: ''
@@ -79,19 +78,12 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'tree':
-          console.log('_obj', _obj)
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
-          })
-          break
-        case 'form':
+        case 'BaseTable_EmButtonGroup_btnClick--BaseTable_EmDialog_closeFn':
           vueBus.$emit(_controlId, {
             meta: _obj.meta
           })
           break
-        case 'dialogClose':
+        case 'BaseTable_EmButtonGroup_btnClick--BaseTable_EmTransfer_Fn':
           vueBus.$emit(_controlId, {
             meta: _obj.meta
           })

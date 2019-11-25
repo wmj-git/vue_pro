@@ -229,21 +229,36 @@ const actions = {
     })
   },
 
-  // dynamically modify permissions-manage
-  changeRoles({ commit, state, dispatch }, role) {
+  // 角色切换
+  changeRoles({ commit, state, dispatch }, roleId) {
     return new Promise(async resolve => {
+      let _data = null
       const _user = getUser()
       const _params = {
         'phone': _user.phone,
         'refreshAuthorization': state.refreshToken,
-        'roleId': role
+        'roleId': roleId
+      }
+      await ChangeRoles(_params).then((res) => {
+        console.log('ChangeRoles', res)
+        if (res.statusCode === 200) {
+          _data = res.data
+        }
+      })
+
+      if (!_data) {
+        return
       }
 
-      ChangeRoles(_params).then((res) => {
-        console.log('ChangeRoles', res)
-      })
+      commit('SET_TOKEN', _data.Authorization)
+      setToken(_data.Authorization)
+      commit('SET_REFRESHTOKEN', _data.refreshAuthorization)
+      setRefreshToken(_data.refreshAuthorization)
+      commit('SET_EXPIRES', _data.expires)
+      setExpires(_data.expires)
+
       state.roles.forEach(function(_role) {
-        if (_role.id === role) {
+        if (_role.id === roleId) {
           commit('SET_CURRENTROLE', _role)
         }
       })

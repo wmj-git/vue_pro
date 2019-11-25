@@ -145,7 +145,6 @@ export default {
     },
     init() {
       this.set = dataInitFn(this.set, this.meta)
-      console.log('_tree：', this.set)
       this.setFn = dataInitFn(this.setFn, this.meta)
 
       this.defaultProps.children = this.meta.propsChildren
@@ -173,7 +172,6 @@ export default {
             'url': this.set.treeDataUrl,
             'params': this.set.treeDataParams_OBJ
           }).then((response) => {
-            console.log(response)
             if (response.statusCode === 200) {
               response.data.forEach((_obj) => {
                 _tree.push(_obj)
@@ -199,14 +197,14 @@ export default {
       }
     },
     append(node, data) {
-      console.log(node, data)
       const _data = JSON.parse(JSON.stringify(data))
+      const _extData = JSON.parse(JSON.stringify(data.extData))
       if ('id' in _data) {
         _data.pid = _data.id
         delete _data.id
       }
       if ('extData' in _data) {
-        _data.extData = JSON.stringify(_data.extData)
+        _data.extData = JSON.stringify(_extData)
       }
       add({
         url: this.set.appendUrl,

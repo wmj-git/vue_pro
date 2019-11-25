@@ -78,6 +78,8 @@
                 />
               </div>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='line'">
+            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"

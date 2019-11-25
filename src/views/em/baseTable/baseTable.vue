@@ -1,6 +1,6 @@
 <template>
   <div class="baseTable-container">
-    <split-pane split="vertical" :min-percent="0" :default-percent="Number(set.defaultPercent)">
+    <split-pane split="vertical" :min-percent="Number(set.minPercent)" :default-percent="Number(set.defaultPercent)">
       <template slot="paneL">
         <div style="overflow: auto;height: 100%;">
           <el-row v-if="set.paneL">
@@ -35,7 +35,6 @@ import { emMixin, emPage } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
-import emTree from './components/emTree/emTree'
 import emButtonGroup from './components/emButtonGroup/emButtonGroup'
 import emDialog from './components/emDialog/emDialog'
 import emTableGroup from './components/emTableGroup/emTableGroup'
@@ -44,7 +43,6 @@ export default {
   name: 'BaseTable',
   components: {
     splitPane,
-    emTree,
     emButtonGroup,
     emDialog,
     emTableGroup
@@ -53,6 +51,7 @@ export default {
   data() {
     return {
       set: {
+        minPercent: '20',
         defaultPercent: '50',
         paneL: true,
         paneR: true

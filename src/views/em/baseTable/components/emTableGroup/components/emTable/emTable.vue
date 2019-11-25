@@ -42,6 +42,7 @@
                   :key="_index"
                   class="em-btn-operation"
                   size="mini"
+                  :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
                   @click.stop
                   @click="fn(btn,{'index':scope.$index,'row':scope.row,'control_type':btn.meta.control_type})"
                 >
@@ -57,7 +58,7 @@
       <el-col :span="48">
         <el-pagination
           :current-page="pagination.currentPage"
-          :page-sizes="[2,10,20,50]"
+          :page-sizes="[5,10,20,50]"
           :page-size="pagination.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pagination.totalSize"
@@ -83,6 +84,7 @@ export default {
         appendUrl: '',
         removeUrl: '',
         updateUrl: '',
+        updateMethod: 'post',
         maxHeight: '100',
         tableHeader: []
       },
@@ -272,6 +274,7 @@ export default {
       const _this = this
       update({
         url: _this.set.updateUrl,
+        method: _this.set.updateMethod,
         params: _obj.Form
       }).then(res => {
         if (res) {

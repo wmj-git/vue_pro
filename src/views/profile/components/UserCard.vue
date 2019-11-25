@@ -111,7 +111,6 @@ export default {
   },
   created() {
     this.init()
-    // console.log('PanThumb', this.user, this.changeRole)
   },
   mounted() {
   },
@@ -120,7 +119,6 @@ export default {
       this.set.changeRole = this.user.role.id
     },
     changeRolesFn() {
-      console.log('changeRole', this.set.changeRole)
       this.$store.dispatch('user/changeRoles', this.set.changeRole)
     },
     displayModeFn() {

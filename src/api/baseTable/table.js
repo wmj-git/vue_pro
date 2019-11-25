@@ -24,9 +24,15 @@ export function query(obj) { // 表格数据查
 }
 
 export function update(obj) { // 表格数据修改
+  let _method = 'post'
+
+  if ('method' in obj) {
+    _method = obj.method
+  }
+
   return request({
     url: obj.url,
-    method: 'post',
+    method: _method,
     data: obj.params
   })
 }
