@@ -244,9 +244,7 @@ const actions = {
         'roleId': role
       }
 
-      ChangeRoles({
-        ChangeRolePo: _params
-      }).then((res) => {
+      ChangeRoles(_params).then((res) => {
         console.log('ChangeRoles', res)
       })
       state.roles.forEach(function(_role) {

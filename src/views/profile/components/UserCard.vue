@@ -14,7 +14,7 @@
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
         <div class="user-role text-center text-muted">
-          <el-select v-model="changeRole" placeholder="请选择" @change="changeRolesFn">
+          <el-select v-model="set.changeRole" placeholder="请选择" @change="changeRolesFn">
             <el-option
               v-for="item in user.roles"
               :key="item.id"
@@ -117,9 +117,10 @@ export default {
   },
   methods: {
     init() {
-      this.changeRole = this.user.role.id
+      this.set.changeRole = this.user.role.id
     },
     changeRolesFn() {
+      console.log('changeRole', this.set.changeRole)
       this.$store.dispatch('user/changeRoles', this.set.changeRole)
     },
     displayModeFn() {

@@ -19,6 +19,6 @@ export function ChangeRoles(obj) {
   return request({
     url: '/jwt/auth/changeRole',
     method: 'post',
-    params: obj
+    data: obj
   })
 }
