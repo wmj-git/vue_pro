@@ -232,11 +232,6 @@ const actions = {
   // dynamically modify permissions-manage
   changeRoles({ commit, state, dispatch }, role) {
     return new Promise(async resolve => {
-      /* const token = role + '-token'
-
-      commit('SET_TOKEN', token)
-      setToken(token)
-*/
       const _user = getUser()
       const _params = {
         'phone': _user.phone,
