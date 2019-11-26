@@ -37,4 +37,11 @@ export function studentInfo(obj) {
     params: obj
   })
 }
-
+// 获取班级id
+export function ClassId(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj
+  })
+}

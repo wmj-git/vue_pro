@@ -3,7 +3,7 @@
     <el-card :class="set.class" :shadow="set.shadow">
       <div class="emForm">
         <template v-for="(item, index) in children.operateItem">
-          <el-col :key="index">
+          <el-col :key="index" class="el-col-48">
             <em-form :data="item" />
           </el-col>
         </template>
