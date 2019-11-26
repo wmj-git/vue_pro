@@ -255,17 +255,15 @@ export default {
         url: _this.set.appendUrl,
         params: _row
       }).then(res => {
-        if (res) {
-          if (res.statusCode === 200) {
-            _this.$message({
-              message: '恭喜你，添加成功',
-              type: 'success'
-            })
-            /*  vueBus.$emit(_obj.obj.dialog_id, {
-              'fn': _obj.obj.dialog_fn
-            })*/
-            this.createDataFn()
-          }
+        if (res && res.statusCode === 200) {
+          _this.$message({
+            message: '恭喜你，添加成功',
+            type: 'success'
+          })
+          /*  vueBus.$emit(_obj.obj.dialog_id, {
+            'fn': _obj.obj.dialog_fn
+          })*/
+          this.createDataFn()
         }
       })
     },

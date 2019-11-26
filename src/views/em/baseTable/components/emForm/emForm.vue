@@ -53,8 +53,13 @@
               <el-select
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
+                :style="{width: item.meta.selectWidth}"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                :multiple="item.meta.allowCreate ? item.meta.allowCreate : false"
+                :filterable="item.meta.allowCreate ? item.meta.allowCreate : false"
+                :allow-create="item.meta.allowCreate ? item.meta.allowCreate : false"
+                default-first-option
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -78,8 +83,6 @@
                 />
               </div>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='line'">
-            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
@@ -101,6 +104,7 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
+import { optionData } from '@/api/baseTable/form'
 
 import JsonEditor from '@/components/JsonEditor'
 
@@ -220,7 +224,13 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       // 获取行按钮数据
       this.children = childrenInitFn(this.children, this.componentData)
-      // 处理验证和数据
+
+      this.children.formItem.forEach(async(_item) => {
+        if ('options_url' in _item.meta) {
+          _item.meta.options_OBJ.data = await this.optionFn(_item.meta)
+        }
+      })
+
       this.defaultFn(this.children.formItem)
     },
     defaultFn(_formItem) {
@@ -263,7 +273,45 @@ export default {
         }
       })
     },
+    async optionFn(_meta) {
+      async function option() {
+        let _options = []
+        await optionData({
+          url: _meta.options_url
+          // params: _params
+        }).then((res) => {
+          if (res && res.statusCode === 200) {
+            const _keys = _meta.options_OBJ.data[0]
+            const _data = []
+            res.data.forEach((_item) => {
+              const _value = {}
+              for (const _k in _keys) {
+                _value[_k] = _item[_keys[_k]]
+              }
+              _data.push(_value)
+            })
+            _options = _options.concat(_data)
+          } else {
+            this.$message({
+              message: '获取数据错误',
+              type: 'error'
+            })
+          }
+        })
+        return _options
+      }
+
+      let _options = []
+      if (_meta && ('options_url' in _meta) && _meta.options_url) {
+        _options = await option()
+      } else if (_meta && 'options_OBJ' in _meta) {
+        _options = _options.concat(_meta.options_OBJ.data ? _meta.options_OBJ.data : [])
+      }
+      console.log('optionData', _options)
+      return _options
+    },
     setForm(_obj) { // 设置表单值
+      this.onReset()
       const _data = _obj.Form
       for (const _k in _data) {
         switch (_k) {
