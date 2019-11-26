@@ -81,6 +81,11 @@ export default {
                   _item[_k] = (_item[_k] === 2) ? '女' : '男'
                 }
                 break
+              case 'studentSex':
+                if (typeof _item[_k] === 'number') {
+                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
+                }
+                break
             }
           }
         })

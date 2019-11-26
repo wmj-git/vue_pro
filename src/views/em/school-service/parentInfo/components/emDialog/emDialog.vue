@@ -78,7 +78,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList } from '@/api/schoolService/parentInfo'
+import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
@@ -94,9 +94,7 @@ export default {
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: '',
-        add_show: true,
-        edit_show: true
+        vueBusName: ''
       },
       multiple: {
         type: Boolean
@@ -108,7 +106,7 @@ export default {
       rules: {}, // 验证数据
       formLabelWidth: '120px',
       dialogFormVisible: false,
-      itemFormVisible: true,
+      itemFormVisible: false,
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
       dialogStatus: ''
     }
@@ -141,6 +139,18 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 下拉选项赋值
             break
+          case 'classId':
+            var optionsArrs = []
+            var _obj = {
+              url: this.set.selectUrl
+            }
+            ClassId(_obj).then(response => {
+              response.data.list.forEach((_val) => {
+                optionsArrs.push({ 'label': _val.name, 'value': _val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 下拉选项赋值
+            break
         }
       }
     },
@@ -161,16 +171,19 @@ export default {
           case 'studentIds':
             val.meta.itemFormVisible = true // 添加时该字段应该显示
             break
+          case 'classId':
+            val.meta.itemFormVisible = true // 添加时该字段应该显示
+            break
         }
       })
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
-        console.log(12)
         this.$refs[this.system_id].resetFields()
       }
     },
     // 修改数据弹框
     edit() {
+      const _this = this
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.children.formItem.forEach((val) => {
@@ -178,10 +191,14 @@ export default {
           case 'studentIds':
             val.meta.itemFormVisible = false // 修改时该字段应该隐藏
             break
+          case 'classId':
+            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
+            break
         }
       })
       this.$nextTick(() => {
-        this.$refs[this.system_id].clearValidate()
+        console.log(this.temp)
+        _this.$refs[_this.system_id].clearValidate()
       })
     },
     changeDialogHidden() {
