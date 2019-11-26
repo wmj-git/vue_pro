@@ -13,6 +13,10 @@ Dropzone.autoDiscover = false
 
 export default {
   props: {
+    item: {
+      type: Object,
+      required: true
+    },
     id: {
       type: String,
       required: true
@@ -73,7 +77,7 @@ export default {
   data() {
     return {
       dropzone: '',
-      initOnce: true
+      initOnce: false
     }
   },
   watch: {
@@ -149,7 +153,7 @@ export default {
     }
 
     this.dropzone.on('success', file => {
-      vm.$emit('dropzone-success', file, vm.dropzone.element)
+      vm.$emit('dropzone-success', file, vm.dropzone.element, this.item)
     })
     this.dropzone.on('addedfile', file => {
       vm.$emit('dropzone-fileAdded', file)

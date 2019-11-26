@@ -79,7 +79,13 @@
               </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <dropzone :id="item.meta.system_id" :url="item.meta.url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"></dropzone>
+              {{ Form[item.meta.valueKey] ? Form[item.meta.valueKey] : "" }}
+              <dropzone
+                :id="item.meta.system_id"
+                :url="BASE_API+item.meta.url"
+                :item="item"
+                @dropzone-removedFile="dropzoneR"
+                @dropzone-success="dropzoneS" />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
@@ -139,8 +145,8 @@ export default {
   watch: {
     Form: {
       handler: function(val) {
+        let _path = val.path
         if ('regular' in val) {
-          let _path = val.path
           _path = _path.replace(/\//g, '_')
           if (_path.substr(0, 1) === '_') {
             _path = _path.substr(1, _path.length)
@@ -154,6 +160,7 @@ export default {
   },
   created() {
     this.init()
+    console.log(this.system_id, this.$data)
   },
   mounted() {
   },
@@ -294,6 +301,7 @@ export default {
     },
     setForm(_obj) { // 设置表单值
       const _data = _obj.data
+      this.onReset()
       this.Form = dataInitFn(this.Form, _data)
     },
     getForm() {
@@ -313,10 +321,25 @@ export default {
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
     },
-    dropzoneS(file) {
-      console.log(file.name, this.Form)
-      console.log(file.name, this.Form)
-      this.$message({ message: 'Upload success', type: 'success' })
+    dropzoneS(file, el, it) {
+      console.log('file', file, el, it)
+      // console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, k)
+      if (!(file.xhr.status === 200)) {
+        return
+      }
+      const _response = JSON.parse(file.xhr.response)
+      const _imgUrl = _response.data[0].networkPath
+      const val = this.Form
+      if ('extData' in this.Form && 'imgUrl' in this.Form) {
+        this.Form.imgUrl = _imgUrl
+      }
+      console.log(typeof val.extData)
+      if ('extData' in val && 'imgUrl' in val && typeof val.extData === 'string') {
+        val.extData = JSON.parse(val.extData)
+        val.extData.imgUrl = _imgUrl
+        this.Form.extData = val.extData
+      }
+      this.$message({ message: '图片上传成功', type: 'success' })
     },
     dropzoneR(file) {
       console.log(file)

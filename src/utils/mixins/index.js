@@ -17,7 +17,8 @@ export const emMixin = {
     return {
       system_id: 'none',
       meta: {},
-      componentData: JSON.parse(JSON.stringify(this.data))
+      componentData: JSON.parse(JSON.stringify(this.data)),
+      BASE_API: process.env.VUE_APP_BASE_API
     }
   },
   created: function() {

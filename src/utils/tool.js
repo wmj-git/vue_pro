@@ -96,7 +96,6 @@ function treeStructure(data) {
 export function toTree(_nodes) {
   const _Tree = []
   const _data = treeStructure(_nodes)
-  console.log('tree', _data)
   for (const _k in _data) {
     _data[_k].forEach(function(_obj) {
       _Tree.push(_obj)
