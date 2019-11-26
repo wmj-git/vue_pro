@@ -2,7 +2,7 @@
   <div class="school-container">
     <el-table
       :data="tableDataEnd "
-      style="width: 100%"
+      style="width: 100%;"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -57,15 +57,17 @@ export default {
         queryUrl: '',
         appendUrl: '',
         removeUrl: '',
-        updateUrl: ''
+        updateUrl: '',
+        vueBusName: ''
       },
       tableHeader: [],
       tableDataEnd: [],
+      multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
       listQuery: {},
       ids: [],
-      inputFilter: '' // 模糊查询关键字
+      valueKey: '' // 模糊查询关键字
     }
   },
   watch: {
@@ -118,8 +120,9 @@ export default {
           pageNum: this.listQuery.page
         }
       }
-      if (this.inputFilter) {
-        obj.parentName = this.inputFilter
+      if (emMixin.valueKey) {
+        obj.parentName = emMixin.valueKey
+        console.log(21, emMixin.valueKey)
       }
       fetchList(obj).then(response => {
         this.total = response.data.total
@@ -131,11 +134,12 @@ export default {
       this.multipleSelection = val
     },
     handleEdit(row) {
-      vueBus.$emit('update', Object.assign({}, row)) // 当前选中行内容返回给表单
+      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
     },
     // 删除选中行
     remove() {
       var _val = this.multipleSelection
+      console.log('val', _val)
       _val.forEach(_val => {
         //  提取出需要传给后台的参数ids
         this.ids.push(_val.id)

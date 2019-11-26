@@ -11,7 +11,7 @@
         :rules="rules"
       >
         <template v-for="(item,index) in children.formItem">
-          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)" :readonly="item.add_show">
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -93,7 +93,10 @@ export default {
         labelWidth: '',
         statusIcon: '',
         labelPosition: '',
-        textMap: {}
+        textMap: {},
+        vueBusName: '',
+        add_show: true,
+        edit_show: true
       },
       multiple: {
         type: Boolean
@@ -111,7 +114,7 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on('update', val => {
+    vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.updateDialogVisible()
     })
@@ -156,16 +159,6 @@ export default {
     },
     // 修改数据弹框
     updateDialogVisible() {
-      this.$nextTick(() => {
-        this.$refs[this.system_id].resetFields()
-      })
-      for (const _k in this.children.formItem) {
-        switch (this.children.formItem[_k].meta.valueKey) {
-          case 'studentIds':
-            this.children.formItem[_k].meta.itemFormVisible = false
-            break
-        }
-      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -180,6 +173,7 @@ export default {
             params: this.temp
           }
           addList(obj).then((res) => {
+            console.log('填入数据：', obj)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -207,7 +201,7 @@ export default {
           }
           editList(obj).then(() => {
             console.log('修改数据', this.temp)
-            for (const v of this.tableDataEnd) {
+            for (const v in this.tableDataEnd) {
               if (v.id === this.temp.id) {
                 const index = this.tableDataEnd.indexOf(v)
                 this.tableDataEnd.splice(index, 1, this.temp)
