@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="set.textMap[dialogStatus]":visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -11,7 +11,7 @@
         :rules="rules"
       >
         <template v-for="(item,index) in children.formItem">
-          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)" :readonly="item.add_show">
+          <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -108,6 +108,7 @@ export default {
       rules: {}, // 验证数据
       formLabelWidth: '120px',
       dialogFormVisible: false,
+      itemFormVisible: true,
       statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
       dialogStatus: ''
     }
@@ -116,7 +117,7 @@ export default {
     this.init()
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
-      this.updateDialogVisible()
+      this.edit()
     })
   },
   beforeDestroy() {
@@ -153,14 +154,35 @@ export default {
       }
     },
     // 添加数据显示
-    changeDialogVisible() {
+    add() {
       this.dialogStatus = 'create'
+      this.children.formItem.forEach((val) => {
+        switch (val.meta.valueKey) {
+          case 'studentIds':
+            val.meta.itemFormVisible = true // 添加时该字段应该显示
+            break
+        }
+      })
       this.dialogFormVisible = true
+      if (this.$refs[this.system_id] !== undefined) {
+        console.log(12)
+        this.$refs[this.system_id].resetFields()
+      }
     },
     // 修改数据弹框
-    updateDialogVisible() {
+    edit() {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.children.formItem.forEach((val) => {
+        switch (val.meta.valueKey) {
+          case 'studentIds':
+            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
+            break
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs[this.system_id].clearValidate()
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -181,9 +203,6 @@ export default {
               })
               this.changeDialogHidden()
               vueBus.$emit('query')
-              this.$nextTick(() => {
-                this.$refs[this.system_id].resetFields()
-              })
             } else {
               this.$notify.error('添加失败')
             }
@@ -192,7 +211,6 @@ export default {
       })
     },
     updateData() {
-      vueBus.$emit('query')
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           const obj = {
@@ -209,6 +227,7 @@ export default {
               }
             }
             this.changeDialogHidden()
+            vueBus.$emit('query')
             this.$notify({
               title: 'Success',
               message: '修改成功',
