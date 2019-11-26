@@ -15,7 +15,7 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     // 说明请求的设备方式
-    config.headers['REQUEST-FROM'] = 'PC'
+    config.headers['PLATFORM-FROM'] = 1
     if (store.getters.token) {
       // let each request carry token
       config.headers['Authorization'] = getToken()
