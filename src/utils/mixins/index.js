@@ -91,7 +91,9 @@ export const emMixin = {
           this[_fn](_obj.meta.fn_set, _obj.meta)
           break
         case 'ParentInfo_EmForm_queryData': // 查询
-          this[_fn](_obj)
+          this[_fn]({
+            params: _obj.params
+          })
           break
         case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
           this[_fn](_obj)

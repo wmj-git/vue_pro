@@ -117,8 +117,11 @@ export default {
             meta: _obj.item.meta
           })
           break
-        case 'component':
-
+        case 'TableInfo_tableQuery_handleFilter':
+          vueBus.$emit(_controlId, {
+            meta: _obj.item.meta,
+            params: _obj.params
+          })
           break
         case 'default':
           this[_fn](_obj.meta)

@@ -125,10 +125,6 @@ export default {
           pageNum: this.listQuery.page
         }
       }
-      if (emMixin.valueKey) {
-        obj.parentName = emMixin.valueKey
-        console.log(21, emMixin.valueKey)
-      }
       fetchList(obj).then(response => {
         this.total = response.data.total
         this.tableDataEnd = response.data.list
