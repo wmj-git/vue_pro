@@ -36,3 +36,11 @@ export function paramsGetApi(obj) {
     method: 'get'
   })
 }
+
+export function postApi(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}

@@ -104,7 +104,7 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
-import { optionData, optionParams, paramsGetApi } from '@/api/baseTable/form'
+import { optionData, optionParams, paramsGetApi, postApi } from '@/api/baseTable/form'
 
 import JsonEditor from '@/components/JsonEditor'
 
@@ -180,6 +180,12 @@ export default {
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: _Form
+          })
+          break
+        case 'BaseTable_EmForm_onSubmit':
+          this[_fn]({
+            meta: _obj.meta,
+            data: _data
           })
           break
         case 'default':
@@ -420,9 +426,18 @@ export default {
     },
     onSubmit(_obj) { // 表单提交
       const _this = this
+      const _meta = _obj.meta
+      const _set = _meta.fn_set
+      const _data = _obj.data
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           console.log('submit!', _this.Form, _this.senderData)
+          postApi({
+            url: _set.requestUrl,
+            params: _data
+          }).then((res) => {
+            console.log('submit!', res)
+          })
         } else {
           console.log('error submit!!')
           return false
