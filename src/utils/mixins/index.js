@@ -90,18 +90,6 @@ export const emMixin = {
         case 'RoleManage_EmForm_fn':
           this[_fn](_obj.meta.fn_set, _obj.meta)
           break
-        case 'ParentInfo_EmForm_queryData': // 查询
-          this[_fn](_obj)
-          break
-        case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
-          this[_fn](_obj)
-          break
-        case 'ParentInfo_EmTable_deleteData':
-          this[_fn](_obj)
-          break
-        case 'TeacherInfo_EmForm_addForm': // 添加教师
-          this[_fn](_obj)
-          break
         case 'RoleManage_EmDialog_openFn':
           if ('fn_set' in _meta) {
             this[_fn]({
@@ -121,14 +109,41 @@ export const emMixin = {
         case 'RoleManage_EmDialog_closeFn':
           this[_fn]()
           break
+        case 'ParentInfo_EmForm_queryData': // 查询
+          this[_fn](_obj)
+          break
+        case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
+          this[_fn](_obj)
+          break
+        case 'ParentInfo_EmTable_deleteData':
+          this[_fn](_obj)
+          break
+        case 'TeacherInfo_EmForm_addForm': // 添加教师
+          this[_fn](_obj)
+          break
         case 'BaseTable_EmTableGroup_EmTable_queryFn':
           this[_fn]({
             Form: _obj.Form
           })
           break
         case 'BaseTable_EmTableGroup_EmTable_addFn':
+          if (_meta.fn_set && 'dataType' in _meta.fn_set) {
+            switch (_meta.fn_set.dataType) {
+              case 'userAddRoles':
+                val = {
+                  addPo: {
+                    ids: _obj.Form.ids
+                  },
+                  user: {
+                    phone: Number(_obj.Form.phone),
+                    username: _obj.Form.username
+                  }
+                }
+                break
+            }
+          }
           this[_fn]({
-            Form: _obj.Form
+            Form: val
           })
           break
         case 'BaseTable_EmTableGroup_EmTable_updateFn':
