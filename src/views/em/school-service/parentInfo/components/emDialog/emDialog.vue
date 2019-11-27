@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]":visible.sync="dialogFormVisible">
+    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -51,13 +51,25 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
               />
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='selects'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                multiple
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='select'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
-                :multiple="item.meta.multiple"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -107,7 +119,6 @@ export default {
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
-      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
       dialogStatus: ''
     }
   },
@@ -137,7 +148,7 @@ export default {
                 optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 班级id下拉选项赋值
             break
           case 'classId':
             var optionsArrs = []
@@ -149,7 +160,7 @@ export default {
                 optionsArrs.push({ 'label': _val.name, 'value': _val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 学生id下拉选项赋值
             break
         }
       }
@@ -197,7 +208,6 @@ export default {
         }
       })
       this.$nextTick(() => {
-        console.log(this.temp)
         _this.$refs[_this.system_id].clearValidate()
       })
     },
@@ -236,10 +246,11 @@ export default {
           }
           editList(obj).then(() => {
             console.log('修改数据', this.temp)
-            for (const v in this.tableDataEnd) {
-              if (v.id === this.temp.id) {
+            const _this = this
+            for (const v in _this.tableDataEnd) {
+              if (v.id === _this.temp.id) {
                 const index = this.tableDataEnd.indexOf(v)
-                this.tableDataEnd.splice(index, 1, this.temp)
+                this.tableDataEnd.splice(index, 1, _this.temp)
                 break
               }
             }
