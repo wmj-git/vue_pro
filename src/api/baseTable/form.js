@@ -29,3 +29,10 @@ export function optionData(obj) {
     params: obj.params ? obj.params : {}
   })
 }
+
+export function paramsGetApi(obj) {
+  return request({
+    url: obj.url + '/' + obj.params,
+    method: 'get'
+  })
+}

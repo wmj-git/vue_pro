@@ -18,7 +18,8 @@ export const emMixin = {
       system_id: 'none',
       meta: {},
       componentData: JSON.parse(JSON.stringify(this.data)),
-      BASE_API: process.env.VUE_APP_BASE_API
+      BASE_API: process.env.VUE_APP_BASE_API,
+      senderData: null
     }
   },
   created: function() {
@@ -33,6 +34,7 @@ export const emMixin = {
   mounted() {
     if (this.system_id !== 'none') {
       vueBus.$on(this.system_id, obj => {
+        this.senderData = JSON.parse(JSON.stringify(obj))
         this.receiverFn(obj)
       })
     }
@@ -176,15 +178,18 @@ export const emMixin = {
         case 'BaseTable_EmForm_setForm':
 
           if ('set' in _obj) {
-            if (_obj.set.type === 'tableColumnBtn') {
-              val = _obj.data.row
+            if (_obj.set.dataType === 'tableColumnBtn') {
+              val = {
+                set: _obj.set,
+                Form: _obj.data.row
+              }
             }
           } else {
-            val = _obj.Form
+            val = {
+              Form: _obj.Form
+            }
           }
-          this[_fn]({
-            Form: val
-          })
+          this[_fn](val)
           break
         default:
           Message({

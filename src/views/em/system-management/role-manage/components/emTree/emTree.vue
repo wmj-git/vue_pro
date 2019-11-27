@@ -198,12 +198,13 @@ export default {
     },
     append(node, data) {
       const _data = JSON.parse(JSON.stringify(data))
-      const _extData = JSON.parse(JSON.stringify(data.extData))
+      let _extData
       if ('id' in _data) {
         _data.pid = _data.id
         delete _data.id
       }
       if ('extData' in _data) {
+        _extData = JSON.parse(JSON.stringify(data.extData))
         _data.extData = JSON.stringify(_extData)
       }
       add({

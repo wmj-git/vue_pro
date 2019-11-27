@@ -61,8 +61,8 @@
                 :allow-create="item.meta.allowCreate ? item.meta.allowCreate : false"
                 default-first-option
               >
-                <template v-for="(option, _index) in item.meta.options_OBJ.data">
-                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                <template v-for="option in item.meta.options_OBJ.data">
+                  <el-option :key="option.value" :label="option.label" :value="option.value" />
                 </template>
               </el-select>
             </el-form-item>
@@ -104,7 +104,7 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
-import { optionData, optionParams } from '@/api/baseTable/form'
+import { optionData, optionParams, paramsGetApi } from '@/api/baseTable/form'
 
 import JsonEditor from '@/components/JsonEditor'
 
@@ -226,8 +226,12 @@ export default {
       this.children = childrenInitFn(this.children, this.componentData)
 
       this.children.formItem.forEach(async(_item) => {
-        if ('options_type' in _item.meta && _item.meta.options_type === 'params') {
-        } else {
+        if ('options_url' in _item.meta && 'options_params' in _item.meta) {
+          _item.meta.options_OBJ.data = await this.optionParamsFn({
+            meta: _item.meta,
+            params: _item.meta.options_params
+          })
+        } else if ('options_url' in _item.meta) {
           _item.meta.options_OBJ.data = await this.optionFn(_item.meta)
         }
       })
@@ -274,20 +278,23 @@ export default {
         }
       })
     },
-    updateOptionFn(_obj) {
+    updateOptionParamsFn(_obj) {
+      const _set = _obj.set
       this.children.formItem.forEach(async(_item) => {
-        if ('options_type' in _item.meta && _item.meta.options_type === 'params') {
-        } else {
-          _item.meta.options_OBJ.data = await this.optionParamsFn(_obj)
+        if ('options_url' in _item.meta && 'options_params' in _item.meta) {
+          if ('system_ids' in _set && _set.system_ids.indexOf(_item.meta.system_id)) {
+            _item.meta.options_OBJ.data = await this.optionParamsFn({
+              meta: _item.meta,
+              params: _obj.params[_set.paramsKey]
+            })
+          }
         }
       })
-
       this.defaultFn(this.children.formItem)
     },
     async optionParamsFn(_obj) {
       const _meta = _obj.meta
       const _params = _obj.params
-
       async function option() {
         let _options = []
         await optionParams({
@@ -306,6 +313,7 @@ export default {
             })
             _options = _options.concat(_data)
           } else {
+            _options = _meta.options_OBJ.data[0]
             this.$message({
               message: '获取数据错误',
               type: 'error'
@@ -362,28 +370,59 @@ export default {
       return _options
     },
     setForm(_obj) { // 设置表单值
+      const _this = this
+      console.log('setForm', _obj)
       this.onReset()
-      const _data = JSON.parse(JSON.stringify(_obj.Form))
-      for (const _k in _data) {
-        switch (_k) {
-          case 'parentSex':
-            if (typeof _data[_k] === 'string') {
-              _data[_k] = (_data[_k] === '男') ? 1 : 2
-            }
-            break
-        }
+      let _set = {}
+      let _data = {}
+      if ('set' in _obj) {
+        _set = JSON.parse(JSON.stringify(_obj.set))
+        _data = JSON.parse(JSON.stringify(_obj.Form))
+      } else {
+        _data = JSON.parse(JSON.stringify(_obj.Form))
+        this.Form = _data
+        return
       }
-      console.log('setForm', _data)
-      this.Form = _data
+
+      if (!('requestType' in _set)) {
+        return
+      }
+      switch (_set.requestType) {
+        case 'baseGet':
+          break
+        case 'userUpdateRoles':
+          console.log('paramsGet', _set)
+          paramsGetApi({
+            url: _set.requestUrl,
+            params: _data[_set.requestKey]
+          }).then((res) => {
+            if (res && res.statusCode === 200) {
+              const _val = []
+              console.log('paramsGet', res)
+              res.data.forEach((_item) => {
+                _val.push(_item.id)
+              })
+              _this.Form.ids = _val
+            } else {
+              this.$message({
+                message: '获取数据错误',
+                type: 'error'
+              })
+            }
+          })
+          break
+        default:
+          this.Form = _data
+      }
     },
     getForm() {
       return this.Form
     },
-    onSubmit() { // 表单提交
+    onSubmit(_obj) { // 表单提交
       const _this = this
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          console.log('submit!', _this.Form)
+          console.log('submit!', _this.Form, _this.senderData)
         } else {
           console.log('error submit!!')
           return false
