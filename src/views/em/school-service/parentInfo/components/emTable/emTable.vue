@@ -66,8 +66,7 @@ export default {
       pageOne: false,
       total: 0,
       listQuery: {},
-      ids: [],
-      valueKey: '' // 模糊查询关键字
+      ids: []
     }
   },
   watch: {
@@ -109,12 +108,14 @@ export default {
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
-      console.log(this.listQuery)
       this.getList()
     },
     // 查询
-    handleFilter() {
-      this.getList()
+    handleFilter(_obj) {
+      if (_obj.temp) {
+        console.log('接受参数', _obj.temp)
+        this.getList(_obj.temp)
+      }
     },
     // 渲染数据
     getList() {
