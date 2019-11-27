@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(obj) {
   return request({
-    url: '/school/student/queryAllByPage',
+    url: obj.url,
     method: 'get',
     params: obj
   })
@@ -9,7 +9,7 @@ export function fetchList(obj) {
 
 export function editList(obj) {
   return request({
-    url: '/school/student/update',
+    url: obj.url,
     method: 'post',
     data: obj
   })
@@ -17,7 +17,7 @@ export function editList(obj) {
 // 学生管理添加
 export function addList(obj) {
   return request({
-    url: '/school/student/add',
+    url: obj.url,
     method: 'post',
     data: obj
   })
@@ -25,7 +25,7 @@ export function addList(obj) {
 // 学生管理删除
 export function delList(obj) {
   return request({
-    url: '/school/student/deletes',
+    url: obj.url,
     method: 'delete',
     data: obj.params
   })
@@ -33,7 +33,7 @@ export function delList(obj) {
 // 获取班级id
 export function ClassId(obj) {
   return request({
-    url: '/school/class/queryAllByPage',
+    url: obj.url,
     method: 'get',
     params: obj
   })
