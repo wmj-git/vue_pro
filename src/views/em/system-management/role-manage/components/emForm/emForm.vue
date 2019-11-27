@@ -323,7 +323,7 @@ export default {
     },
     dropzoneS(file, el, it) {
       console.log('file', file, el, it)
-      // console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, k)
+      console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, k)
       if (!(file.xhr.status === 200)) {
         return
       }
