@@ -66,8 +66,7 @@ export default {
       pageOne: false,
       total: 0,
       listQuery: {},
-      ids: [],
-      valueKey: '' // 模糊查询关键字
+      ids: []
     }
   },
   watch: {
@@ -109,30 +108,42 @@ export default {
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
-      console.log(this.listQuery)
       this.getList()
     },
     // 查询
-    handleFilter() {
-      this.getList()
+    handleFilter(_obj) {
+      if (_obj.temp) {
+        console.log('接受参数', _obj.temp) // 接受后需要传递给查询接口，不然还是查询不到
+        this.getList(_obj.temp)
+      }
     },
     // 渲染数据
-    getList() {
-      const obj = {
-        url: this.set.queryUrl,
+    getList(params) {
+      const _params = {
         params: {
           pageSize: this.listQuery.limit,
           pageNum: this.listQuery.page
         }
       }
-      if (emMixin.valueKey) {
-        obj.parentName = emMixin.valueKey
-        console.log(21, emMixin.valueKey)
+      try {
+        let _val = {}
+        if (params) {
+          _val = params
+        }
+        for (const k in _val) {
+          _params[k] = _val[k]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        fetchList({
+          url: this.set.queryUrl,
+          params: _params
+        }).then(response => {
+          this.total = response.data.total
+          this.tableDataEnd = response.data.list
+        })
       }
-      fetchList(obj).then(response => {
-        this.total = response.data.total
-        this.tableDataEnd = response.data.list
-      })
     },
     handleCurrentChange(val) {},
     handleSelectionChange(val) {

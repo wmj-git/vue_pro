@@ -1,21 +1,32 @@
 <template>
   <div class="form-container">
+    <el-form
+      :ref="system_id"
+      :class="set.class"
+      :label-position="set.labelPosition"
+      :label-width="set.labelWidth"
+      :status-icon="set.statusIcon"
+      :model="temp"
+      :rules="rules"
+    >
     <template v-for="(item,index) in children.operateItem">
       <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+        <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
         <el-input
           v-if="item.meta.itemType==='input'"
           :ref="item.meta.system_id"
-          v-model="item.meta.valueKey"
+          v-model="temp[item.meta.valueKey]"
           :label="item.meta.title"
           :prop="item.meta.valueKey"
           :disabled="item.meta.disabled"
           :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
           clearable
         />
+        </el-form-item>
+        <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
         <el-input
-          v-else-if="item.meta.itemType==='selectInput'"
           :ref="item.meta.system_id"
-          v-model="item.meta.valueKey"
+          v-model="temp[item.meta.valueKey]"
           :label="item.meta.title"
           :prop="item.meta.valueKey"
           :disabled="item.meta.disabled"
@@ -33,11 +44,12 @@
             </template>
           </el-select>
         </el-input>
+        </el-form-item>
+        <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
         <el-input
-          v-else-if="item.meta.itemType==='textarea'"
           :ref="item.meta.system_id"
           v-model="item.meta.valueKey"
-          :prop="item.meta.valueKey"
+          :prop="temp[item.meta.valueKey]"
           :label="item.meta.title"
           :disabled="item.meta.disabled"
           :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
@@ -45,10 +57,11 @@
           :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
           clearable
         />
+        </el-form-item>
+        <el-form-item  v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
         <el-select
-          v-else-if="item.meta.itemType==='select'"
           :ref="item.meta.system_id"
-          v-model="item.meta.valueKey"
+          v-model="temp[item.meta.valueKey]"
           :label="item.meta.title"
           :prop="item.meta.valueKey"
           :disabled="item.meta.disabled"
@@ -58,16 +71,18 @@
             <el-option :key="_index" :label="option.label" :value="option.value" />
           </template>
         </el-select>
+        </el-form-item>
+        <el-form-item  v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
         <el-switch
-          v-else-if="item.meta.itemType==='switch'"
           :ref="item.meta.system_id"
-          v-model="item.meta.valueKey"
+          v-model="temp[item.meta.valueKey]"
           :disabled="item.meta.disabled"
           :active-color="item.meta.activeColor ? item.meta.activeColor : '#111c95'"
           :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
         />
+        </el-form-item>
+        <el-form-item  v-else-if="item.meta.itemType==='button'" :prop="item.meta.valueKey">
         <el-button
-          v-else-if="item.meta.itemType==='button'"
           :ref="item.meta.system_id"
           :icon="item.meta.icon"
           :class="item.meta.class"
@@ -77,8 +92,10 @@
         >
           {{ item.meta.title }}
         </el-button>
+        </el-form-item>
       </el-col>
     </template>
+    </el-form>
   </div>
 </template>
 <script>
@@ -94,7 +111,8 @@ export default {
       children: {
         operateItem: []
       },
-      inpVal: '' // 模糊查询
+      temp: {},
+      rules: {}
     }
   },
   created() {
@@ -106,6 +124,8 @@ export default {
     fn(_fn, _obj) {
       const _controlType = _obj.control_type ? _obj.control_type : ''
       const _controlId = _obj.item.meta.control_id
+      const temp = this.getTemp()
+      console.log('初始传值', temp)
       switch (_controlType) {
         case 'dialog':
           vueBus.$emit(_controlId, {
@@ -117,8 +137,11 @@ export default {
             meta: _obj.item.meta
           })
           break
-        case 'component':
-
+        case 'ParentInfo_tableQuery_handleFilter': // 家长查询关键字
+          vueBus.$emit(_controlId, {
+            meta: _obj.item.meta,
+            temp: temp
+          })
           break
         case 'default':
           this[_fn](_obj.meta)
@@ -133,13 +156,9 @@ export default {
     init: function() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      for (const _v in this.children) {
-        const _meta = this.children[_v][0].meta
-        const type = this.children[_v][0].meta.itemType
-        if (type === 'input') { // 获取第一个输入框的值
-          _meta.valueKey = this.inpVal
-        }
-      }
+    },
+    getTemp() {
+      return this.temp
     }
   }
 }
