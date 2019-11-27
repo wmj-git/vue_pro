@@ -14,8 +14,8 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    // 说明请求的设备方式
-    config.headers['PLATFORM-FROM'] = 1
+    // 说明请求的设备方式PLATFORM
+    config.headers['PLATFORM'] = 1
     if (store.getters.token) {
       // let each request carry token
       config.headers['Authorization'] = getToken()

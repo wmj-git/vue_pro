@@ -247,22 +247,17 @@ export default {
     },
     // 添加一行数据
     addFn(_obj) { // 添加一行数据
-      let _row = this.tableData[0]
-      _row = dataInitFn(_row, _obj.Form)
-      delete _row.id
+      console.log(_obj)
       const _this = this
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
-        params: _row
+        params: _obj.Form
       }).then(res => {
         if (res && res.statusCode === 200) {
           _this.$message({
             message: '恭喜你，添加成功',
             type: 'success'
           })
-          /*  vueBus.$emit(_obj.obj.dialog_id, {
-            'fn': _obj.obj.dialog_fn
-          })*/
           this.createDataFn()
         }
       })

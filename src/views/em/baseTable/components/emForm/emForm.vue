@@ -104,7 +104,7 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
-import { optionData } from '@/api/baseTable/form'
+import { optionData, optionParams } from '@/api/baseTable/form'
 
 import JsonEditor from '@/components/JsonEditor'
 
@@ -226,7 +226,8 @@ export default {
       this.children = childrenInitFn(this.children, this.componentData)
 
       this.children.formItem.forEach(async(_item) => {
-        if ('options_url' in _item.meta) {
+        if ('options_type' in _item.meta && _item.meta.options_type === 'params') {
+        } else {
           _item.meta.options_OBJ.data = await this.optionFn(_item.meta)
         }
       })
@@ -273,6 +274,56 @@ export default {
         }
       })
     },
+    updateOptionFn(_obj) {
+      this.children.formItem.forEach(async(_item) => {
+        if ('options_type' in _item.meta && _item.meta.options_type === 'params') {
+        } else {
+          _item.meta.options_OBJ.data = await this.optionParamsFn(_obj)
+        }
+      })
+
+      this.defaultFn(this.children.formItem)
+    },
+    async optionParamsFn(_obj) {
+      const _meta = _obj.meta
+      const _params = _obj.params
+
+      async function option() {
+        let _options = []
+        await optionParams({
+          url: _meta.options_url,
+          params: _params
+        }).then((res) => {
+          if (res && res.statusCode === 200) {
+            const _keys = _meta.options_OBJ.data[0]
+            const _data = []
+            res.data.forEach((_item) => {
+              const _value = {}
+              for (const _k in _keys) {
+                _value[_k] = _item[_keys[_k]]
+              }
+              _data.push(_value)
+            })
+            _options = _options.concat(_data)
+          } else {
+            this.$message({
+              message: '获取数据错误',
+              type: 'error'
+            })
+          }
+        })
+        return _options
+      }
+
+      let _options = []
+      if (_meta && ('options_url' in _meta) && _meta.options_url) {
+        _options = await option()
+      } else if (_meta && 'options_OBJ' in _meta) {
+        _options = _options.concat(_meta.options_OBJ.data ? _meta.options_OBJ.data : [])
+      }
+      console.log('optionData', _options)
+      return _options
+    },
     async optionFn(_meta) {
       async function option() {
         let _options = []
@@ -312,7 +363,7 @@ export default {
     },
     setForm(_obj) { // 设置表单值
       this.onReset()
-      const _data = _obj.Form
+      const _data = JSON.parse(JSON.stringify(_obj.Form))
       for (const _k in _data) {
         switch (_k) {
           case 'parentSex':
