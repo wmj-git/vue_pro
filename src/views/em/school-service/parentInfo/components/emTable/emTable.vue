@@ -70,30 +70,6 @@ export default {
 
     }
   },
-  /* watch: {
-    tableDataEnd: {
-      handler: function(val, oldVal) {
-        val.forEach((_item) => {
-          for (const _k in _item) {
-            switch (_k) {
-              case 'parentSex':
-                if (typeof _item[_k] === 'number') {
-                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
-                }
-                break
-              case 'studentSex':
-                if (typeof _item[_k] === 'number') {
-                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
-                }
-                break
-            }
-          }
-        })
-        return val
-      },
-      deep: true
-    }
-  },*/
   created() {
     this.init()
     this.getList()
@@ -191,6 +167,7 @@ export default {
         })
       }
     },
+    // 过滤字段
     formatterFn(row, column) {
       let _val = ''
       // console.log('formatter', row, column.property)

@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible" v-if="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -101,6 +101,7 @@ import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
+import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
@@ -175,6 +176,7 @@ export default {
             break
         }
       }
+      this.defaultFn(this.children.formItem)
     },
     fn(_obj) {
       const _fn = _obj.meta.fn
@@ -215,7 +217,9 @@ export default {
       })
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
-        this.$refs[this.system_id].resetFields()
+        this.$nextTick(() => {
+          this.$refs[this.system_id].resetFields()
+        })
       }
     },
     // 修改数据弹框
@@ -232,12 +236,15 @@ export default {
             break
         }
       })
-      this.$nextTick(() => {
-        this.$refs[this.system_id].clearValidate()
-      })
+      try {
+        this.$refs[this.system_id].resetFields()
+      } catch (e) {
+        console.log(e)
+      }
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
+      this.onReset()
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
@@ -292,7 +299,49 @@ export default {
       })
       this.dialogFormVisible = false
     },
-    currentSel() {}
+    currentSel() {
+    },
+    defaultFn(_formItem) {
+      if (!(this.children.formItem && this.children.formItem.length > 0)) {
+        return
+      }
+      // 表单组数据
+      const _rule_data = []
+      _formItem.forEach((_item) => {
+        if ('valueKey' in _item.meta) {
+          _rule_data.push(_item)
+        }
+      })
+      this.rulesFn(_rule_data)
+    },
+    // 表单验证
+    rulesFn(rule_items) {
+      const _temp = {}
+      const _rules = {}
+      const _rule_items = JSON.parse(JSON.stringify(rule_items))
+      _rule_items.forEach(function(_obj) {
+        _obj.meta.validate_OBJ.data.forEach((_item) => {
+          if ('validator' in _item) {
+            _item.validator = validate[_item.validator]
+          }
+        })
+        if (_obj.meta.itemType === 'selectInput') {
+          _obj.meta.options_OBJ.data.forEach((_val) => {
+            _temp[_val.value] = _obj.meta.defaultValue
+            _rules[_val.value] = _obj.meta.validate_OBJ.data
+          })
+        } else {
+          _temp[_obj.meta.valueKey] = _obj.meta.defaultValue
+          _rules[_obj.meta.valueKey] = _obj.meta.validate_OBJ.data
+        }
+      })
+
+      this.temp = _temp
+      this.rules = _rules
+    },
+    onReset() { // 重置
+      this.$refs[this.system_id].resetFields()
+    }
   }
 }
 </script>

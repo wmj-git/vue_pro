@@ -18,6 +18,102 @@ export function isPhone(rule, value, callback) {
     }
   }, 100)
 }
+/**
+ 正整数
+ */
+export function integerP(rule, value, callback) {
+  if (value && !(/^[1-9]\d*$/).test(value)) {
+    callback(new Error('只能填写正整数'))
+  } else {
+    callback()
+  }
+}
+/**
+ 身份证号验证
+ */
+export function idCard(rule, value, callback) {
+  if (value && (!(/\d{17}[\d|x]|\d{15}/).test(value) || (value.length !== 15 && value.length !== 18))) {
+    callback(new Error('身份证号码不符合规范'))
+  } else {
+    callback()
+  }
+}
+/**
+ 英文字符
+ */
+export function enText(rule, value, callback) {
+  // let a = '',
+  //   arr = value.split(" ")
+  // for (let i = 0; i < arr.length; i++) { //删除行内空格
+  //   a += arr[i];
+  // }
+  if (value && !(/^[A-Za-z]+$/).test(value)) {
+    callback(new Error('只能填写英文字符'))
+  } else {
+    callback()
+  }
+}
+
+/**
+ 数字和英文字符
+ */
+export function ChEnText(rule, value, callback) {
+  if (value && !(/^[A-Za-z0-9]+$/).test(value)) {
+    callback(new Error('只能填写数字和英文字符'))
+  } else {
+    callback()
+  }
+}
+
+/**
+ 中文字符
+ */
+export function cnText(rule, value, callback) {
+  // let a = '',
+  //   arr = value.split(" ")
+  // for (let i = 0; i < arr.length; i++) { //删除行内空格
+  //   a += arr[i];
+  // }
+  if (value && (/[^\u4e00-\u9fa5]/).test(value)) {
+    callback(new Error('只能填写中文字符'))
+  } else {
+    callback()
+  }
+}
+
+/**
+ 两位正整数
+ */
+export function validateTwoNum(rule, value, callback) {
+  if (!/^[1-9]{2}$/.test(value)) {
+    callback(new Error('请输入两位正整数！'))
+  } else {
+    callback()
+  }
+}
+/**
+ 经度
+ */
+export function checkLongitude(rule, value, callback) {
+  const longrg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/
+  if (!longrg.test(value)) {
+    callback(new Error('经度整数部分为0-180,小数部分为0到6位!'))
+  } else {
+    callback()
+  }
+}
+
+/**
+ 纬度
+ */
+export function checkLatitude(rule, value, callback) {
+  var latreg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/
+  if (!latreg.test(value)) {
+    callback(new Error('纬度整数部分为0-90,小数部分为0到6位!'))
+  } else {
+    callback()
+  }
+}
 
 /**
  * @param {string} path
@@ -104,5 +200,5 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isPhone
+  isPhone, idCard, integerP
 }
