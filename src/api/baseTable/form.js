@@ -14,14 +14,6 @@ export function update(obj) {
   })
 }
 
-export function optionParams(obj) {
-  return request({
-    url: obj.url,
-    method: 'get',
-    params: obj.params ? obj.params : {}
-  })
-}
-
 export function optionData(obj) {
   return request({
     url: obj.url,

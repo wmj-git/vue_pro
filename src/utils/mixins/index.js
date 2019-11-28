@@ -89,6 +89,18 @@ export const emMixin = {
             data: val
           })
           break
+        case 'RoleManage_EmForm_updateOptionParamsFn':
+
+          if (_meta.fn_set.dataType === 'stringData') {
+            val = _meta.fn_set.requestParams
+            val = _obj.data[val]
+          }
+          this[_fn]({
+            meta: _meta,
+            set: _meta.fn_set,
+            data: val
+          })
+          break
         case 'RoleManage_EmForm_fn':
           this[_fn](_obj.meta.fn_set, _obj.meta)
           break
