@@ -333,14 +333,14 @@ export default {
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
     },
-    dropzoneS(file, el, it) {
-      console.log('file', file, el, it)
-      console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, k)
+    dropzoneS(file, el, item) {
+      console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, item)
       if (!(file.xhr.status === 200)) {
         return
       }
       const _response = JSON.parse(file.xhr.response)
       const _imgUrl = _response.data[0].networkPath
+      // this.Form[item.valueKey] = _imgUrl
       const val = this.Form
       if ('extData' in this.Form && 'imgUrl' in this.Form) {
         this.Form.imgUrl = _imgUrl

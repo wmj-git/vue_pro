@@ -76,6 +76,15 @@
                 </template>
               </el-select>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              {{ temp[item.meta.valueKey] ? temp[item.meta.valueKey] : "" }}
+              <dropzone
+                :id="item.meta.system_id"
+                :url="BASE_API+item.meta.url"
+                :item="item"
+                @dropzone-removedFile="dropzoneR"
+                @dropzone-success="dropzoneS" />
+            </el-form-item>
           </el-col>
         </template>
       </el-form>
@@ -91,9 +100,11 @@ import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
+import Dropzone from '@/components/Dropzone'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
+  components: { Dropzone },
   data() {
     return {
       id: '',
@@ -174,6 +185,21 @@ export default {
           break
       }
     },
+    // 上传图片
+    dropzoneS(file, el, item) {
+      if (!(file.xhr.status === 200)) {
+        return
+      }
+      const _response = JSON.parse(file.xhr.response)
+      const _imgUrl = _response.data[0].networkPath
+      this.temp[item.meta.valueKey] = _imgUrl // 后台获取到的url地址赋值给表单
+      this.$message({ message: '图片上传成功', type: 'success' })
+    },
+    // 移除图片
+    dropzoneR(file) {
+      console.log(file)
+      this.$message({ message: 'Delete success', type: 'success' })
+    },
     // 添加数据显示
     add() {
       this.dialogStatus = 'create'
@@ -194,7 +220,6 @@ export default {
     },
     // 修改数据弹框
     edit() {
-      const _this = this
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.children.formItem.forEach((val) => {
@@ -208,7 +233,7 @@ export default {
         }
       })
       this.$nextTick(() => {
-        _this.$refs[_this.system_id].clearValidate()
+        this.$refs[this.system_id].clearValidate()
       })
     },
     changeDialogHidden() {

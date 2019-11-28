@@ -2,6 +2,7 @@
   <div class="school-container">
     <el-table
       :data="tableDataEnd "
+      border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
     >
@@ -67,9 +68,10 @@ export default {
       total: 0,
       listQuery: {},
       ids: []
+
     }
   },
-  watch: {
+  /* watch: {
     tableDataEnd: {
       handler: function(val, oldVal) {
         val.forEach((_item) => {
@@ -92,7 +94,7 @@ export default {
       },
       deep: true
     }
-  },
+  },*/
   created() {
     this.init()
     this.getList()
