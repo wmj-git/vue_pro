@@ -149,6 +149,9 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _Form = this.getForm()
+
+      let _val = {}
+      let _row = {}
       switch (_controlType) {
         case 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_addFn':
           this.$refs[this.system_id].validate((valid) => {
@@ -182,10 +185,14 @@ export default {
             data: _Form
           })
           break
-        case 'BaseTable_EmForm_onSubmit':
+        case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
+          _val = Object.assign({}, _obj.meta.fn_set.requestParams)
+          _row = this.senderData.data.row
+          Object.assign(_Form, _row)
+          _val = dataInitFn(_val, _Form)
           this[_fn]({
             meta: _obj.meta,
-            data: _data
+            data: _val
           })
           break
         case 'default':
@@ -400,7 +407,7 @@ export default {
           console.log('paramsGet', _set)
           paramsGetApi({
             url: _set.requestUrl,
-            params: _data[_set.requestKey]
+            params: _data[_set.requestParams]
           }).then((res) => {
             if (res && res.statusCode === 200) {
               const _val = []
@@ -425,21 +432,28 @@ export default {
       return this.Form
     },
     onSubmit(_obj) { // 表单提交
-      const _this = this
+      // 属性值
       const _meta = _obj.meta
+      const _params = _obj.data
       const _set = _meta.fn_set
-      const _data = _obj.data
+      const _url = _set.requestUrl
+
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          console.log('submit!', _this.Form, _this.senderData)
           postApi({
-            url: _set.requestUrl,
-            params: _data
+            url: _url,
+            params: _params
           }).then((res) => {
             console.log('submit!', res)
+            if (res && res.statusCode === 200) {
+              this.$message({
+                message: '恭喜你，添加成功',
+                type: 'success'
+              })
+            }
           })
         } else {
-          // console.log('error submit!!')
+          console.log('error submit!!')
           return false
         }
       })

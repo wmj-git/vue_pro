@@ -33,6 +33,7 @@
               :label="column.label"
               :width="column.width"
               :show-overflow-tooltip="true"
+              :formatter="formatterFn"
             />
           </template>
           <el-table-column fixed="right" label="操作">
@@ -105,18 +106,6 @@ export default {
   watch: {
     tableData: {
       handler: function(val, oldVal) {
-        val.forEach((_item) => {
-          for (const _k in _item) {
-            switch (_k) {
-              case 'parentSex':
-                if (typeof _item[_k] === 'number') {
-                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
-                }
-                break
-            }
-          }
-        })
-        return val
       },
       deep: true
     }
@@ -323,8 +312,17 @@ export default {
         })
       }
     },
-    // 控制对话框
-    addDialog(_obj) {
+    formatterFn(row, column) {
+      let _val = ''
+      // console.log('formatter', row, column.property)
+      switch (column.property) {
+        case 'dataStatus':
+          _val = row[column.property] === 1 ? '启用' : '禁用'
+          break
+        default:
+          _val = row[column.property]
+      }
+      return _val
     }
   }
 }

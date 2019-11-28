@@ -202,6 +202,8 @@ export const emMixin = {
             duration: 5 * 1000
           })
       }
+    },
+    thenFn() {
     }
   }
 }
