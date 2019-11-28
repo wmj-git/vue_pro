@@ -5,13 +5,18 @@
 /**
  判断为手机号码
  */
-export function isPhone(str) {
-  const _r = /^[1][3,4,5,7,8][0-9]{9}$/
-  if (!_r.test(str)) {
-    return false
-  } else {
-    return true
+export function isPhone(rule, value, callback) {
+  console.log('isPhone', rule, value)
+  if (!value) {
+    return callback(new Error('不能为空'))
   }
+  setTimeout(() => {
+    if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
+      callback()
+    } else {
+      callback(new Error('请输入正确的手机号'))
+    }
+  }, 100)
 }
 
 /**
@@ -96,4 +101,8 @@ export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]'
   }
   return Array.isArray(arg)
+}
+
+export const validate = {
+  isPhone
 }

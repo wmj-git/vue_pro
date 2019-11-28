@@ -2,5 +2,9 @@
   .el-dialog__body{
     overflow: auto ;
   }
+  // 上传按钮
+  .dropzone .dz-message{
+    margin: unset;
+  }
 }
 

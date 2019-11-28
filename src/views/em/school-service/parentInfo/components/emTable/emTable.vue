@@ -18,10 +18,9 @@
         v-for="info in meta.tableHeader"
         :key="info.key"
         :label="info.label"
+        :prop="info.key"
+        :formatter="formatterFn"
       >
-        <template slot-scope="scope">
-          <span>{{ scope.row[info.key] }}</span>
-        </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
@@ -191,6 +190,21 @@ export default {
           type: 'warning'
         })
       }
+    },
+    formatterFn(row, column) {
+      let _val = ''
+      // console.log('formatter', row, column.property)
+      switch (column.property) {
+        case 'parentSex':
+          _val = row[column.property] === 2 ? '女' : '男'
+          break
+        case 'studentSex':
+          _val = row[column.property] === 2 ? '女' : '男'
+          break
+        default:
+          _val = row[column.property]
+      }
+      return _val
     }
   }
 }

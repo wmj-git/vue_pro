@@ -77,28 +77,16 @@ export default {
   name: 'Login',
   components: {},
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!isPhone(value)) {
-        callback(new Error('请输入正确的手机号'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不少于6个字符'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
         username: '',
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [
+          { required: true, trigger: 'blur', validator: isPhone }
+        ],
+        password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
       passwordType: 'password',
       capsTooltip: false,
