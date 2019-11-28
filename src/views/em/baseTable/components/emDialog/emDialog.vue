@@ -30,15 +30,13 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { dataInitFn, childrenInitFn, FilterTree } from '@/utils/tool'
 import emButtonGroup from '../emButtonGroup/emButtonGroup'
 import emForm from '../emForm/emForm'
-import emTransfer from '../emTransfer/emTransfer'
 
 export default {
   name: 'EmDialog',
   directives: { elDragDialog },
   components: {
     emButtonGroup,
-    emForm,
-    emTransfer
+    emForm
   },
   mixins: [emMixin],
   data() {

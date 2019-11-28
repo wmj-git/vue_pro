@@ -1,7 +1,7 @@
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-import { FilterTree } from '@/utils/tool'
+import { FilterTree, TimeFn } from '@/utils/tool'
 
 // 定义一个混入对象
 export const emMixin = {
@@ -203,7 +203,54 @@ export const emMixin = {
           })
       }
     },
-    thenFn() {
+    controlGroupFn(_obj, _data) {
+      if ('controlGroup' in _obj.meta) {
+        _obj.meta.controlGroup.forEach((_item, _index) => {
+          switch (_item.control_type) {
+            case 'TimeFn':
+              new TimeFn(this.system_id + '_' + _index + '_t1', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  set: _item.fn_set,
+                  data: _data
+                })
+              }, () => {
+                return false
+              }, 200).run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                set: _item.fn_set,
+                data: _data
+              })
+          }
+        })
+      }
+    },
+    callbackFn(_obj, _data) {
+      console.log('callback', _obj, _data)
+      if ('callback' in _obj.meta) {
+        _obj.meta.callback.forEach((_item, _index) => {
+          switch (_item.control_type) {
+            case 'TimeFn':
+              new TimeFn(this.system_id + '_' + _index + '_t2', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  data: _data
+                })
+              }, () => {
+                return false
+              }, 200).run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                data: _data
+              })
+          }
+        })
+      }
     }
   }
 }

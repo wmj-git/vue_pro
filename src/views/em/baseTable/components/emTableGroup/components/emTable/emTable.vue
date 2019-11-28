@@ -268,7 +268,8 @@ export default {
             /* vueBus.$emit(_obj.obj.dialog_id, {
               'fn': _obj.obj.dialog_fn
             })*/
-            this.createDataFn()
+            // this.createDataFn()
+            this.callbackFn(this.senderData, {})
           }
         }
       })

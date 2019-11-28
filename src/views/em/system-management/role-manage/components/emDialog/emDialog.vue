@@ -30,13 +30,15 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { dataInitFn, childrenInitFn, FilterTree } from '@/utils/tool'
 import emButtonGroup from '../emButtonGroup/emButtonGroup'
 import emTree from '../emTree/emTree'
+import emForm from '../emForm/emForm'
 
 export default {
   name: 'EmDialog',
   directives: { elDragDialog },
   components: {
     emButtonGroup,
-    emTree
+    emTree,
+    emForm
   },
   mixins: [emMixin],
   data() {
@@ -84,8 +86,6 @@ export default {
         value: _val
       })
       const _data = Tree.getData()
-      // alert(_data.length)
-      console.log('childrenFn', _data)
       if (_data.length > 0) {
         return _data[0]
       }

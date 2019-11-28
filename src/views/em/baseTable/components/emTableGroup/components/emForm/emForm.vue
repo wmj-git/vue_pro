@@ -69,14 +69,6 @@
               :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
             />
           </el-form-item>
-          <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
-            <div class="json-item">
-              <json-editor
-                :ref="item.meta.system_id"
-                v-model="Form[item.meta.valueKey]"
-              />
-            </div>
-          </el-form-item>
           <el-button
             v-else-if="item.meta.itemType==='button'"
             :ref="item.meta.system_id"
@@ -97,13 +89,11 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
-
-import JsonEditor from '@/components/JsonEditor'
+import { validate } from '@/utils/validate'
 
 export default {
   name: 'EmForm',
   components: {
-    JsonEditor
   },
   mixins: [emMixin],
   data() {
@@ -121,10 +111,7 @@ export default {
       }
     }
   },
-  watch: {
-    Form(val) {
-    }
-  },
+  watch: {},
   created() {
     this.init()
   },
@@ -230,6 +217,11 @@ export default {
       const _rules = {}
       const _rule_items = JSON.parse(JSON.stringify(rule_items))
       _rule_items.forEach(function(_obj) {
+        _obj.meta.validate_OBJ.data.forEach((_item) => {
+          if ('validator' in _item) {
+            _item.validator = validate[_item.validator]
+          }
+        })
         if (_obj.meta.itemType === 'selectInput') {
           _obj.meta.options_OBJ.data.forEach((_val) => {
             _Form[_val.value] = _obj.meta.defaultValue

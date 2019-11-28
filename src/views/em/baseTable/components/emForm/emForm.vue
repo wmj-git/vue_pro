@@ -103,7 +103,7 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
-import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { optionData, optionParams, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
@@ -203,34 +203,6 @@ export default {
             message: '(control_type)参数无效',
             type: 'error'
           })
-      }
-    },
-    controlGroupFn(_obj) {
-      const _this = this
-      let tm1 = null
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              tm1 = new TimeFn('t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _this.getForm()
-                })
-              }, () => {
-                return false
-              }, 200)
-              tm1.run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _this.getForm()
-              })
-          }
-        })
       }
     },
     init() {

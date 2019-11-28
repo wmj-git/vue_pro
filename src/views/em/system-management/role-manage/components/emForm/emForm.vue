@@ -85,7 +85,8 @@
                 :url="BASE_API+item.meta.url"
                 :item="item"
                 @dropzone-removedFile="dropzoneR"
-                @dropzone-success="dropzoneS" />
+                @dropzone-success="dropzoneS"
+              />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
@@ -96,16 +97,12 @@
               </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <el-select
+              <el-transfer
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
-                :disabled="item.meta.disabled"
-                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
-              >
-                <template v-for="(option, _index) in item.meta.options_OBJ.data">
-                  <el-option :key="_index" :label="option.label" :value="option.value" />
-                </template>
-              </el-select>
+                :titles="item.meta.titles"
+                :data="item.meta.options_OBJ.data"
+              />
             </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
@@ -150,7 +147,7 @@ export default {
       Form: {}, // 表单组值对象
       rules: {}, // 验证数据
       children: {
-        formItem: []
+        formItem: [] // 子组件的system_type值
       }
     }
   },
@@ -219,11 +216,16 @@ export default {
                 meta: _obj.meta,
                 data: _Form
               })
-              this.controlGroupFn(_obj)
+              this.controlGroupFn(_obj, _Form)
             } else {
               console.log('error submit!!')
               return false
             }
+          })
+          break
+        case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_closeFn':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta
           })
           break
         case 'default':
@@ -236,38 +238,21 @@ export default {
           })
       }
     },
-    controlGroupFn(_obj) {
-      const _this = this
-      let tm1 = null
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              tm1 = new TimeFn('t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _this.getForm()
-                })
-              }, () => {
-                return false
-              }, 200)
-              tm1.run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _this.getForm()
-              })
-          }
-        })
-      }
-    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       // 获取行按钮数据
       this.children = childrenInitFn(this.children, this.componentData)
+
+      this.children.formItem.forEach(async(_item) => {
+        if ('options_url' in _item.meta && 'options_params' in _item.meta) {
+          _item.meta.options_OBJ.data = await this.optionParamsFn({
+            meta: _item.meta,
+            params: _item.meta.options_params
+          })
+        } else if ('options_url' in _item.meta) {
+          _item.meta.options_OBJ.data = await this.optionFn(_item.meta)
+        }
+      })
       // 处理验证和数据
       this.defaultFn(this.children.formItem)
     },
@@ -289,6 +274,11 @@ export default {
       const _rules = {}
       const _rule_items = JSON.parse(JSON.stringify(rule_items))
       _rule_items.forEach(function(_obj) {
+        _obj.meta.validate_OBJ.data.forEach((_item) => {
+          if ('validator' in _item) {
+            _item.validator = validate[_item.validator]
+          }
+        })
         if (_obj.meta.itemType === 'selectInput') {
           _obj.meta.options_OBJ.data.forEach((_val) => {
             _Form[_val.value] = _obj.meta.defaultValue
