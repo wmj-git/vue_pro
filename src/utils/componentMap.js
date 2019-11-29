@@ -10,6 +10,7 @@ const componentMap = {
   'RoleManage': () => import('@/views/em/system-management/role-manage/role-manage.vue'),
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
   'TeacherInfo': () => import('@/views/em/school-service/teacherInfo/teacherInfo'),
+  'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
   'BaseTable': () => import('@/views/em/baseTable/baseTable')
 }
 

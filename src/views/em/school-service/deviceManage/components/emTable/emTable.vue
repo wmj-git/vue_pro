@@ -46,7 +46,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList } from '@/api/schoolService/teacherInfo'
+import { fetchList, delList } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -88,7 +88,7 @@ export default {
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {
-        console.log(11, _obj.temp)// 接受后需要传递给查询接口，不然还是查询不到
+        // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
       }
     },
@@ -129,11 +129,9 @@ export default {
     // 删除选中行
     remove() {
       var _val = this.multipleSelection
-      console.log('val', _val)
       _val.forEach(_val => {
         //  提取出需要传给后台的参数ids
         this.ids.push(_val.id)
-        console.log('ids', _val.id)
       })
       if (this.ids.length >= 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
