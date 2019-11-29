@@ -265,10 +265,6 @@ export default {
               message: '恭喜你，更新成功',
               type: 'success'
             })
-            /* vueBus.$emit(_obj.obj.dialog_id, {
-              'fn': _obj.obj.dialog_fn
-            })*/
-            // this.createDataFn()
             this.callbackFn(this.senderData, {})
           }
         }
