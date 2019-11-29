@@ -97,10 +97,8 @@ export default {
     // 渲染数据
     getList(params) {
       const _params = {
-        params: {
-          pageSize: this.listQuery.limit,
-          pageNum: this.listQuery.page
-        }
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}

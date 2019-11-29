@@ -3,7 +3,7 @@ export function fetchList(obj) {
   return request({
     url: obj.url,
     method: 'get',
-    params: obj
+    params: obj.params
   })
 }
 

@@ -200,5 +200,5 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isPhone, idCard, integerP
+  isPhone, idCard, integerP,
 }
