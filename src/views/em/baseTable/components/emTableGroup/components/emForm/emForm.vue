@@ -111,7 +111,19 @@ export default {
       }
     }
   },
-  watch: {},
+  watch: {
+    Form: {
+      handler: function(val) {
+        for (const _k in val) {
+          if (typeof val[_k] === 'string') {
+            val[_k] = val[_k].trim()
+          }
+        }
+        return val
+      },
+      deep: true
+    }
+  },
   created() {
     this.init()
   },

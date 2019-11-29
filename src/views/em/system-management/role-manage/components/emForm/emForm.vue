@@ -125,7 +125,7 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { optionData, paramsGetApi } from '@/api/baseTable/form'
+import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
@@ -188,6 +188,7 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _Form = this.getForm()
+      let _val = null; let _value
       switch (_controlType) {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
           this.$refs[this.system_id].validate((valid) => {
@@ -225,7 +226,39 @@ export default {
               })
               this.controlGroupFn(_obj, _Form)
             } else {
-              console.log('error submit!!')
+              console.log('验证错误')
+              return false
+            }
+          })
+          break
+        case 'RoleManage_EmForm_btnClick--RoleManage_EmForm_setForm':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              vueBus.$emit(_controlId, {
+                meta: _obj.meta,
+                data: _Form
+              })
+            } else {
+              console.log('验证错误')
+              return false
+            }
+          })
+          break
+        case 'RoleManage_EmForm_btnClick-onSubmit':
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              if (_obj.meta.fn_set.dataType === 'objectData') {
+                _val = Object.assign({}, _obj.meta.fn_set.requestParams)
+                _value = JSON.parse(JSON.stringify(this.senderData.data))
+                Object.assign(_value, _Form)
+                _val = dataInitFn(_val, _value)
+              }
+              this[_fn]({
+                meta: _obj.meta,
+                data: _val
+              })
+            } else {
+              console.log('验证错误')
               return false
             }
           })
@@ -328,7 +361,7 @@ export default {
         params: _params
       }).then((res) => {
         if (res && res.statusCode === 200) {
-          const _keys = _set.requestKeys
+          const _keys = _set.successKeys
           const _data = []
           res.data.forEach((_item) => {
             const _value = {}
@@ -356,7 +389,7 @@ export default {
           // params: _params
         }).then((res) => {
           if (res && res.statusCode === 200) {
-            const _keys = _meta.options_OBJ.data[0]
+            const _keys = _meta.successKeys
             const _data = []
             res.data.forEach((_item) => {
               const _value = {}
@@ -386,18 +419,89 @@ export default {
       return _options
     },
     setForm(_obj) { // 设置表单值
-      const _data = _obj.data
+      const _this = this
+      console.log('setForm', _obj)
       this.onReset()
-      this.Form = dataInitFn(this.Form, _data)
+      let _set = {}
+      let _data = {}
+      if ('set' in _obj) {
+        _set = JSON.parse(JSON.stringify(_obj.set))
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      } else {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+        this.Form = _data
+        return
+      }
+
+      if (!('requestType' in _set)) {
+        return
+      }
+
+      const _url = _set.requestUrl; let _params
+      const _value = JSON.parse(JSON.stringify(this.senderData.data))
+      if (_set.dataType === 'objectData') {
+        _params = Object.assign({}, _set.requestParams)
+        _params = dataInitFn(_params, _value)
+      } else if (_set.dataType === 'stringData') {
+        _params = _value[_set.requestParams]
+      }
+
+      switch (_set.requestType) {
+        case 'baseGet':
+          break
+        case 'paramsGetApi':
+          paramsGetApi({
+            url: _url,
+            params: _params
+          }).then((res) => {
+            if (res && res.statusCode === 200) {
+              const _val = []
+              console.log('paramsGet', res, _this.Form)
+              res.data.forEach((_item) => {
+                _val.push(_item[_set.successKeys.valueKey])
+              })
+              _set.successKeys.objKeys.forEach((_key) => {
+                _this.Form[_key] = _val
+              })
+            } else {
+              this.$message({
+                message: '获取数据错误',
+                type: 'error'
+              })
+            }
+          })
+          break
+        default:
+          this.Form = _data
+      }
     },
     getForm() {
       return this.Form
     },
-    onSubmit() { // 表单提交
-      const _this = this
+    onSubmit(_obj) { // 表单提交
+      // 属性值
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          console.log('submit!', _this.Form)
+          postApi({
+            url: _url,
+            method: _set.requestMethod ? _set.requestMethod : null,
+            params: _params
+          }).then((res) => {
+            console.log('submit!', res)
+            if (res && res.statusCode === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.callbackFn(this.senderData, res.data)
+            }
+          })
         } else {
           console.log('error submit!!')
           return false

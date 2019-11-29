@@ -32,7 +32,7 @@ export function paramsGetApi(obj) {
 export function postApi(obj) {
   return request({
     url: obj.url,
-    method: 'post',
+    method: obj.method ? obj.method : 'post',
     data: obj.params
   })
 }

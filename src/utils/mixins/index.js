@@ -52,7 +52,7 @@ export const emMixin = {
       const _fn = _obj.meta.fn
       const _fn_type = _obj.meta.fn_type
       const _meta = _obj.meta
-      let val
+      let val, _value
       switch (_fn_type) {
         case 'default':
           this[_fn](_meta)
@@ -67,17 +67,17 @@ export const emMixin = {
           this[_fn](_obj.id)
           break
         case 'RoleManage_EmForm_setForm':
-          val = _obj.data
-          for (const _k in val) {
-            let _extData = val[_k]
+          _value = _obj.data
+          for (const _k in _value) {
+            let _extData = _value[_k]
             if (typeof (_extData) === 'string' && _k === 'extData') {
               _extData = _extData.replace(/\\n/g, '')// 去掉换行
               _extData = _extData.replace(/\s*/g, '')// 去掉空格
               if (_extData.substr(0, 1) === '{' && _extData.substr(-1) === '}') {
-                val[_k] = JSON.parse(_extData)
+                _value[_k] = JSON.parse(_extData)
                 try {
-                  if ('system_id' in val.extData.meta) {
-                    val.extData.meta.system_id = 'system_id_' + val.id
+                  if ('system_id' in _value.extData.meta) {
+                    _value.extData.meta.system_id = 'system_id_' + _value.id
                   }
                 } catch (err) {
                   console.log(err)
@@ -85,9 +85,18 @@ export const emMixin = {
               }
             }
           }
-          this[_fn]({
-            data: val
-          })
+          if ('set' in _obj) {
+            val = {
+              meta: _meta,
+              set: _meta.fn_set,
+              data: _value
+            }
+          } else {
+            val = {
+              data: _value
+            }
+          }
+          this[_fn](val)
           break
         case 'RoleManage_EmForm_updateOptionParamsFn':
 

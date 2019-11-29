@@ -51,11 +51,11 @@ export default {
     },
     maxFilesize: {
       type: Number,
-      default: 2
+      default: 1
     },
     maxFiles: {
       type: Number,
-      default: 3
+      default: 1
     },
     autoProcessQueue: {
       type: Boolean,
@@ -94,6 +94,39 @@ export default {
   mounted() {
     const element = document.getElementById(this.id)
     const vm = this
+    /*  var myDropzone = new Dropzone("#dropz", {
+      url: "/upload", // 文件提交地址
+      method: "post",  // 也可用put
+      paramName: "file", // 默认为file
+      maxFiles: 1,// 一次性上传的文件数量上限
+      maxFilesize: 2, // 文件大小，单位：MB
+      acceptedFiles: ".jpg,.gif,.png,.jpeg", // 上传的类型
+      addRemoveLinks: true, // 默认 false。如果设为 true，则会给文件添加一个删除链接
+      parallelUploads: 1,// 一次上传的文件数量
+      //previewsContainer:"#preview", // 上传图片的预览窗口
+      dictDefaultMessage: '拖动文件至此或者点击上传',
+      dictMaxFilesExceeded: "您最多只能上传1个文件！",
+      dictResponseError: '文件上传失败!',
+      dictInvalidFileType: "文件类型只能是*.jpg,*.gif,*.png,*.jpeg。",
+      dictFallbackMessage: "浏览器不受支持",
+      dictFileTooBig: "文件过大上传文件最大支持.",
+      dictRemoveLinks: "删除",
+      dictCancelUpload: "取消",
+      init: function () {
+        this.on("addedfile", function (file) {
+          // 上传文件时触发的事件
+        });
+        this.on("success", function (file, data) {
+          // 上传成功触发的事件
+        });
+        this.on("error", function (file, data) {
+          // 上传失败触发的事件
+        });
+        this.on("removedfile", function (file) {
+          // 删除文件时触发的方法
+        });
+      }
+    })*/
     this.dropzone = new Dropzone(element, {
       clickable: this.clickable,
       thumbnailWidth: this.thumbnailWidth,
@@ -102,12 +135,16 @@ export default {
       maxFilesize: this.maxFilesize,
       dictRemoveFile: 'Remove',
       addRemoveLinks: this.showRemoveLink,
+      uploadMultiple: false,
       acceptedFiles: this.acceptedFiles,
       autoProcessQueue: this.autoProcessQueue,
       dictDefaultMessage: '<i style="margin-top: 3em;display: inline-block" class="material-icons">' + this.defaultMsg + '</i><br>Drop files here to upload',
       dictMaxFilesExceeded: '只能一个图',
       previewTemplate: '<div class="dz-preview dz-file-preview">  <div class="dz-image" style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" ><img style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" data-dz-thumbnail /></div>  <div class="dz-details"><div class="dz-size"><span data-dz-size></span></div> <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>  <div class="dz-error-message"><span data-dz-errormessage></span></div>  <div class="dz-success-mark"> <i class="material-icons">done</i> </div>  <div class="dz-error-mark"><i class="material-icons">error</i></div></div>',
       init() {
+        this.on('addedfile', function(file) {
+          // 上传文件时触发的事件
+        })
         const val = vm.defaultImg
         if (!val) return
         if (Array.isArray(val)) {

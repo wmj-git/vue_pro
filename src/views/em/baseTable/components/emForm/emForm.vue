@@ -131,7 +131,13 @@ export default {
   },
   watch: {
     Form: {
-      handler: function(val, oldVal) {
+      handler: function(val) {
+        for (const _k in val) {
+          if (typeof val[_k] === 'string') {
+            val[_k] = val[_k].trim()
+          }
+        }
+        return val
       },
       deep: true
     }
@@ -186,13 +192,20 @@ export default {
           })
           break
         case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
-          _val = Object.assign({}, _obj.meta.fn_set.requestParams)
-          _row = this.senderData.data.row
-          Object.assign(_Form, _row)
-          _val = dataInitFn(_val, _Form)
-          this[_fn]({
-            meta: _obj.meta,
-            data: _val
+          this.$refs[this.system_id].validate((valid) => {
+            if (valid) {
+              _val = Object.assign({}, _obj.meta.fn_set.requestParams)
+              _row = this.senderData.data.row
+              Object.assign(_Form, _row)
+              _val = dataInitFn(_val, _Form)
+              this[_fn]({
+                meta: _obj.meta,
+                data: _val
+              })
+            } else {
+              console.log('验证错误')
+              return false
+            }
           })
           break
         case 'default':
@@ -271,7 +284,7 @@ export default {
           // params: _params
         }).then((res) => {
           if (res && res.statusCode === 200) {
-            const _keys = _meta.options_OBJ.data[0]
+            const _keys = _meta.successKeys
             const _data = []
             res.data.forEach((_item) => {
               const _value = {}
@@ -352,6 +365,7 @@ export default {
     onSubmit(_obj) { // 表单提交
       // 属性值
       const _meta = _obj.meta
+      // 请求的数据
       const _params = _obj.data
       const _set = _meta.fn_set
       const _url = _set.requestUrl
