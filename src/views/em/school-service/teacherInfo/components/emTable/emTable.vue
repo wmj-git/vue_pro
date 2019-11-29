@@ -96,11 +96,10 @@ export default {
     },
     // 渲染数据
     getList(params) {
+      console.log(1, params)
       const _params = {
-        params: {
-          pageSize: this.listQuery.limit,
-          pageNum: this.listQuery.page
-        }
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}
@@ -110,6 +109,7 @@ export default {
         for (const k in _val) {
           _params[k] = _val[k]
         }
+        console.log(1, _params)
       } catch (e) {
         console.log(e)
       } finally {

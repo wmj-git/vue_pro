@@ -137,7 +137,7 @@ export default {
             meta: _obj.item.meta
           })
           break
-        case 'TeacherInfo_tableQuery_handleFilter': // 家长查询关键字
+        case 'TeacherInfo_tableQuery_handleFilter': // 教师查询关键字
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp
