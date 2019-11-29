@@ -239,7 +239,6 @@ export default {
       try {
         this.$refs[this.system_id].resetFields()
       } catch (e) {
-        console.log(e)
       }
     },
     changeDialogHidden() {

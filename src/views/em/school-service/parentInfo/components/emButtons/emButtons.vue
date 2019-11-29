@@ -125,7 +125,6 @@ export default {
       const _controlType = _obj.control_type ? _obj.control_type : ''
       const _controlId = _obj.item.meta.control_id
       const temp = this.getTemp()
-      console.log('初始传值', temp)
       switch (_controlType) {
         case 'dialog':
           vueBus.$emit(_controlId, {

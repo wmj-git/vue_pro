@@ -1,9 +1,9 @@
 <template>
   <div class="school-container">
-    <el-input v-model="inputFilter" placeholder="请输入教师姓名" clearable />
     <el-table
       :data="tableDataEnd "
-      style="width: 100%"
+      border
+      style="width: 100%;"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -18,10 +18,9 @@
         v-for="info in meta.tableHeader"
         :key="info.key"
         :label="info.label"
+        :prop="info.key"
+        :formatter="formatterFn"
       >
-        <template slot-scope="scope">
-          <span>{{ scope.row[info.key] }}</span>
-        </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
@@ -58,45 +57,25 @@ export default {
         queryUrl: '',
         appendUrl: '',
         removeUrl: '',
-        updateUrl: ''
+        updateUrl: '',
+        vueBusName: ''
       },
       tableHeader: [],
       tableDataEnd: [],
+      multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
       listQuery: {},
-      ids: [],
-      inputFilter: '' // 模糊查询关键字
+      ids: []
+
     }
   },
-  /* watch: {
-    tableDataEnd: {
-      handler: function(val, oldVal) {
-        console.log('数据', val)
-        val.forEach((_item) => {
-          for (const _k in _item) {
-            switch (_k) {
-              case 'sex':
-                console.log(_k)
-                if (typeof _item[_k] === 'number') {
-                  _item[_k] = (_item[_k] === 2) ? '女' : '男'
-                }
-                break
-              case 'tncumbency':
-                if (typeof _item[_k] === 'number') {
-                  _item[_k] = (_item[_k] === 1) ? '在职' : (_item[_k] === 0) ? '离职' : '开除'
-                }
-            }
-          }
-        })
-        return val
-      },
-      deep: true
-    }
-  },*/
   created() {
     this.init()
     this.getList()
+    vueBus.$on('query', () => {
+      this.getList()
+    })
   },
   methods: {
     init() {
@@ -106,42 +85,55 @@ export default {
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
-      console.log(this.listQuery)
       this.getList()
     },
     // 查询
-    handleFilter() {
-      this.getList()
+    handleFilter(_obj) {
+      if (_obj.temp) {
+        console.log(11, _obj.temp)// 接受后需要传递给查询接口，不然还是查询不到
+        this.getList(_obj.temp)
+      }
     },
     // 渲染数据
-    getList() {
-      const obj = {
-        url: this.set.queryUrl,
+    getList(params) {
+      const _params = {
         params: {
           pageSize: this.listQuery.limit,
           pageNum: this.listQuery.page
         }
       }
-      if (this.inputFilter) {
-        obj.parentName = this.inputFilter
+      try {
+        let _val = {}
+        if (params) {
+          _val = params
+        }
+        for (const k in _val) {
+          _params[k] = _val[k]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        fetchList({
+          url: this.set.queryUrl,
+          params: _params
+        }).then(response => {
+          this.total = response.data.total
+          this.tableDataEnd = response.data.list
+        })
       }
-      fetchList(obj).then(response => {
-        this.total = response.data.total
-        this.tableDataEnd = response.data.list
-      })
     },
-    handleCurrentChange(val) {},
+    handleCurrentChange(val) {
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
     handleEdit(row) {
-      vueBus.$emit('update')
-      this.temp = Object.assign({}, row)
-      console.log('选择', this.temp)
+      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
     },
     // 删除选中行
     remove() {
       var _val = this.multipleSelection
+      console.log('val', _val)
       _val.forEach(_val => {
         //  提取出需要传给后台的参数ids
         this.ids.push(_val.id)
@@ -175,6 +167,22 @@ export default {
           type: 'warning'
         })
       }
+    },
+    // 过滤字段
+    formatterFn(row, column) {
+      let _val = ''
+      // console.log('formatter', row, column.property)
+      switch (column.property) {
+        case 'sex':
+          _val = row[column.property] === 2 ? '女' : '男'
+          break
+        case 'tncumbency':
+          _val = row[column.property] === 1 ? '在职' : _val = row[column.property] === 0 ? '离职' : '开除'
+          break
+        default:
+          _val = row[column.property]
+      }
+      return _val
     }
   }
 }

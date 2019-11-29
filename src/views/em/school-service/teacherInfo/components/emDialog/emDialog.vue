@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -51,13 +51,34 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='selects'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
                 multiple
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='datetime'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-date-picker
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择时间'"
+                format
+              />
+            </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='select'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -78,7 +99,8 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, schoolInfo } from '@/api/schoolService/teacherInfo'
+import { addList, editList, schoolInfo } from '@/api/schoolService/teacherInfo'
+import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
   mixins: [emMixin],
@@ -87,29 +109,34 @@ export default {
       id: '',
       set: {
         appendUrl: '',
+        updateUrl: '',
         selectUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
         labelPosition: '',
-        textMap: {}
+        textMap: {},
+        vueBusName: ''
+      },
+      multiple: {
+        type: Boolean
       },
       children: {
         formItem: []
       },
       temp: {},
       rules: {}, // 验证数据
-      itemFormVisible: true, // 学生id在修改时不显示
       formLabelWidth: '120px',
       dialogFormVisible: false,
-      statusOptions: [{ label: '女', value: 2 }, { label: '男', value: 1 }], // 定义性别
+      itemFormVisible: false,
       dialogStatus: ''
     }
   },
   created() {
     this.init()
-    vueBus.$on('update', () => {
-      this.updateDialogVisible()
+    vueBus.$on(this.set.vueBusName, val => {
+      this.temp = val // 接收修改时的表单值
+      this.edit()
     })
   },
   beforeDestroy() {
@@ -119,22 +146,23 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
-      for (var i = 0; i < this.children.formItem.length; i++) {
+      for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'siId':
+          case 'siOrgCode':
             var optionsArr = []
             var obj = {
               url: this.set.selectUrl
             }
             schoolInfo(obj).then(response => {
               response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.name, 'value': _val.id })
+                optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 班级id下拉选项赋值
             break
         }
       }
+      this.defaultFn(this.children.formItem)
     },
     fn(_obj) {
       const _fn = _obj.meta.fn
@@ -146,16 +174,19 @@ export default {
       }
     },
     // 添加数据显示
-    changeDialogVisible() {
+    add() {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
+      if (this.$refs[this.system_id] !== undefined) {
+        this.$nextTick(() => {
+          this.$refs[this.system_id].resetFields()
+        })
+      }
     },
     // 修改数据弹框
-    updateDialogVisible() {
+    edit() {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.itemFormVisible = false
-      return this.temp
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -163,18 +194,23 @@ export default {
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
+          for (const i in this.temp) { // 寻找时间字段后再转换
+            if (i === 'entryTime') {
+              this.temp[i] = new Date(this.temp[i]).getTime()
+            }
+          }
           const obj = {
             url: this.set.appendUrl,
             params: this.temp
           }
           addList(obj).then((res) => {
-            console.log('we', obj)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
                 type: 'success'
               })
               this.changeDialogHidden()
+              vueBus.$emit('query')
             } else {
               this.$notify.error('添加失败')
             }
@@ -183,9 +219,80 @@ export default {
       })
     },
     updateData() {
+      this.$refs[this.system_id].validate((valid) => {
+        if (valid) {
+          for (const i in this.temp) { // 寻找时间字段后再转换
+            if (i === 'entryTime') {
+              this.temp[i] = new Date(this.temp[i]).getTime()
+            }
+          }
+          const obj = {
+            url: this.set.updateUrl,
+            params: Object.assign({}, this.temp)
+          }
+          editList(obj).then(() => {
+            console.log('修改数据', this.temp)
+            const _this = this
+            for (const v in _this.tableDataEnd) {
+              if (v.id === _this.temp.id) {
+                const index = this.tableDataEnd.indexOf(v)
+                this.tableDataEnd.splice(index, 1, _this.temp)
+                break
+              }
+            }
+            this.changeDialogHidden()
+            vueBus.$emit('query')
+            this.$notify({
+              title: 'Success',
+              message: '修改成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
       this.dialogFormVisible = false
     },
-    currentSel() {}
+    currentSel() {
+    },
+    defaultFn(_formItem) {
+      if (!(this.children.formItem && this.children.formItem.length > 0)) {
+        return
+      }
+      // 表单组数据
+      const _rule_data = []
+      _formItem.forEach((_item) => {
+        if ('valueKey' in _item.meta) {
+          _rule_data.push(_item)
+        }
+      })
+      this.rulesFn(_rule_data)
+    },
+    // 表单验证
+    rulesFn(rule_items) {
+      const _temp = {}
+      const _rules = {}
+      const _rule_items = JSON.parse(JSON.stringify(rule_items))
+      _rule_items.forEach(function(_obj) {
+        _obj.meta.validate_OBJ.data.forEach((_item) => {
+          if ('validator' in _item) {
+            _item.validator = validate[_item.validator]
+          }
+        })
+        if (_obj.meta.itemType === 'selectInput') {
+          _obj.meta.options_OBJ.data.forEach((_val) => {
+            _temp[_val.value] = _obj.meta.defaultValue
+            _rules[_val.value] = _obj.meta.validate_OBJ.data
+          })
+        } else {
+          _temp[_obj.meta.valueKey] = _obj.meta.defaultValue
+          _rules[_obj.meta.valueKey] = _obj.meta.validate_OBJ.data
+        }
+      })
+
+      this.temp = _temp
+      this.rules = _rules
+    }
   }
 }
 </script>

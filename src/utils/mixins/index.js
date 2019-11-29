@@ -117,9 +117,6 @@ export const emMixin = {
         case 'ParentInfo_EmTable_deleteData':
           this[_fn](_obj)
           break
-        case 'TeacherInfo_EmForm_addForm': // 添加教师
-          this[_fn](_obj)
-          break
         case 'RoleManage_EmDialog_openFn':
           if ('fn_set' in _meta) {
             this[_fn]({
