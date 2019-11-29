@@ -13,7 +13,7 @@
               <el-row>
                 <template v-for="(item,index) in children.paneC">
                   <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-                    <component :is="item.meta.componentType" :key="index" :data="item" v-if="isChildUpdate"/>
+                    <component :is="item.meta.componentType" :key="index" :data="item" />
                   </el-col>
                 </template>
               </el-row>
@@ -41,8 +41,7 @@ export default {
       tableTabsValue: '',
       children: {
         paneC: []
-      },
-      isChildUpdate: true
+      }
     }
   },
   created() {
@@ -52,6 +51,13 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+      console.log(2, this.children)
+      for (const i in this.children) {
+        this.children[i].forEach((val) => {
+          // 拿到表格组id并赋值给当前显示的tabs
+          this.tableTabsValue = val.meta.system_id
+        })
+      }
     },
     handleClick(tab) {
       console.log('name', tab.name)
