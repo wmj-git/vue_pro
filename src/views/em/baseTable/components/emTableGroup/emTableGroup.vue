@@ -4,7 +4,7 @@
       <el-row>
         <template v-for="(item,index) in children.tableGroupItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <component :is="item.meta.componentType" :key="index" :data="item" />
+            <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
           </el-col>
         </template>
       </el-row>

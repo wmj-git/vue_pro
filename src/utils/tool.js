@@ -266,3 +266,9 @@ export function childrenInitFn(_children, _data) {
   }
   return { ..._children }
 }
+
+/* const __kkName = { kkk: 1231, eee: 12, kk: 1231 }
+const { [__kkName.key_kk ? __kkName.key_kk : 'kk']: kk } = __kkName
+console.log('tt', {
+  k: kk
+})*/

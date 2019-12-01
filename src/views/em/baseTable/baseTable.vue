@@ -6,7 +6,7 @@
           <el-row v-if="set.paneL">
             <template v-for="(item,index) in children.paneL">
               <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-                <component :is="item.meta.componentType" :key="index" :data="item" />
+                <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
               </el-col>
             </template>
           </el-row>
@@ -17,7 +17,7 @@
           <el-row v-if="set.paneR">
             <template v-for="(item,index) in children.paneR">
               <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-                <component :is="item.meta.componentType" :key="index" :data="item" />
+                <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
               </el-col>
             </template>
           </el-row>
@@ -26,7 +26,7 @@
     </split-pane>
     <!--容器类显示-->
     <template v-for="(item,index) in children.ContainerBox">
-      <component :is="item.meta.componentType" :key="index" :data="item" />
+      <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
     </template>
   </div>
 </template>
@@ -75,7 +75,6 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      console.log('baseTable：', this.$data)
     }
   }
 }

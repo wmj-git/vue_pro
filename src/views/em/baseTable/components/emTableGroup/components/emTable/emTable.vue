@@ -230,8 +230,11 @@ export default {
     },
     // 查询数据
     queryFn(_obj) {
+      console.log('table', _obj)
       if (_obj.Form) {
         this.createDataFn(_obj.Form)
+      } else {
+        this.createDataFn(_obj.data)
       }
     },
     // 添加一行数据

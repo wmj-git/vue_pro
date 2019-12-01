@@ -176,7 +176,6 @@ export default {
   },
   created() {
     this.init()
-    console.log(this.system_id, this.$data)
   },
   mounted() {
   },
@@ -189,6 +188,7 @@ export default {
       const _controlId = _obj.meta.control_id
       const _Form = this.getForm()
       let _val = null; let _value
+
       switch (_controlType) {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
           this.$refs[this.system_id].validate((valid) => {

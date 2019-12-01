@@ -22,6 +22,10 @@ export const emMixin = {
       senderData: null
     }
   },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
+  },
   created: function() {
     if ('meta' in this.componentData) {
       this.meta = { ...this.componentData.meta }
@@ -39,12 +43,47 @@ export const emMixin = {
       })
     }
   },
+  updated() {
+    // console.log('$route', this.$route)
+  },
   beforeDestroy() {
     if (this.system_id !== 'none') {
       vueBus.$off(this.system_id)
     }
   },
   methods: {
+    fetchData() {
+      console.log('$route', this.$route, this.system_id)
+      const _query = this.$route.query
+      if (_query && 'meta' in _query) {
+        const _system_id = _query.meta.control_id
+        if (!(this.system_id === _system_id)) {
+          return
+        }
+        this.senderData = JSON.parse(JSON.stringify(_query))
+        this.fetchFn(_query)
+      }
+    },
+    fetchFn(_query) {
+      const _fn = _query.meta.fn
+      const _fn_type = _query.meta.fn_type
+      switch (_fn_type) {
+        case 'default':
+          if (_fn) {
+            this[_fn](_query)
+          }
+          this.controlGroupFn(_query, _query.data)
+          break
+        case 'RoleManage_EmTree_update':
+          break
+        default:
+          Message({
+            message: '(fn_type)参数无效',
+            type: 'error',
+            duration: 5 * 1000
+          })
+      }
+    },
     receiverFn(_obj) {
       if (!(_obj && 'meta' in _obj)) {
         return
@@ -224,7 +263,17 @@ export const emMixin = {
     controlGroupFn(_obj, _data) {
       if ('controlGroup' in _obj.meta) {
         _obj.meta.controlGroup.forEach((_item, _index) => {
+          let _refs
           switch (_item.control_type) {
+            case 'refs':
+              console.log('$', this.$route, this.system_id)
+              _refs = this.$refs[_item.control_id]
+              _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
+              _refs[0][_item.fn]({
+                meta: _item,
+                data: _data
+              })
+              break
             case 'TimeFn':
               new TimeFn(this.system_id + '_' + _index + '_t1', () => {
                 vueBus.$emit(_item.control_id, {
@@ -234,7 +283,7 @@ export const emMixin = {
                 })
               }, () => {
                 return false
-              }, 200).run()
+              }, 500).run()
               break
             default:
               vueBus.$emit(_item.control_id, {

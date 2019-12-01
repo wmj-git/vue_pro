@@ -139,6 +139,7 @@ export default {
       const _Form = this.getForm()
       switch (_controlType) {
         case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':
+
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
               vueBus.$emit(_controlId, {
@@ -165,6 +166,18 @@ export default {
               return false
             }
           })
+          break
+        case 'routerReplace':
+          if (this.$route.query.data) {
+            this.$router.replace({ path: this.$route.path, query: {
+              meta: null,
+              data: null
+            }})
+          }
+          this.$router.replace({ path: this.$route.path, query: {
+            meta: _obj.meta,
+            data: _Form
+          }})
           break
         case 'default':
           this[_fn](_obj.meta)

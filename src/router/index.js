@@ -10,7 +10,7 @@ import Layout from '@/layout'
 import demo from '@/router/modules/demo/index'
 
 /* 菜单数据 */
-import schoolService from './modules/em/schoolService' // 学校服务
+// import schoolService from './modules/em/schoolService' // 学校服务
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -55,7 +55,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/register',
+    path: '/register', // 注册页面
     component: () => import('@/views/register/index'),
     hidden: true
   },
