@@ -261,12 +261,31 @@ export const emMixin = {
       }
     },
     controlGroupFn(_obj, _data) {
+      const _this = this
       if ('controlGroup' in _obj.meta) {
         _obj.meta.controlGroup.forEach((_item, _index) => {
           let _refs
+          function PromiseFn(_obj, _data, _fn) {
+            new Promise((resolve) => {
+              setTimeout(() => {
+                _refs = _this.$refs[_item.control_id]
+                if (_refs.length > 0) {
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+              }, 500)
+            }).then(val => {
+              if (val) {
+                _fn()
+              } else {
+                PromiseFn(_obj, _data, _fn)
+              }
+            })
+          }
           switch (_item.control_type) {
             case 'refs':
-              console.log('$', this.$route, this.system_id)
+              // console.log('$', this.$route, this.system_id)
               _refs = this.$refs[_item.control_id]
               _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
               _refs[0][_item.fn]({
@@ -284,6 +303,15 @@ export const emMixin = {
               }, () => {
                 return false
               }, 500).run()
+              break
+            case 'Promise':
+              PromiseFn(_obj, _data, function() {
+                _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
+                _refs[0][_item.fn]({
+                  meta: _item,
+                  data: _data
+                })
+              })
               break
             default:
               vueBus.$emit(_item.control_id, {

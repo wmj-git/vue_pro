@@ -6,7 +6,6 @@
  判断为手机号码
  */
 export function isPhone(rule, value, callback) {
-  console.log('isPhone', rule, value)
   if (!value) {
     return callback(new Error('不能为空'))
   }
@@ -200,5 +199,5 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isPhone, idCard, integerP,
+  isPhone, idCard, integerP
 }

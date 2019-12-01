@@ -79,7 +79,7 @@
               </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              {{ Form[item.meta.valueKey] ? Form[item.meta.valueKey] : "" }}
+              {{ Form[item.meta.valueKey] ? Form[item.meta.valueKey] : "none" }}
               <dropzone
                 :id="item.meta.system_id"
                 :url="BASE_API+item.meta.url"
@@ -87,14 +87,6 @@
                 @dropzone-removedFile="dropzoneR"
                 @dropzone-success="dropzoneS"
               />
-            </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <div class="json-item">
-                <json-editor
-                  :ref="item.meta.system_id"
-                  v-model="Form[item.meta.valueKey]"
-                />
-              </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-transfer
@@ -421,7 +413,6 @@ export default {
     setForm(_obj) { // 设置表单值
       const _this = this
       console.log('setForm', _obj)
-      this.onReset()
       let _set = {}
       let _data = {}
       if ('set' in _obj) {
@@ -429,7 +420,7 @@ export default {
         _data = JSON.parse(JSON.stringify(_obj.data))
       } else {
         _data = JSON.parse(JSON.stringify(_obj.data))
-        this.Form = _data
+        Object.assign(this.Form, _data)
         return
       }
 
@@ -450,7 +441,7 @@ export default {
         case 'baseGet':
           break
         case 'paramsGetApi':
-          paramsGetApi({
+          ['paramsGetApi']({
             url: _url,
             params: _params
           }).then((res) => {
@@ -472,7 +463,7 @@ export default {
           })
           break
         default:
-          this.Form = _data
+          Object.assign(this.Form, _data)
       }
     },
     getForm() {
@@ -523,7 +514,6 @@ export default {
       if ('extData' in this.Form && 'imgUrl' in this.Form) {
         this.Form.imgUrl = _imgUrl
       }
-      console.log(typeof val.extData)
       if ('extData' in val && 'imgUrl' in val && typeof val.extData === 'string') {
         val.extData = JSON.parse(val.extData)
         val.extData.imgUrl = _imgUrl

@@ -272,3 +272,19 @@ const { [__kkName.key_kk ? __kkName.key_kk : 'kk']: kk } = __kkName
 console.log('tt', {
   k: kk
 })*/
+
+/*
+异步循环
+function PromiseFN(_fn) {
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true)
+    }, 1500)
+  }).then(val => {
+    _fn()
+    PromiseFN(_fn)
+  })
+}
+PromiseFN(function() {
+  console
+})*/
