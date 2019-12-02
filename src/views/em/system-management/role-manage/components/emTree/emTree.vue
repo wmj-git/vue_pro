@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 import { getResources } from '@/utils/auth'
 import vueBus from '@/utils/vueBus'
 
-import { toTree, dataInitFn } from '@/utils/tool'
+import { toTree, dataInitFn, FilterChildrenFn } from '@/utils/tool'
 import { updateCheckedKeys, getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
 
 export default {
@@ -151,9 +151,6 @@ export default {
       this.defaultProps.label = this.meta.propsLabel
 
       this.treeDataFn()
-      if (this.set.checkbox) {
-        this.setCheckedKeys()
-      }
     },
     filterNode(value, data) {
       if (!value) return true
@@ -286,12 +283,17 @@ export default {
             message: response.message,
             type: 'success'
           })
-          const _Keys = []
-          response.data.forEach(function(_obj) {
-            _Keys.push(_obj.id)
+
+          let _treeVal = []
+          let _keys = []
+          _treeVal = _treeVal.concat(toTree(response.data))
+          const _Children = new FilterChildrenFn({
+            treeData: _treeVal,
+            value: 'id'
           })
-          // console.log('_Keys', _Keys)
-          _this.$refs.tree.setCheckedKeys(_Keys)
+          _keys = _keys.concat(_Children.getData())
+          console.log('getRoutePermission', _keys, _treeVal)
+          _this.$refs.tree.setCheckedKeys(_keys)
         }
       })
     },

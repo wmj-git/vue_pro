@@ -153,6 +153,37 @@ tm2.run();
 tm2.stop();
 */
 
+export class FilterChildrenFn {
+  constructor(_val) {
+    this.treeData = _val.treeData
+    this.value = _val.value
+    this.res = []
+  }
+
+  static has(_value, tmp) {
+    let _has = null
+    if (!('children' in tmp)) {
+      _has = true
+    }
+    return _has
+  }
+
+  filter(_treeData, _value) {
+    _treeData.forEach(_item => {
+      const tmp = { ..._item }
+      if (tmp.children) {
+        this.filter(tmp.children, _value)
+      }
+      if (FilterChildrenFn.has(_value, tmp)) {
+        this.res.push(tmp[_value])
+      }
+    })
+    return this.res
+  }
+  getData() {
+    return this.filter(this.treeData, this.value)
+  }
+}
 // 树形数据提取数据
 export class FilterTree {
   constructor(_val) {
@@ -195,7 +226,6 @@ export class FilterTree {
     })
     return this.res
   }
-
   getData() {
     return this.filter(this.treeData, this.value)
   }
