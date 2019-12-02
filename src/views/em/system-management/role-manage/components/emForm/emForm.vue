@@ -522,7 +522,6 @@ export default {
       this.$message({ message: '图片上传成功', type: 'success' })
     },
     dropzoneR(file) {
-      console.log(file)
       this.$message({ message: 'Delete success', type: 'success' })
     }
   }
