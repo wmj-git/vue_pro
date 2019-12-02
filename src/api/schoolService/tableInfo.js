@@ -18,7 +18,7 @@ export function addList(obj) {
   return request({
     url: obj.url,
     method: 'post',
-    data: obj
+    data: obj.params
   })
 }
 // 设备管理删除
@@ -27,5 +27,20 @@ export function delList(obj) {
     url: obj.url,
     method: 'delete',
     data: obj.params
+  })
+}
+// 获取学校组织编码
+export function schoolInfo(obj) {
+  return request({
+    url: obj.url,
+    method: 'get'
+  })
+}
+// 获取学校组织编码
+export function deviceType(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
   })
 }

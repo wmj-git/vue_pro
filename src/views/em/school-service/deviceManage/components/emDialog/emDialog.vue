@@ -99,7 +99,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, schoolInfo } from '@/api/schoolService/teacherInfo'
+import { addList, editList, schoolInfo, deviceType } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -111,6 +111,7 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        searchUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -158,7 +159,22 @@ export default {
                 optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 班级id下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学校组织编码下拉选项赋值
+            break
+          case 'type': // 设备类型
+            var typeArr = []
+            var _obj = {
+              url: this.set.searchUrl,
+              params: {
+                enumType: 'device_type'
+              }
+            }
+            deviceType(_obj).then(response => {
+              response.data.forEach((_val) => {
+                typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
             break
         }
       }
@@ -194,11 +210,6 @@ export default {
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'entryTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           const obj = {
             url: this.set.appendUrl,
             params: this.temp

@@ -65,6 +65,7 @@
               :label="item.meta.title"
               :prop="item.meta.valueKey"
               :disabled="item.meta.disabled"
+              clearable
               :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
             >
               <template v-for="(option, _index) in item.meta.options_OBJ.data">
@@ -137,7 +138,7 @@ export default {
             meta: _obj.item.meta
           })
           break
-        case 'TeacherInfo_tableQuery_handleFilter': // 教师查询关键字
+        case 'DeviceInfo_tableQuery_handleFilter': // 设备查询关键字
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp

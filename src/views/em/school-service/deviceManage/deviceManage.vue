@@ -36,7 +36,7 @@ export default {
   mixins: [emMixin, emPage],
   data() {
     return {
-      tableType: 'device_manage',
+      tableType: 'device_manage',// 默认显示第一个
       tableTabs: [], // 选项卡list
       tabPosition: 'left',
       tableTabsValue: 'device_manage',
@@ -52,11 +52,6 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      for (const i in this.children) {
-        this.children[i].forEach((val) => {
-          // 拿到表格组id并赋值给当前显示的tabs
-        })
-      }
     },
     handleClick(tab) {
       if (tab.name === 'device_type_manage') {

@@ -36,4 +36,11 @@ export function schoolInfo(obj) {
     method: 'get'
   })
 }
+// 获取设备类型
+export function deviceInfo(obj) {
+  return request({
+    url: obj.url,
+    method: 'get'
+  })
+}
 
