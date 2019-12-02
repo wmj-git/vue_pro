@@ -32,7 +32,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="tableDataEnd.length !== 0">
     <Pagination
       :total="total"
       :page.sync="listQuery.page"
@@ -41,14 +40,13 @@
       @pagination="handlePaginationChange"
       @current-change="handleCurrentChange"
     />
-    </div>
   </div>
 </template>
 <script>
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList } from '@/api/schoolService/tableInfo'
+import { fetchList, delList, deviceType } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -167,13 +165,9 @@ export default {
     // 过滤字段
     formatterFn(row, column) {
       let _val = ''
-      // console.log('formatter', row, column.property)
       switch (column.property) {
-        case 'sex':
-          _val = row[column.property] === 2 ? '女' : '男'
-          break
-        case 'tncumbency':
-          _val = row[column.property] === 1 ? '在职' : _val = row[column.property] === 0 ? '离职' : '开除'
+        case 'type':
+          _val = row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '其他'
           break
         default:
           _val = row[column.property]
