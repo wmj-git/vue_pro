@@ -290,8 +290,8 @@ export default {
           response.data.forEach(function(_obj) {
             _Keys.push(_obj.id)
           })
-          // console.log('_Keys', _Keys)
-          _this.$refs.tree.setCheckedKeys(_Keys)
+          console.log('_Keys', _Keys)
+          _this.$refs.tree.setCheckedKeys(_Keys, true)
         }
       })
     },
@@ -344,7 +344,7 @@ export default {
       this.updateRoutePermission(_id, _CheckedKeys)
     },
     getCheckedKeys() {
-      return this.$refs.tree.getCheckedKeys()
+      return this.$refs.tree.getHalfCheckedKeys()
     },
     setCheckedKeys(_val) {
       this.getRoutePermission(_val.data.id)

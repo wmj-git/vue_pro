@@ -103,7 +103,7 @@
               :class="item.meta.class"
               :disabled="item.meta.disabled"
               :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-              @click="fn(item, {})"
+              @click="fn(item, Form)"
             >
               {{ item.meta.title }}
             </el-button>
@@ -260,14 +260,8 @@ export default {
             meta: _obj.meta
           })
           break
-        case 'default':
-          this[_fn](_obj.meta)
-          break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
+          this.FN(_obj, _data)
       }
     },
     init() {
@@ -441,7 +435,7 @@ export default {
         case 'baseGet':
           break
         case 'paramsGetApi':
-          ['paramsGetApi']({
+          paramsGetApi({
             url: _url,
             params: _params
           }).then((res) => {

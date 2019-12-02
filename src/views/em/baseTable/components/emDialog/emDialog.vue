@@ -100,7 +100,10 @@ export default {
     },
     openFn(_obj) {
       if (_obj && 'set' in _obj) {
-        this.set = dataInitFn(this.set, _obj.set)
+        Object.assign(this.set, _obj.set)
+        // this.set = dataInitFn(this.set, _obj.set)
+      } else if (_obj && 'meta' in _obj) {
+        Object.assign(this.set, _obj.meta.fn_set)
       } else {
         this.set.dialogVisible = true
       }
