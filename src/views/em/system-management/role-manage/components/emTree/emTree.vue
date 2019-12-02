@@ -344,7 +344,9 @@ export default {
       this.updateRoutePermission(_id, _CheckedKeys)
     },
     getCheckedKeys() {
-      return this.$refs.tree.getCheckedKeys()
+      let _Keys = this.$refs.tree.getCheckedKeys()
+      _Keys = _Keys.concat(this.$refs.tree.getHalfCheckedKeys())
+      return _Keys
     },
     setCheckedKeys(_val) {
       this.getRoutePermission(_val.data.id)

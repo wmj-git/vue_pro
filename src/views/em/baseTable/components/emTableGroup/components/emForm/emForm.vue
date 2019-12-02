@@ -76,7 +76,7 @@
             :class="item.meta.class"
             :disabled="item.meta.disabled"
             :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-            @click="fn(item, {})"
+            @click="fn(item, Form)"
           >
             {{ item.meta.title }}
           </el-button>
@@ -136,6 +136,7 @@ export default {
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
+
       const _Form = this.getForm()
       switch (_controlType) {
         case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':
@@ -167,54 +168,8 @@ export default {
             }
           })
           break
-        case 'routerReplace':
-          if (this.$route.query.data) {
-            this.$router.replace({ path: this.$route.path, query: {
-              meta: null,
-              data: null
-            }})
-          }
-          this.$router.replace({ path: this.$route.path, query: {
-            meta: _obj.meta,
-            data: _Form
-          }})
-          break
-        case 'default':
-          this[_fn](_obj.meta)
-          break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
-      }
-    },
-    controlGroupFn(_obj) {
-      const _this = this
-      let tm1 = null
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              tm1 = new TimeFn('t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _this.getForm()
-                })
-              }, () => {
-                return false
-              }, 200)
-              tm1.run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _this.getForm()
-              })
-          }
-        })
+          this.FN(_obj, _data)
       }
     },
     init() {

@@ -52,6 +52,33 @@ export const emMixin = {
     }
   },
   methods: {
+    FN(_obj, _data) {
+      const _fn = _obj.meta.fn
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
+      switch (_controlType) {
+        case 'routerReplace':
+          if (this.$route.query.data) {
+            this.$router.replace({ path: _routePath, query: {
+              meta: null,
+              data: null
+            }})
+          }
+          this.$router.replace({ path: _routePath, query: {
+            meta: _obj.meta,
+            data: _data
+          }})
+          break
+        case 'default':
+          this[_fn](_obj.meta)
+          break
+        default:
+          this.$message({
+            message: '(control_type)参数无效',
+            type: 'error'
+          })
+      }
+    },
     fetchData() {
       console.log('$route', this.$route, this.system_id)
       const _query = this.$route.query
@@ -74,14 +101,99 @@ export const emMixin = {
           }
           this.controlGroupFn(_query, _query.data)
           break
-        case 'RoleManage_EmTree_update':
-          break
         default:
           Message({
             message: '(fn_type)参数无效',
             type: 'error',
             duration: 5 * 1000
           })
+      }
+    },
+    controlGroupFn(_obj, _data) {
+      const _this = this
+      if ('controlGroup' in _obj.meta) {
+        _obj.meta.controlGroup.forEach((_item, _index) => {
+          let _refs
+          function PromiseFn(_obj, _data, _fn) {
+            new Promise((resolve) => {
+              setTimeout(() => {
+                _refs = _this.$refs[_item.control_id]
+                if (_refs.length > 0) {
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+              }, 500)
+            }).then(val => {
+              if (val) {
+                _fn()
+              } else {
+                PromiseFn(_obj, _data, _fn)
+              }
+            })
+          }
+          switch (_item.control_type) {
+            case 'refs':
+              // console.log('$', this.$route, this.system_id)
+              _refs = this.$refs[_item.control_id]
+              _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
+              _refs[0][_item.fn]({
+                meta: _item,
+                data: _data
+              })
+              break
+            case 'PromiseRefs':
+              PromiseFn(_obj, _data, function() {
+                _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
+                _refs[0][_item.fn]({
+                  meta: _item,
+                  data: _data
+                })
+              })
+              break
+            case 'TimeFn':
+              new TimeFn(this.system_id + '_' + _index + '_t1', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  set: _item.fn_set,
+                  data: _data
+                })
+              }, () => {
+                return false
+              }, 500).run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                set: _item.fn_set,
+                data: _data
+              })
+          }
+        })
+      }
+    },
+    callbackFn(_obj, _data) {
+      console.log('callback', _obj, _data)
+      if ('callback' in _obj.meta) {
+        _obj.meta.callback.forEach((_item, _index) => {
+          switch (_item.control_type) {
+            case 'TimeFn':
+              new TimeFn(this.system_id + '_' + _index + '_t2', () => {
+                vueBus.$emit(_item.control_id, {
+                  meta: _item,
+                  data: _data
+                })
+              }, () => {
+                return false
+              }, 200).run()
+              break
+            default:
+              vueBus.$emit(_item.control_id, {
+                meta: _item,
+                data: _data
+              })
+          }
+        })
       }
     },
     receiverFn(_obj) {
@@ -93,9 +205,6 @@ export const emMixin = {
       const _meta = _obj.meta
       let val, _value
       switch (_fn_type) {
-        case 'default':
-          this[_fn](_meta)
-          break
         case 'RoleManage_EmTree_update':
           this[_fn](_obj.node)
           break
@@ -253,98 +362,7 @@ export const emMixin = {
           this[_fn](val)
           break
         default:
-          Message({
-            message: '(fn_type)参数无效',
-            type: 'error',
-            duration: 5 * 1000
-          })
-      }
-    },
-    controlGroupFn(_obj, _data) {
-      const _this = this
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item, _index) => {
-          let _refs
-          function PromiseFn(_obj, _data, _fn) {
-            new Promise((resolve) => {
-              setTimeout(() => {
-                _refs = _this.$refs[_item.control_id]
-                if (_refs.length > 0) {
-                  resolve(true)
-                } else {
-                  resolve(false)
-                }
-              }, 500)
-            }).then(val => {
-              if (val) {
-                _fn()
-              } else {
-                PromiseFn(_obj, _data, _fn)
-              }
-            })
-          }
-          switch (_item.control_type) {
-            case 'refs':
-              // console.log('$', this.$route, this.system_id)
-              _refs = this.$refs[_item.control_id]
-              _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
-              _refs[0][_item.fn]({
-                meta: _item,
-                data: _data
-              })
-              break
-            case 'TimeFn':
-              new TimeFn(this.system_id + '_' + _index + '_t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _data
-                })
-              }, () => {
-                return false
-              }, 500).run()
-              break
-            case 'Promise':
-              PromiseFn(_obj, _data, function() {
-                _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
-                _refs[0][_item.fn]({
-                  meta: _item,
-                  data: _data
-                })
-              })
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _data
-              })
-          }
-        })
-      }
-    },
-    callbackFn(_obj, _data) {
-      console.log('callback', _obj, _data)
-      if ('callback' in _obj.meta) {
-        _obj.meta.callback.forEach((_item, _index) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              new TimeFn(this.system_id + '_' + _index + '_t2', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  data: _data
-                })
-              }, () => {
-                return false
-              }, 200).run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                data: _data
-              })
-          }
-        })
+          this.fetchFn(_obj)
       }
     }
   }
