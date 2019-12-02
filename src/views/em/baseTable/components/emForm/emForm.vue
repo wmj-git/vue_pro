@@ -316,9 +316,13 @@ export default {
       if ('set' in _obj) {
         _set = JSON.parse(JSON.stringify(_obj.set))
         _data = JSON.parse(JSON.stringify(_obj.Form))
+      } else if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+        Object.assign(this.Form, _data)
+        return
       } else {
         _data = JSON.parse(JSON.stringify(_obj.Form))
-        this.Form = _data
+        Object.assign(this.Form, _data)
         return
       }
 

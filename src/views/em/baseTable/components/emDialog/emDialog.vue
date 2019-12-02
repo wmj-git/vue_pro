@@ -14,7 +14,7 @@
       <el-row :gutter="2">
         <template v-for="(component, index) in children.ContainerItem">
           <el-col :key="index" :span="Number(component.meta.span)" :offset="Number(component.meta.offset)">
-            <component :is="component.meta.componentType" :data="component" />
+            <component :is="component.meta.componentType" :ref="component.meta.system_id" :data="component" />
           </el-col>
         </template>
       </el-row>

@@ -80,7 +80,7 @@ export const emMixin = {
       }
     },
     fetchData() {
-      console.log('$route', this.$route, this.system_id)
+      // console.log('$route', this.$route, this.system_id)
       const _query = this.$route.query
       if (_query && 'meta' in _query) {
         const _system_id = _query.meta.control_id
@@ -118,7 +118,8 @@ export const emMixin = {
             new Promise((resolve) => {
               setTimeout(() => {
                 _refs = _this.$refs[_item.control_id]
-                if (_refs.length > 0) {
+                console.log('_refs', _refs)
+                if (_refs && _refs.length > 0) {
                   resolve(true)
                 } else {
                   resolve(false)
@@ -128,7 +129,13 @@ export const emMixin = {
               if (val) {
                 _fn()
               } else {
-                PromiseFn(_obj, _data, _fn)
+                _this.$confirm('数据异常, 是否重复操作?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  PromiseFn(_obj, _data, _fn)
+                })
               }
             })
           }
@@ -136,15 +143,23 @@ export const emMixin = {
             case 'refs':
               // console.log('$', this.$route, this.system_id)
               _refs = this.$refs[_item.control_id]
-              _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
-              _refs[0][_item.fn]({
+              _refs[0].senderData = JSON.parse(JSON.stringify({
                 meta: _item,
                 data: _data
-              })
+              }))
+              if (_refs && _refs.length > 0) {
+                _refs[0][_item.fn]({
+                  meta: _item,
+                  data: _data
+                })
+              }
               break
             case 'PromiseRefs':
               PromiseFn(_obj, _data, function() {
-                _refs[0].senderData = JSON.parse(JSON.stringify(_obj))
+                _refs[0].senderData = JSON.parse(JSON.stringify({
+                  meta: _item,
+                  data: _data
+                }))
                 _refs[0][_item.fn]({
                   meta: _item,
                   data: _data
