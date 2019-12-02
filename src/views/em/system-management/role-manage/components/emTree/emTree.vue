@@ -290,7 +290,7 @@ export default {
           response.data.forEach(function(_obj) {
             _Keys.push(_obj.id)
           })
-          console.log('_Keys', _Keys)
+          // console.log('_Keys', _Keys)
           _this.$refs.tree.setCheckedKeys(_Keys, true)
         }
       })
