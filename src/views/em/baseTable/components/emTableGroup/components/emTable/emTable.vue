@@ -41,6 +41,7 @@
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
                   :key="_index"
+                  :ref="btn.meta.system_id"
                   class="em-btn-operation"
                   size="mini"
                   :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
@@ -115,8 +116,7 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
-      console.log(_obj, _data)
-      const _fn = _obj.meta.fn
+      Object.assign(_data, _data.row)
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
@@ -133,14 +133,8 @@ export default {
           })
           this.controlGroupFn(_obj, _data)
           break
-        case 'default':
-          this[_fn](_obj.meta)
-          break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
+          this.FN(_obj, _data)
       }
     },
     controlGroupFn(_obj, _data) {
@@ -260,7 +254,7 @@ export default {
       update({
         url: _this.set.updateUrl,
         method: _this.set.updateMethod,
-        params: _obj.Form
+        params: _obj.Form || _obj.data
       }).then(res => {
         if (res) {
           if (res.statusCode === 200) {
@@ -315,13 +309,22 @@ export default {
     formatterFn(row, column) {
       let _val = ''
       // console.log('formatter', row, column.property)
+      const _orgType = new Map([
+        [0, '超管组织'],
+        [1, '学校'],
+        [2, '教委']
+      ])
       switch (column.property) {
         case 'dataStatus':
           _val = row[column.property] === 1 ? '启用' : '禁用'
           break
+        case 'orgType':
+          _val = _orgType.get(row[column.property])
+          break
         default:
           _val = row[column.property]
       }
+
       return _val
     }
   }
