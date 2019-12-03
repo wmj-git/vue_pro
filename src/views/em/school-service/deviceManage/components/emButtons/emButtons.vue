@@ -103,7 +103,6 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-
 export default {
   name: 'EmForm',
   mixins: [emMixin],
@@ -112,6 +111,9 @@ export default {
       id: '',
       children: {
         operateItem: []
+      },
+      set: {
+        searchUrl: ''
       },
       temp: {},
       rules: {}
@@ -139,6 +141,12 @@ export default {
           })
           break
         case 'DeviceInfo_tableQuery_handleFilter': // 设备查询关键字
+          vueBus.$emit(_controlId, {
+            meta: _obj.item.meta,
+            temp: temp
+          })
+          break
+        case 'DeviceTypeInfo_tableQuery_handleFilter': // 设备类型查询关键字
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp

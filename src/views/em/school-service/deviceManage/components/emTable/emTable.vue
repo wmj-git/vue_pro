@@ -20,8 +20,7 @@
         :label="info.label"
         :prop="info.key"
         :formatter="formatterFn"
-      >
-      </el-table-column>
+      />
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <el-button
@@ -44,9 +43,11 @@
 </template>
 <script>
 import vueBus from '@/utils/vueBus'
+import { staticFormatterMap } from '@/utils/formatterMap'
+
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList, deviceType } from '@/api/schoolService/tableInfo'
+import { fetchList, delList } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -58,7 +59,15 @@ export default {
         removeUrl: '',
         vueBusName: ''
       },
-      tableHeader: [],
+      formatterMap: {},
+      tableHeader: [
+        {
+          value: '',
+          formatterSet: {
+            url: ''
+          }
+        }
+      ],
       tableDataEnd: [],
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
@@ -96,7 +105,8 @@ export default {
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        pageNum: this.listQuery.page,
+        enumType: 'device_type' // 设备类型
       }
       try {
         let _val = {}
@@ -165,12 +175,15 @@ export default {
     // 过滤字段
     formatterFn(row, column) {
       let _val = ''
-      switch (column.property) {
-        case 'type':
-          _val = row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '其他'
-          break
-        default:
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
+      console.log(2, _formatterMap)
+      for (const _k in _formatterMap) {
+        if (column.property === _k) {
+          _val = _formatterMap[_k].get(row[column.property])
+          // row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '报警柱'
+        } else {
           _val = row[column.property]
+        }
       }
       return _val
     }

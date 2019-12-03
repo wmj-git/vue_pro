@@ -74,6 +74,7 @@
 <script>
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
+import { staticFormatterMap } from '@/utils/formatterMap'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { add, del, update, query } from '@/api/baseTable/table'
 export default {
@@ -91,6 +92,7 @@ export default {
         tableHeader: []
       },
       listLoading: true, // 加载状态
+      formatterMap: {},
       tableData: [], // 表数据
       currentRow: null, // 单选对象
       multipleSelection: [], // 多选框对象组
@@ -281,24 +283,13 @@ export default {
     },
     formatterFn(row, column) {
       let _val = ''
-      // console.log('formatter', row, column.property)
-      const _orgType = new Map([
-        [2, '省教委'],
-        [3, '市教委'],
-        [4, '县教委'],
-        [5, '学校']
-      ])
-      switch (column.property) {
-        case 'dataStatus':
-          _val = row[column.property] === 1 ? '启用' : '禁用'
-          break
-        case 'orgType':
-          _val = _orgType.get(row[column.property])
-          break
-        default:
-          _val = row[column.property]
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
       }
-
+      console.log(_val)
       return _val
     }
   }
