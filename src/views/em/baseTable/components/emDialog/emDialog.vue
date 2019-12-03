@@ -70,6 +70,17 @@ export default {
 
   },
   methods: {
+    fn(_obj, _data) {
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'none':
+          console.log(_controlId)
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       if (!(this.set.clear)) {

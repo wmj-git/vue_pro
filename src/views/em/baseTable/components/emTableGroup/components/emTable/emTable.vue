@@ -74,7 +74,7 @@
 <script>
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
-import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { add, del, update, query } from '@/api/baseTable/table'
 export default {
   name: 'EmTable',
@@ -135,33 +135,6 @@ export default {
           break
         default:
           this.FN(_obj, _data)
-      }
-    },
-    controlGroupFn(_obj, _data) {
-      let tm1 = null
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              tm1 = new TimeFn('t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _data
-                })
-              }, () => {
-                return false
-              }, 200)
-              tm1.run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _data
-              })
-          }
-        })
       }
     },
     init() {

@@ -53,9 +53,10 @@ export const emMixin = {
   },
   methods: {
     FN(_obj, _data) {
-      const _fn = _obj.meta.fn
+      const _this = this
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
+      let _refs
       switch (_controlType) {
         case 'routerReplace':
           if (this.$route.query.data) {
@@ -69,8 +70,58 @@ export const emMixin = {
             data: _data
           }})
           break
+        case 'refs':
+          // console.log('$', this.$route, this.system_id)
+          _refs = this.$refs[_obj.control_id]
+          _refs[0].senderData = JSON.parse(JSON.stringify({
+            meta: _obj.meta,
+            data: _data
+          }))
+          if (_refs && _refs.length > 0) {
+            _refs[0][_obj.fn]({
+              meta: _obj.meta,
+              data: _data
+            })
+          }
+          break
+        case 'PromiseRefs':
+          promiseFn(500, () => {
+            _refs = _this.$refs[_obj.control_id]
+            console.log('_refs', _refs)
+            return _refs && _refs.length > 0
+          }, function() {
+            _refs[0].senderData = JSON.parse(JSON.stringify({
+              meta: _obj.meta,
+              data: _data
+            }))
+            _refs[0][_obj.fn]({
+              meta: _obj.meta,
+              data: _data
+            })
+          })
+          break
+        case 'TimeFn':
+          new TimeFn(this.system_id + '_t1', () => {
+            vueBus.$emit(_obj.control_id, {
+              meta: _obj.meta,
+              set: _obj.meta.fn_set,
+              data: _data
+            })
+          }, () => {
+            return false
+          }, 500).run()
+          break
+        case 'VueBus':
+          vueBus.$emit(_obj.control_id, {
+            meta: _obj.meta,
+            data: _data
+          })
+          break
         case 'default':
-          this[_fn](_obj.meta)
+          this.fetchFn({
+            meta: _obj.meta,
+            data: _data
+          })
           break
         default:
           this.$message({
@@ -110,80 +161,21 @@ export const emMixin = {
       }
     },
     controlGroupFn(_obj, _data) {
-      const _this = this
       if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item, _index) => {
-          let _refs
-          switch (_item.control_type) {
-            case 'refs':
-              // console.log('$', this.$route, this.system_id)
-              _refs = this.$refs[_item.control_id]
-              _refs[0].senderData = JSON.parse(JSON.stringify({
-                meta: _item,
-                data: _data
-              }))
-              if (_refs && _refs.length > 0) {
-                _refs[0][_item.fn]({
-                  meta: _item,
-                  data: _data
-                })
-              }
-              break
-            case 'PromiseRefs':
-              promiseFn(500, () => {
-                _refs = _this.$refs[_item.control_id]
-                console.log('_refs', _refs)
-                return _refs && _refs.length > 0
-              }, function() {
-                _refs[0].senderData = JSON.parse(JSON.stringify({
-                  meta: _item,
-                  data: _data
-                }))
-                _refs[0][_item.fn]({
-                  meta: _item,
-                  data: _data
-                })
-              })
-              break
-            case 'TimeFn':
-              new TimeFn(this.system_id + '_' + _index + '_t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set,
-                  data: _data
-                })
-              }, () => {
-                return false
-              }, 500).run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set,
-                data: _data
-              })
-          }
+        _obj.meta.controlGroup.forEach((_item) => {
+          this.fn({
+            meta: _item
+          }, _data)
         })
       }
     },
     callbackFn(_obj, _data) {
       console.log('callback', _obj, _data)
       if ('callback' in _obj.meta) {
-        _obj.meta.callback.forEach((_item, _index) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              new TimeFn(this.system_id + '_' + _index + '_t2', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  data: _data
-                })
-              }, () => {
-                return false
-              }, 200).run()
-              break
-            default:
-              this.fn(_obj, _data)
-          }
+        _obj.meta.callback.forEach((_item) => {
+          this.fn({
+            meta: _item
+          }, _data)
         })
       }
     },
