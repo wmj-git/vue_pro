@@ -237,7 +237,7 @@ export default {
               message: '恭喜你，更新成功',
               type: 'success'
             })
-            this.callbackFn(this.senderData, {})
+            this.callbackFn(this.senderData, res)
           }
         }
       })
@@ -289,7 +289,6 @@ export default {
       } else {
         _val = row[column.property]
       }
-      console.log(_val)
       return _val
     }
   }

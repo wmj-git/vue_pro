@@ -88,7 +88,7 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
-import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { validate } from '@/utils/validate'
 
 export default {
@@ -133,14 +133,11 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
-      const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-
       const _Form = this.getForm()
       switch (_controlType) {
         case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':
-
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {
               vueBus.$emit(_controlId, {

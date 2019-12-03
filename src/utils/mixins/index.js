@@ -53,11 +53,22 @@ export const emMixin = {
   },
   methods: {
     FN(_obj, _data) {
-      const _this = this
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
-      let _refs
       switch (_controlType) {
+        case 'default':
+          this.fetchFn({
+            meta: _obj.meta,
+            data: _data
+          })
+          break
+        case 'VueBus':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: _data
+          })
+          break
         case 'routerReplace':
           if (this.$route.query.data) {
             this.$router.replace({ path: _routePath, query: {
@@ -70,39 +81,9 @@ export const emMixin = {
             data: _data
           }})
           break
-        case 'refs':
-          // console.log('$', this.$route, this.system_id)
-          _refs = this.$refs[_obj.control_id]
-          _refs[0].senderData = JSON.parse(JSON.stringify({
-            meta: _obj.meta,
-            data: _data
-          }))
-          if (_refs && _refs.length > 0) {
-            _refs[0][_obj.fn]({
-              meta: _obj.meta,
-              data: _data
-            })
-          }
-          break
-        case 'PromiseRefs':
-          promiseFn(500, () => {
-            _refs = _this.$refs[_obj.control_id]
-            console.log('_refs', _refs)
-            return _refs && _refs.length > 0
-          }, function() {
-            _refs[0].senderData = JSON.parse(JSON.stringify({
-              meta: _obj.meta,
-              data: _data
-            }))
-            _refs[0][_obj.fn]({
-              meta: _obj.meta,
-              data: _data
-            })
-          })
-          break
         case 'TimeFn':
           new TimeFn(this.system_id + '_t1', () => {
-            vueBus.$emit(_obj.control_id, {
+            vueBus.$emit(_controlId, {
               meta: _obj.meta,
               set: _obj.meta.fn_set,
               data: _data
@@ -110,18 +91,6 @@ export const emMixin = {
           }, () => {
             return false
           }, 500).run()
-          break
-        case 'VueBus':
-          vueBus.$emit(_obj.control_id, {
-            meta: _obj.meta,
-            data: _data
-          })
-          break
-        case 'default':
-          this.fetchFn({
-            meta: _obj.meta,
-            data: _data
-          })
           break
         default:
           this.$message({
@@ -143,13 +112,48 @@ export const emMixin = {
       }
     },
     fetchFn(_query) {
+      const _this = this
       const _fn = _query.meta.fn
       const _fn_type = _query.meta.fn_type
+      const _controlId = _query.meta.control_id
+      let _refs
       switch (_fn_type) {
         case 'default':
           if (_fn) {
             this[_fn](_query)
           }
+          this.controlGroupFn(_query, _query.data)
+          break
+        case 'refs':
+          // console.log('$', this.$route, this.system_id)
+          _refs = this.$refs[_controlId]
+          if (_refs && _refs.length > 0) {
+            _refs[0].senderData = JSON.parse(JSON.stringify({
+              meta: _query.meta,
+              data: _query.data
+            }))
+            _refs[0][_query.meta.fn]({
+              meta: _query.meta,
+              data: _query.data
+            })
+          }
+          this.controlGroupFn(_query, _query.data)
+          break
+        case 'PromiseRefs':
+          promiseFn(500, () => {
+            _refs = _this.$refs[_controlId]
+            console.log('_refs', _refs)
+            return _refs && _refs.length > 0
+          }, function() {
+            _refs[0].senderData = JSON.parse(JSON.stringify({
+              meta: _query.meta,
+              data: _query.data
+            }))
+            _refs[0][_query.meta.fn]({
+              meta: _query.meta,
+              data: _query.data
+            })
+          })
           this.controlGroupFn(_query, _query.data)
           break
         default:
