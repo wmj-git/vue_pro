@@ -116,7 +116,8 @@ export default {
         searchUrl: ''
       },
       temp: {},
-      rules: {}
+      rules: {},
+      optionsArr: []
     }
   },
   created() {

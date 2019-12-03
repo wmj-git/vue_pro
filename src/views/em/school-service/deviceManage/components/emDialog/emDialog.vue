@@ -130,30 +130,32 @@ export default {
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
-      dialogStatus: ''
+      dialogStatus: '',
+      typeArrList: {}, // 设备类型传递给表格
     }
   },
-  created() {
-    this.init()
+  async created() {
+    await this.init()
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.edit()
     })
+    vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
   },
   methods: {
-    init() {
+    async  init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
+        const optionsArr = []
+        const obj = {
+          url: this.set.selectUrl
+        }
         switch (this.children.formItem[i].meta.valueKey) {
           case 'siOrgCode': // 学校组织代码
-            var optionsArr = []
-            var obj = {
-              url: this.set.selectUrl
-            }
             schoolInfo(obj).then(response => {
               response.data.list.forEach((_val) => {
                 optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
@@ -169,9 +171,14 @@ export default {
                 enumType: 'device_type'
               }
             }
-            deviceType(_obj).then(response => {
+            await deviceType(_obj).then(response => {
+              const _map = new Map()
               response.data.forEach((_val) => {
                 typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
+                _map.set(_val.id, _val.enumCvalue)
+              })
+              Object.assign(this.typeArrList, { // 表格type字段需要转换为对应的中文显示（需要注明字段名：type）
+                type: _map
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
