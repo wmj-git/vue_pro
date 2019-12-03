@@ -1,7 +1,7 @@
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
-import { FilterTree, TimeFn } from '@/utils/tool'
+import { FilterTree, TimeFn, promiseFn } from '@/utils/tool'
 
 // 定义一个混入对象
 export const emMixin = {
@@ -114,31 +114,6 @@ export const emMixin = {
       if ('controlGroup' in _obj.meta) {
         _obj.meta.controlGroup.forEach((_item, _index) => {
           let _refs
-          function PromiseFn(_obj, _data, _fn) {
-            new Promise((resolve) => {
-              setTimeout(() => {
-                _refs = _this.$refs[_item.control_id]
-                console.log('_refs', _refs)
-                if (_refs && _refs.length > 0) {
-                  resolve(true)
-                } else {
-                  resolve(false)
-                }
-              }, 500)
-            }).then(val => {
-              if (val) {
-                _fn()
-              } else {
-                _this.$confirm('数据异常, 是否重复操作?', '提示', {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }).then(() => {
-                  PromiseFn(_obj, _data, _fn)
-                })
-              }
-            })
-          }
           switch (_item.control_type) {
             case 'refs':
               // console.log('$', this.$route, this.system_id)
@@ -155,7 +130,11 @@ export const emMixin = {
               }
               break
             case 'PromiseRefs':
-              PromiseFn(_obj, _data, function() {
+              promiseFn(500, () => {
+                _refs = _this.$refs[_item.control_id]
+                console.log('_refs', _refs)
+                return _refs && _refs.length > 0
+              }, function() {
                 _refs[0].senderData = JSON.parse(JSON.stringify({
                   meta: _item,
                   data: _data
@@ -203,10 +182,7 @@ export const emMixin = {
               }, 200).run()
               break
             default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                data: _data
-              })
+              this.fn(_obj, _data)
           }
         })
       }
