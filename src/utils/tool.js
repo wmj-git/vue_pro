@@ -1,3 +1,7 @@
+import { MessageBox } from 'element-ui'
+// import router from './router'
+// import store from '@/store'
+
 // 树型数据转换
 function treeWeight(_nodes) {
   function compare(obj1, obj2) {
@@ -303,18 +307,27 @@ console.log('tt', {
   k: kk
 })*/
 
-/*
-异步循环
-function PromiseFN(_fn) {
+// 异步循环
+export function promiseFn(_time, _judgeFn, _fn) {
   new Promise((resolve) => {
     setTimeout(() => {
-      resolve(true)
-    }, 1500)
+      if (_judgeFn()) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    }, _time)
   }).then(val => {
-    _fn()
-    PromiseFN(_fn)
+    if (val) {
+      _fn()
+    } else {
+      MessageBox.confirm('数据异常, 是否重复操作?', '提示', {
+        showClose: false,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        promiseFn(_fn, _judgeFn)
+      })
+    }
   })
 }
-PromiseFN(function() {
-  console
-})*/

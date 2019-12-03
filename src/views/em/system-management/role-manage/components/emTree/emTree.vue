@@ -292,7 +292,6 @@ export default {
             value: 'id'
           })
           _keys = _keys.concat(_Children.getData())
-          console.log('getRoutePermission', _keys, _treeVal)
           _this.$refs.tree.setCheckedKeys(_keys)
         }
       })

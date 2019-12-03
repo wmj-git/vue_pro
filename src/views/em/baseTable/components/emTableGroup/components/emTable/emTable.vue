@@ -310,9 +310,10 @@ export default {
       let _val = ''
       // console.log('formatter', row, column.property)
       const _orgType = new Map([
-        [0, '超管组织'],
-        [1, '学校'],
-        [2, '教委']
+        [2, '省教委'],
+        [3, '市教委'],
+        [4, '县教委'],
+        [5, '学校']
       ])
       switch (column.property) {
         case 'dataStatus':
