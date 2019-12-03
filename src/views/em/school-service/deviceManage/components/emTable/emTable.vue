@@ -46,7 +46,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList, deviceType } from '@/api/schoolService/tableInfo'
+import { fetchList, delList } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -96,7 +96,8 @@ export default {
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        pageNum: this.listQuery.page,
+        enumType: 'device_type' // 设备类型
       }
       try {
         let _val = {}

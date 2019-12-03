@@ -149,7 +149,7 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'siOrgCode':
+          case 'siOrgCode': // 学校组织代码
             var optionsArr = []
             var obj = {
               url: this.set.selectUrl
@@ -161,7 +161,7 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学校组织编码下拉选项赋值
             break
-          case 'type': // 设备类型
+          case 'type': // 设备管理-设备类型
             var typeArr = []
             var _obj = {
               url: this.set.searchUrl,
