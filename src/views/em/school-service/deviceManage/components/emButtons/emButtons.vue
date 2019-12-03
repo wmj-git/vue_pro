@@ -103,7 +103,6 @@
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { deviceType } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmForm',
   mixins: [emMixin],

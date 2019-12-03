@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :modal-append-to-body="false" :visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"

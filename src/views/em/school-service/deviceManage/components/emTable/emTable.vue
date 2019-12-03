@@ -168,7 +168,7 @@ export default {
       let _val = ''
       switch (column.property) {
         case 'type':
-          _val = row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '其他'
+          _val = row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '报警柱'
           break
         default:
           _val = row[column.property]
