@@ -59,7 +59,7 @@ export default {
         removeUrl: '',
         vueBusName: ''
       },
-      formatterMap: {},
+      formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [
         {
           value: '',
@@ -82,6 +82,9 @@ export default {
     this.getList()
     vueBus.$on('query', () => {
       this.getList()
+    })
+    vueBus.$on('device_type', (val) => {
+      this.formatterMap = val // 接受后台获取的动态字段值(传值时已标明字段值)
     })
   },
   methods: {
@@ -175,15 +178,11 @@ export default {
     // 过滤字段
     formatterFn(row, column) {
       let _val = ''
-      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
-      console.log(2, _formatterMap)
-      for (const _k in _formatterMap) {
-        if (column.property === _k) {
-          _val = _formatterMap[_k].get(row[column.property])
-          // row[column.property] === 4 ? '人脸识别门禁' : _val = row[column.property] === 9 ? '监控摄像头' : '报警柱'
-        } else {
-          _val = row[column.property]
-        }
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
       }
       return _val
     }
