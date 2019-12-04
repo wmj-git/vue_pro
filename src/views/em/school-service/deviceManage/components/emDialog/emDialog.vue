@@ -136,24 +136,6 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       typeArrList: {} // 设备类型传递给表格
-<<<<<<< HEAD
-=======
-    }
-  },
-  watch: {
-    dialogStatus(msg) {
-      if (msg !== '') {
-        if (!this.$refs[this.system_id]) {
-          // 初次打开子组件弹窗的时候，form表单dom元素还没加载成功，需要异步获取
-          this.$nextTick(() => {
-            this.$refs[this.system_id].resetFields() // 去除验证
-          })
-        } else {
-          // 再次打开子组件弹窗，子组件弹窗的form表单dom元素已经加载好了，不需要异步获取
-          this.$refs[this.system_id].resetFields() // 去除验证
-        }
-      }
->>>>>>> 4cecaab92baab0beccf43c53561e550bf2d00dce
     }
   },
   async created() {
@@ -223,7 +205,6 @@ export default {
       this.dialogStatus = 'create'
       this.temp = {}
       this.dialogFormVisible = true
-<<<<<<< HEAD
       if (this.$refs[this.system_id] !== undefined) {
         try {
           this.$nextTick(() => {
@@ -233,8 +214,6 @@ export default {
           e
         }
       }
-=======
->>>>>>> 4cecaab92baab0beccf43c53561e550bf2d00dce
     },
     // 修改数据弹框
     edit() {
