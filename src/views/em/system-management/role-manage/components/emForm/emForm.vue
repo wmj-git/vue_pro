@@ -79,14 +79,27 @@
               </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              {{ Form[item.meta.valueKey] ? Form[item.meta.valueKey] : "none" }}
-              <dropzone
-                :id="item.meta.system_id"
-                :url="BASE_API+item.meta.url"
-                :item="item"
-                @dropzone-removedFile="dropzoneR"
-                @dropzone-success="dropzoneS"
-              />
+              <el-row>
+                <el-col :span="32">
+                  <el-image
+                    :src="Form[item.meta.valueKey]"
+                    style="max-height: 184px"
+                    fit="fit"
+                  >
+                  </el-image>
+                </el-col>
+                <el-col :span="16">
+                  <dropzone
+                    style="max-height: 184px;overflow: hidden"
+                    :id="item.meta.system_id"
+                    :ref="item.meta.system_id"
+                    :url="BASE_API+item.meta.url"
+                    :item="item"
+                    @dropzone-removedFile="dropzoneR"
+                    @dropzone-success="dropzoneS"
+                  />
+                </el-col>
+              </el-row>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-transfer
@@ -415,6 +428,10 @@ export default {
       } else {
         _data = JSON.parse(JSON.stringify(_obj.data))
         Object.assign(this.Form, _data)
+        const val = this.Form
+        if ('extData' in val && 'imgUrl' in val) {
+          this.Form.imgUrl = val.extData.imgUrl
+        }
         return
       }
 

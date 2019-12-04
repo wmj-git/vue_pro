@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <el-card>
+    <el-card :style="{'max-height': set.maxHeight,'overflow-y': 'auto'}">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -75,6 +75,29 @@
                 :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
               />
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-row>
+                <el-col :span="32">
+                  <el-image
+                    :src="Form[item.meta.valueKey]"
+                    style="max-height: 184px;overflow: hidden"
+                    fit="fit"
+                  >
+                  </el-image>
+                </el-col>
+                <el-col :span="16">
+                  <dropzone
+                    :style="{'max-height': '184px','overflow':'hidden'}"
+                    :id="item.meta.system_id"
+                    :ref="item.meta.system_id"
+                    :url="BASE_API+item.meta.url"
+                    :item="item"
+                    @dropzone-removedFile="dropzoneR"
+                    @dropzone-success="dropzoneS"
+                  />
+                </el-col>
+              </el-row>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
                 <json-editor
@@ -107,11 +130,12 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
-
+import Dropzone from '@/components/Dropzone'
 export default {
   name: 'EmForm',
   components: {
-    JsonEditor
+    JsonEditor,
+    Dropzone
   },
   mixins: [emMixin],
   data() {
@@ -119,6 +143,7 @@ export default {
       set: {
         labelPosition: '',
         labelWidth: '',
+        maxHeight: '580px',
         statusIcon: false,
         class: ''
       },
@@ -390,6 +415,18 @@ export default {
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
+    },
+    dropzoneS(file, el, item) {
+      console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, item)
+      if (!(file.xhr.status === 200)) {
+        return
+      }
+      const _response = JSON.parse(file.xhr.response)
+      this.Form[item.meta.valueKey] = _response.data[0].networkPath
+      this.$message({ message: '图片上传成功', type: 'success' })
+    },
+    dropzoneR(file) {
+      this.$message({ message: 'Delete success', type: 'success' })
     }
   }
 }

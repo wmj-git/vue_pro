@@ -39,11 +39,11 @@ export default {
     },
     thumbnailHeight: {
       type: Number,
-      default: 200
+      default: 80
     },
     thumbnailWidth: {
       type: Number,
-      default: 200
+      default: 80
     },
     showRemoveLink: {
       type: Boolean,
@@ -145,6 +145,9 @@ export default {
         this.on('addedfile', function(file) {
           // 上传文件时触发的事件
         })
+        this.on('error', function(file, data) {
+          // 上传失败触发的事件
+        })
         const val = vm.defaultImg
         if (!val) return
         if (Array.isArray(val)) {
@@ -191,6 +194,7 @@ export default {
 
     this.dropzone.on('success', file => {
       vm.$emit('dropzone-success', file, vm.dropzone.element, this.item)
+      this.removeAllFiles()
     })
     this.dropzone.on('addedfile', file => {
       vm.$emit('dropzone-fileAdded', file)
