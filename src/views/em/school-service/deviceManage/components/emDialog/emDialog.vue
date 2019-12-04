@@ -89,7 +89,7 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="changeDialogHidden">取 消</el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
       </div>
     </el-dialog>
@@ -131,7 +131,7 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
-      typeArrList: {}, // 设备类型传递给表格
+      typeArrList: {} // 设备类型传递给表格
     }
   },
   async created() {
@@ -201,9 +201,13 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
-        this.$nextTick(() => {
-          this.$refs[this.system_id].resetFields()
-        })
+        try {
+          this.$nextTick(() => {
+            this.$refs[this.system_id].resetFields()
+          })
+        } catch (e) {
+          e
+        }
       }
     },
     // 修改数据弹框
@@ -213,6 +217,11 @@ export default {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
+      try {
+        this.$refs[this.system_id].resetFields()
+      } catch (e) {
+        e
+      }
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
