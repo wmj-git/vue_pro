@@ -46,7 +46,7 @@
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
                 type="textarea"
-                :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 4}"
+                :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 6}"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -55,7 +55,7 @@
                 v-model="Form[item.meta.valueKey]"
                 :style="{width: item.meta.selectWidth}"
                 :disabled="item.meta.disabled"
-                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
                 :multiple="item.meta.allowCreate ? item.meta.allowCreate : false"
                 :filterable="item.meta.allowCreate ? item.meta.allowCreate : false"
                 :allow-create="item.meta.allowCreate ? item.meta.allowCreate : false"
@@ -82,14 +82,13 @@
                     :src="Form[item.meta.valueKey]"
                     style="max-height: 184px;overflow: hidden"
                     fit="fit"
-                  >
-                  </el-image>
+                  />
                 </el-col>
                 <el-col :span="16">
                   <dropzone
-                    :style="{'max-height': '184px','overflow':'hidden'}"
                     :id="item.meta.system_id"
                     :ref="item.meta.system_id"
+                    :style="{'max-height': '184px','overflow':'hidden'}"
                     :url="BASE_API+item.meta.url"
                     :item="item"
                     @dropzone-removedFile="dropzoneR"
@@ -143,7 +142,7 @@ export default {
       set: {
         labelPosition: '',
         labelWidth: '',
-        maxHeight: '580px',
+        maxHeight: '580px', // 表单最大高
         statusIcon: false,
         class: ''
       },
@@ -294,6 +293,52 @@ export default {
           _this.Form[_item.value] = ''
         }
       })
+    },
+    updateOptionParamsFn(_obj) {
+      console.log('updateOptionParamsFn', _obj)
+      const _meta = _obj.meta
+      const _set = _meta.fn_set
+      const _params = _obj.data
+      this.children.formItem.forEach(async(_item) => {
+        if ('system_ids' in _set && _set.system_ids.indexOf(_item.meta.system_id) !== -1) {
+          _item.meta.options_OBJ.data = await this.optionParamsFn({
+            meta: _meta,
+            params: _params
+          })
+        }
+      })
+      this.defaultFn(this.children.formItem)
+    },
+    async optionParamsFn(_obj) {
+      const _meta = _obj.meta
+      const _set = _meta.fn_set
+      const _params = _obj.params
+
+      let _options = []
+      await paramsGetApi({
+        url: _set.requestUrl,
+        params: _params
+      }).then((res) => {
+        if (res && res.statusCode === 200) {
+          const _keys = _set.successKeys
+          const _data = []
+          res.data.forEach((_item) => {
+            const _value = {}
+            for (const _k in _keys) {
+              _value[_k] = _item[_keys[_k]]
+            }
+            _data.push(_value)
+          })
+          _options = _options.concat(_data)
+        } else {
+          this.$message({
+            message: '获取数据错误',
+            type: 'error'
+          })
+        }
+      })
+      console.log('optionData', _options)
+      return _options
     },
     async optionFn(_meta) {
       async function option() {

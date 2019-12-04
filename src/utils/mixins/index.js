@@ -332,7 +332,6 @@ export const emMixin = {
           this[_fn]()
           break
         case 'BaseTable_EmForm_setForm':
-
           if ('set' in _obj) {
             if (_obj.set.dataType === 'tableColumnBtn') {
               val = {

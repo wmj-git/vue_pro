@@ -85,14 +85,13 @@
                     :src="Form[item.meta.valueKey]"
                     style="max-height: 184px"
                     fit="fit"
-                  >
-                  </el-image>
+                  />
                 </el-col>
                 <el-col :span="16">
                   <dropzone
-                    style="max-height: 184px;overflow: hidden"
                     :id="item.meta.system_id"
                     :ref="item.meta.system_id"
+                    style="max-height: 184px;overflow: hidden"
                     :url="BASE_API+item.meta.url"
                     :item="item"
                     @dropzone-removedFile="dropzoneR"
@@ -188,6 +187,14 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
@@ -196,76 +203,46 @@ export default {
 
       switch (_controlType) {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                node: _Form
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            node: _Form
           })
           break
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_updateCheckedKeys':
           this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                id: _Form.id
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
+            vueBus.$emit(_controlId, {
+              meta: _obj.meta,
+              id: _Form.id
+            })
           })
           break
         case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_openFn':
           this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              const _Form = this.getForm()
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                data: _Form
-              })
-              this.controlGroupFn(_obj, _Form)
-            } else {
-              console.log('验证错误')
-              return false
-            }
+            vueBus.$emit(_controlId, {
+              meta: _obj.meta,
+              data: _Form
+            })
+            this.controlGroupFn(_obj, _Form)
           })
           break
         case 'RoleManage_EmForm_btnClick--RoleManage_EmForm_setForm':
           this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                data: _Form
-              })
-            } else {
-              console.log('验证错误')
-              return false
-            }
+            vueBus.$emit(_controlId, {
+              meta: _obj.meta,
+              data: _Form
+            })
           })
           break
         case 'RoleManage_EmForm_btnClick-onSubmit':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              if (_obj.meta.fn_set.dataType === 'objectData') {
-                _val = Object.assign({}, _obj.meta.fn_set.requestParams)
-                _value = JSON.parse(JSON.stringify(this.senderData.data))
-                Object.assign(_value, _Form)
-                _val = dataInitFn(_val, _value)
-              }
-              this[_fn]({
-                meta: _obj.meta,
-                data: _val
-              })
-            } else {
-              console.log('验证错误')
-              return false
-            }
+          if (_obj.meta.fn_set.dataType === 'objectData') {
+            _val = Object.assign({}, _obj.meta.fn_set.requestParams)
+            _value = JSON.parse(JSON.stringify(this.senderData.data))
+            Object.assign(_value, _Form)
+            _val = dataInitFn(_val, _value)
+          }
+          this[_fn]({
+            meta: _obj.meta,
+            data: _val
           })
           break
         case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_closeFn':
@@ -337,7 +314,7 @@ export default {
     },
     updateOptionParamsFn(_obj) {
       const _meta = _obj.meta
-      const _set = _obj.set
+      const _set = _meta.fn_set
       const _params = _obj.data
       this.children.formItem.forEach(async(_item) => {
         if ('system_ids' in _set && _set.system_ids.indexOf(_item.meta.system_id) !== -1) {
@@ -458,7 +435,6 @@ export default {
           }).then((res) => {
             if (res && res.statusCode === 200) {
               const _val = []
-              console.log('paramsGet', res, _this.Form)
               res.data.forEach((_item) => {
                 _val.push(_item[_set.successKeys.valueKey])
               })
