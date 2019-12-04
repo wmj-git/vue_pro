@@ -125,7 +125,6 @@ export const emMixin = {
           this.controlGroupFn(_query, _query.data)
           break
         case 'refs':
-          // console.log('$', this.$route, this.system_id)
           _refs = this.$refs[_controlId]
           if (_refs && _refs.length > 0) {
             _refs[0].senderData = JSON.parse(JSON.stringify({
