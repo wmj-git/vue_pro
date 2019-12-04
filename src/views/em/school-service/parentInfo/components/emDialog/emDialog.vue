@@ -207,9 +207,9 @@ export default {
       this.dialogStatus = 'create'
       this.children.formItem.forEach((val) => {
         switch (val.meta.valueKey) {
-          case 'studentIds':
+          /* case 'studentIds':
             val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break
+            break*/
           case 'classId':
             val.meta.itemFormVisible = true // 添加时该字段应该显示
             break
@@ -228,9 +228,9 @@ export default {
       this.dialogFormVisible = true
       this.children.formItem.forEach((val) => {
         switch (val.meta.valueKey) {
-          case 'studentIds':
+          /* case 'studentIds':
             val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break
+            break*/
           case 'classId':
             val.meta.itemFormVisible = false // 修改时该字段应该隐藏
             break

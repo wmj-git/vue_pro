@@ -28,6 +28,26 @@ export function integerP(rule, value, callback) {
   }
 }
 /**
+ 年龄1-120
+ */
+export function integerAge(rule, value, callback) {
+  if (value && !(/^(?:[1-9][0-9]?|1[01][0-9]|120)$/).test(value)) {
+    callback(new Error('只能填写1-120的正整数'))
+  } else {
+    callback()
+  }
+}
+/**
+ 整数
+ */
+export function integerN(rule, value, callback) {
+  if (value && !(/^[0-9]\d*$/).test(value)) {
+    callback(new Error('只能填写0-9的整数'))
+  } else {
+    callback()
+  }
+}
+/**
  身份证号验证
  */
 export function idCard(rule, value, callback) {
@@ -41,11 +61,6 @@ export function idCard(rule, value, callback) {
  英文字符
  */
 export function enText(rule, value, callback) {
-  // let a = '',
-  //   arr = value.split(" ")
-  // for (let i = 0; i < arr.length; i++) { //删除行内空格
-  //   a += arr[i];
-  // }
   if (value && !(/^[A-Za-z]+$/).test(value)) {
     callback(new Error('只能填写英文字符'))
   } else {
@@ -63,7 +78,16 @@ export function ChEnText(rule, value, callback) {
     callback()
   }
 }
-
+/**
+ 大小写英文字符、下划线和中划线
+ */
+export function EnTextCode(rule, value, callback) {
+  if (value && !(/^[A-Za-z0-9_\-]+$/ig).test(value)) {
+    callback(new Error('只能填写数字、英文字符、中划线和下划线'))
+  } else {
+    callback()
+  }
+}
 /**
  中文字符
  */
@@ -81,11 +105,21 @@ export function cnText(rule, value, callback) {
 }
 
 /**
- 两位正整数
+ 正整数
  */
-export function validateTwoNum(rule, value, callback) {
-  if (!/^[1-9]{2}$/.test(value)) {
-    callback(new Error('请输入两位正整数！'))
+export function validateNum(rule, value, callback) {
+  if (!/^[1-9]$/.test(value)) {
+    callback(new Error('请输入正整数！'))
+  } else {
+    callback()
+  }
+}
+/**
+ 正数(可输入小数点)
+ */
+export function validateDecimal(rule, value, callback) {
+  if (!/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value)) {
+    callback(new Error('请输入正数(可输入小数点)！'))
   } else {
     callback()
   }
@@ -113,7 +147,17 @@ export function checkLatitude(rule, value, callback) {
     callback()
   }
 }
-
+/**
+ 中英文、数字、和下划线
+ */
+export function checkString(rule, value, callback) {
+  var latreg = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/
+  if (!latreg.test(value)) {
+    callback(new Error('中英文、数字和下划线'))
+  } else {
+    callback()
+  }
+}
 /**
  * @param {string} path
  * @returns {Boolean}
@@ -199,5 +243,5 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isPhone, idCard, integerP
+  isPhone, idCard, integerP, EnTextCode, cnText, integerN, checkLongitude, checkLatitude, checkString, validateNum, validateDecimal, integerAge
 }
