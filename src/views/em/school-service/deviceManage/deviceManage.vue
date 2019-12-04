@@ -36,7 +36,7 @@ export default {
   mixins: [emMixin, emPage],
   data() {
     return {
-      tableType: 'device_manage',// 默认显示第一个
+      tableType: 'device_manage', // 默认显示第一个
       tableTabs: [], // 选项卡list
       tabPosition: 'left',
       tableTabsValue: 'device_manage',

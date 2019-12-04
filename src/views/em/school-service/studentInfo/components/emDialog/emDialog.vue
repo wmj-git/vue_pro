@@ -114,6 +114,21 @@ export default {
   },
   beforeDestroy() {
   },
+  watch: {
+    dialogStatus(msg) {
+      if (msg !== '') {
+        if (!this.$refs[this.system_id]) {
+          // 初次打开子组件弹窗的时候，form表单dom元素还没加载成功，需要异步获取
+          this.$nextTick(() => {
+            this.$refs[this.system_id].resetFields() // 去除验证
+          })
+        } else {
+          // 再次打开子组件弹窗，子组件弹窗的form表单dom元素已经加载好了，不需要异步获取
+          this.$refs[this.system_id].resetFields() // 去除验证
+        }
+      }
+    }
+  },
   methods: {
     init() {
       this.set = dataInitFn(this.set, this.meta)
