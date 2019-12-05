@@ -126,7 +126,7 @@ export default {
       const _controlId = _obj.item.meta.control_id
       const temp = this.getTemp()
       switch (_controlType) {
-        case 'dialog':
+        case 'dialog': // 修改、添加表单
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta
           })
@@ -140,6 +140,11 @@ export default {
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp
+          })
+          break
+        case 'importDialog': // 导入弹框
+          vueBus.$emit(_controlId, {
+            meta: _obj.item.meta
           })
           break
         case 'default':

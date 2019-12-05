@@ -160,7 +160,7 @@ export default {
                 optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 班级id下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学生id下拉选项赋值
             break
           case 'classId':
             var optionsArrs = []
@@ -172,7 +172,7 @@ export default {
                 optionsArrs.push({ 'label': _val.name, 'value': _val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 学生id下拉选项赋值
+            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 班级id下拉选项赋值
             break
         }
       }
