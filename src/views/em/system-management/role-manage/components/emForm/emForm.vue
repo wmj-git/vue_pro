@@ -217,12 +217,9 @@ export default {
           })
           break
         case 'RoleManage_EmForm_ControlType--RoleManage_EmDialog_openFn':
-          this.$refs[this.system_id].validate((valid) => {
-            vueBus.$emit(_controlId, {
-              meta: _obj.meta,
-              data: _Form
-            })
-            this.controlGroupFn(_obj, _Form)
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: _Form
           })
           break
         case 'RoleManage_EmForm_btnClick--RoleManage_EmForm_setForm':
@@ -399,17 +396,17 @@ export default {
       console.log('setForm', _obj)
       let _set = {}
       let _data = {}
-      if ('set' in _obj) {
-        _set = JSON.parse(JSON.stringify(_obj.set))
+      if ('meta' in _obj && 'fn_set' in _obj.meta) {
+        _set = JSON.parse(JSON.stringify(_obj.meta.fn_set))
+      }
+      if ('data' in _obj) {
         _data = JSON.parse(JSON.stringify(_obj.data))
-      } else {
-        _data = JSON.parse(JSON.stringify(_obj.data))
-        Object.assign(this.Form, _data)
-        const val = this.Form
-        if ('extData' in val && 'imgUrl' in val) {
-          this.Form.imgUrl = val.extData.imgUrl
-        }
-        return
+      }
+      _data = JSON.parse(JSON.stringify(_obj.data))
+      Object.assign(this.Form, _data)
+      const val = this.Form
+      if ('extData' in val && 'imgUrl' in val) {
+        this.Form.imgUrl = val.extData.imgUrl
       }
 
       if (!('requestType' in _set)) {

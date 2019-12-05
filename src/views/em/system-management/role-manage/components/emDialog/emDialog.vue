@@ -14,7 +14,7 @@
       <el-row :gutter="2">
         <template v-for="(component, index) in children.ContainerItem">
           <el-col :key="index" :span="Number(component.meta.span)" :offset="Number(component.meta.offset)">
-            <component :is="component.meta.componentType" :data="component" />
+            <component :is="component.meta.componentType" :ref="component.meta.system_id" :data="component" />
           </el-col>
         </template>
       </el-row>
@@ -72,6 +72,17 @@ export default {
 
   },
   methods: {
+    fn(_obj, _data) {
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'none':
+          console.log(_controlId)
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       if (!(this.set.clear)) {

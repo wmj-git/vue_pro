@@ -2,6 +2,7 @@ import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
 import vueBus from '@/utils/vueBus'
 import { FilterTree, TimeFn, promiseFn } from '@/utils/tool'
+import { DataProcessing } from './dataProcessing'
 
 // 定义一个混入对象
 export const emMixin = {
@@ -58,6 +59,9 @@ export const emMixin = {
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
       switch (_controlType) {
         case 'default':
+          if ('meta' in this.senderData) {
+            this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
+          }
           this.fetchFn({
             meta: _obj.meta,
             data: _data
@@ -67,6 +71,16 @@ export const emMixin = {
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: _data
+          })
+          break
+        case 'promiseVueBus':
+          promiseFn(500, () => {
+            return true
+          }, function() {
+            vueBus.$emit(_controlId, {
+              meta: _obj.meta,
+              data: _data
+            })
           })
           break
         case 'routerReplace':
@@ -80,6 +94,22 @@ export const emMixin = {
             meta: _obj.meta,
             data: _data
           }})
+          break
+        case 'promiseRouterReplace':
+          promiseFn(500, () => {
+            return true
+          }, function() {
+            if (this.$route.query.data) {
+              this.$router.replace({ path: _routePath, query: {
+                meta: null,
+                data: null
+              }})
+            }
+            this.$router.replace({ path: _routePath, query: {
+              meta: _obj.meta,
+              data: _data
+            }})
+          })
           break
         case 'TimeFn':
           new TimeFn(this.system_id + '_t1', () => {
@@ -116,16 +146,40 @@ export const emMixin = {
       const _fn = _query.meta.fn
       const _fn_type = _query.meta.fn_type
       const _controlId = _query.meta.control_id
+      const dataProcessing = new DataProcessing()
+      let _dataProcessing
+      // 数据转换
+      if ('fn_set' in _query.meta) {
+        _dataProcessing = dataProcessing.transducerFn(_query.meta.fn_set, _query.data, this.senderData)
+      }
+
       let _refs
       switch (_fn_type) {
         case 'default':
           if (_fn) {
-            this[_fn](_query)
+            this[_fn]({
+              meta: _query.meta,
+              data: _dataProcessing
+            })
           }
+          this.controlGroupFn(_query, _query.data)
+          break
+        case 'PromiseDefault':
+          promiseFn(500, () => {
+            return true
+          }, function() {
+            if (_fn) {
+              this[_fn]({
+                meta: _query.meta,
+                data: _dataProcessing
+              })
+            }
+          })
           this.controlGroupFn(_query, _query.data)
           break
         case 'refs':
           _refs = this.$refs[_controlId]
+          console.log('refs', _refs)
           if (_refs && _refs.length > 0) {
             _refs[0].senderData = JSON.parse(JSON.stringify({
               meta: _query.meta,
@@ -133,7 +187,8 @@ export const emMixin = {
             }))
             _refs[0][_query.meta.fn]({
               meta: _query.meta,
-              data: _query.data
+              set: _query.meta.fn_set,
+              data: _dataProcessing
             })
           }
           this.controlGroupFn(_query, _query.data)
@@ -150,7 +205,7 @@ export const emMixin = {
             }))
             _refs[0][_query.meta.fn]({
               meta: _query.meta,
-              data: _query.data
+              data: _dataProcessing
             })
           })
           this.controlGroupFn(_query, _query.data)
@@ -231,9 +286,10 @@ export const emMixin = {
             }
           }
           this[_fn](val)
-          break
-        case 'RoleManage_EmForm_updateOptionParamsFn':
 
+          break
+        // 已转换
+        case 'RoleManage_EmForm_updateOptionParamsFn':
           if (_meta.fn_set.dataType === 'stringData') {
             val = _meta.fn_set.requestParams
             val = _obj.data[val]
@@ -302,11 +358,6 @@ export const emMixin = {
           }
           this[_fn]({
             Form: val
-          })
-          break
-        case 'BaseTable_EmTableGroup_EmTable_updateFn':
-          this[_fn]({
-            Form: _obj.Form
           })
           break
         case 'BaseTable_EmDialog_openFn':
