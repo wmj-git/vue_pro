@@ -196,25 +196,6 @@ export default {
             }
           })
           break
-        case 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_updateFn':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                Form: _Form
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
-          })
-          break
-        case 'BaseTable_EmForm_btnClick--BaseTable_EmDialog_closeFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _Form
-          })
-          break
         case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
           this.$refs[this.system_id].validate((valid) => {
             if (valid) {

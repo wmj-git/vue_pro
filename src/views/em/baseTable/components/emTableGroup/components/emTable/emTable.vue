@@ -225,6 +225,7 @@ export default {
     },
     // 更新行数据
     updateFn(_obj) {
+      console.log('updateFn', _obj)
       const _this = this
       update({
         url: _this.set.updateUrl,
