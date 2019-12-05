@@ -35,9 +35,10 @@ import EmTableGroup from '@/views/em/school-service/parentInfo/components/emTabl
 import EmForm from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/parentInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/parentInfo/components/emDialog/emDialog'
+import EmImport from '@/views/em/school-service/parentInfo/components/emImport/emImport'
 export default {
   name: 'ParentInfo',
-  components: { splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
+  components: { splitPane, EmTableGroup, EmForm, EmTable, EmDialog, EmImport },
   mixins: [emMixin, emPage],
   data() {
     return {

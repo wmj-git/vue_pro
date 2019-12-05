@@ -45,3 +45,11 @@ export function ClassId(obj) {
     params: obj
   })
 }
+// csv文件导入
+export function uploadFile(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    params: obj.params
+  })
+}

@@ -247,6 +247,11 @@ export const emMixin = {
         case 'RoleManage_EmForm_fn':
           this[_fn](_obj.meta.fn_set, _obj.meta)
           break
+        case 'TableInfo_EmImport_ExcelData': // 导入
+          this[_fn]({
+            params: _obj.params
+          })
+          break
         case 'TableInfo_EmForm_queryData': // 查询
           this[_fn]({
             temp: _obj.temp

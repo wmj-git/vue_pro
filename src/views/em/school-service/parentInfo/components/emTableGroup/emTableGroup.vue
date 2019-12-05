@@ -22,6 +22,13 @@
           </el-col>
         </template>
       </div>
+      <div class="emImport">
+        <template v-for="(item, items) in children.importItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-import :data="item" />
+          </el-col>
+        </template>
+      </div>
     </el-card>
   </div>
 </template>
@@ -31,9 +38,10 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import EmTable from '@/views/em/school-service/parentInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/parentInfo/components/emDialog/emDialog'
 import EmForm from '@/views/em/school-service/parentInfo/components/emButtons/emButtons'
+import EmImport from '@/views/em/school-service/parentInfo/components/emImport/emImport'
 export default {
   name: 'EmTableGroup',
-  components: { EmForm, EmDialog, EmTable },
+  components: { EmForm, EmDialog, EmTable, EmImport },
   mixins: [emMixin],
   data() {
     return {
@@ -44,7 +52,8 @@ export default {
       children: {
         operateItem: [], // 表头操作表单
         formItem: [],
-        dataItem: []
+        dataItem: [],
+        importItem: [] // 导入
       }
     }
   },
