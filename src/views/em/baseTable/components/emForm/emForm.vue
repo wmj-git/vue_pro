@@ -361,21 +361,17 @@ export default {
     setForm(_obj) { // 设置表单值
       const _this = this
       console.log('setForm', _obj)
-      this.onReset()
       let _set = {}
       let _data = {}
-      if ('set' in _obj) {
-        _set = JSON.parse(JSON.stringify(_obj.set))
-        _data = JSON.parse(JSON.stringify(_obj.Form))
-      } else if ('data' in _obj) {
+      if ('meta' in _obj && 'fn_set' in _obj.meta) {
+        _set = JSON.parse(JSON.stringify(_obj.meta.fn_set))
+      }
+      if ('data' in _obj) {
         _data = JSON.parse(JSON.stringify(_obj.data))
-        Object.assign(this.Form, _data)
-        return
       } else {
         _data = JSON.parse(JSON.stringify(_obj.Form))
-        Object.assign(this.Form, _data)
-        return
       }
+      Object.assign(this.Form, _data)
 
       if (!('requestType' in _set)) {
         return
