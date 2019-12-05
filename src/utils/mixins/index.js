@@ -67,6 +67,19 @@ export const emMixin = {
             data: _data
           })
           break
+        case 'promiseDefault':
+          promiseFn(100, () => {
+            return true
+          }, () => {
+            if ('meta' in this.senderData) {
+              this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
+            }
+            this.fetchFn({
+              meta: _obj.meta,
+              data: _data
+            })
+          })
+          break
         case 'VueBus':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
@@ -74,7 +87,7 @@ export const emMixin = {
           })
           break
         case 'promiseVueBus':
-          promiseFn(500, () => {
+          promiseFn(100, () => {
             return true
           }, function() {
             vueBus.$emit(_controlId, {
@@ -96,7 +109,7 @@ export const emMixin = {
           }})
           break
         case 'promiseRouterReplace':
-          promiseFn(500, () => {
+          promiseFn(100, () => {
             return true
           }, function() {
             if (this.$route.query.data) {
@@ -130,7 +143,6 @@ export const emMixin = {
       }
     },
     fetchData() {
-      // console.log('$route', this.$route, this.system_id)
       const _query = this.$route.query
       if (_query && 'meta' in _query) {
         const _system_id = _query.meta.control_id
@@ -165,7 +177,7 @@ export const emMixin = {
           this.controlGroupFn(_query, _query.data)
           break
         case 'PromiseDefault':
-          promiseFn(500, () => {
+          promiseFn(100, () => {
             return true
           }, function() {
             if (_fn) {
@@ -194,7 +206,7 @@ export const emMixin = {
           this.controlGroupFn(_query, _query.data)
           break
         case 'PromiseRefs':
-          promiseFn(500, () => {
+          promiseFn(100, () => {
             _refs = _this.$refs[_controlId]
             console.log('_refs', _refs)
             return _refs && _refs.length > 0

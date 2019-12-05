@@ -60,6 +60,7 @@
                 :filterable="item.meta.allowCreate ? item.meta.allowCreate : false"
                 :allow-create="item.meta.allowCreate ? item.meta.allowCreate : false"
                 default-first-option
+                @change="selectOnChangeFn(item, Form)"
               >
                 <template v-for="option in item.meta.options_OBJ.data">
                   <el-option :key="option.value" :label="option.label" :value="option.value" />
@@ -175,25 +176,25 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _Form = this.getForm()
-
       let _val = {}
       let _row = {}
       switch (_controlType) {
         case 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_addFn':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                Form: _Form
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            Form: _Form
           })
           break
         case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
@@ -282,10 +283,37 @@ export default {
       const _params = _obj.data
       this.children.formItem.forEach(async(_item) => {
         if ('system_ids' in _set && _set.system_ids.indexOf(_item.meta.system_id) !== -1) {
-          _item.meta.options_OBJ.data = await this.optionParamsFn({
-            meta: _meta,
-            params: _params
-          })
+          if (_set.requestType === 'optionParams') {
+            _item.meta.options_OBJ.data = await this.optionParamsFn({
+              meta: _meta,
+              params: _params
+            })
+          } else if (_set.requestType === 'option') {
+            let _options = []
+            await optionData({
+              url: _set.requestUrl,
+              params: _params
+            }).then((res) => {
+              if (res && res.statusCode === 200) {
+                const _keys = _set.successKeys
+                const _data = []
+                res.data.forEach((_item) => {
+                  const _value = {}
+                  for (const _k in _keys) {
+                    _value[_k] = _item[_keys[_k]]
+                  }
+                  _data.push(_value)
+                })
+                _options = _options.concat(_data)
+              } else {
+                this.$message({
+                  message: '获取数据错误',
+                  type: 'error'
+                })
+              }
+            })
+            _item.meta.options_OBJ.data = _options
+          }
         }
       })
       this.defaultFn(this.children.formItem)
@@ -449,6 +477,14 @@ export default {
     },
     dropzoneR(file) {
       this.$message({ message: 'Delete success', type: 'success' })
+    },
+    selectOnChangeFn(_obj, _data) {
+      console.log('selectOnChangeFn', _obj, _data)
+      if ('onChange' in _obj.meta) {
+        this.fn({
+          meta: _obj.meta.onChange
+        }, _data)
+      }
     }
   }
 }

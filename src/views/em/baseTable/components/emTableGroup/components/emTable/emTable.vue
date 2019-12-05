@@ -102,7 +102,7 @@ export default {
       pagination: { // 分页
         currentPage: 1, // 当前页
         pageSize: 10, // 当前信息条数
-        totalSize: 0// 总条数
+        totalSize: 0 // 总条数
       }
     }
   },
@@ -200,7 +200,6 @@ export default {
     },
     // 查询数据
     queryFn(_obj) {
-      console.log('table', _obj)
       if (_obj.Form) {
         this.createDataFn(_obj.Form)
       } else {
@@ -269,7 +268,7 @@ export default {
                   message: '恭喜你，删除成功',
                   type: 'success'
                 })
-                _this.createDataFn()
+                this.callbackFn(this.senderData, res)
               }
             }
           })

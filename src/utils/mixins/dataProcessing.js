@@ -23,6 +23,23 @@ export class DataProcessing {
         Object.assign(_value, _data)
         _value = dataInitFn(_key, _value)
         break
+      case 'objectData_a':
+        _key = Object.assign({}, _set.requestParams)
+        for (const _k in _key) {
+          _data[_k] = _data[_key[_k]]
+        }
+        _value = Object.assign({}, _data)
+        break
+      case 'objectData_b':
+        _key = Object.assign({}, _set.paramsKeys)
+        for (const _k in _key) {
+          _key[_k] = _data[_key[_k]]
+        }
+        _value = Object.assign({}, _key, _set.requestParams)
+        break
+      case 'valueData':
+        _value = _set.requestParams
+        break
       default:
         _value = _data
     }
