@@ -20,7 +20,7 @@ export class DataProcessing {
       case 'objectData':
         _key = Object.assign({}, _set.requestParams)
         _value = JSON.parse(JSON.stringify(_senderData.data))
-        Object.assign(_value, _data)
+        _value = Object.assign({}, _value, _data)
         _value = dataInitFn(_key, _value)
         break
       case 'objectData_a':

@@ -106,6 +106,9 @@
                 />
               </div>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='tree'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <em-tree :data="item" />
+            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
@@ -131,11 +134,13 @@ import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
 import Dropzone from '@/components/Dropzone'
+import emTree from '@/views/em/baseTable/components/emTree/emTree'
 export default {
   name: 'EmForm',
   components: {
     JsonEditor,
-    Dropzone
+    Dropzone,
+    emTree
   },
   mixins: [emMixin],
   data() {
@@ -452,9 +457,10 @@ export default {
             console.log('submit!', res)
             if (res && res.statusCode === 200) {
               this.$message({
-                message: '恭喜你，添加成功',
+                message: res.message,
                 type: 'success'
               })
+              this.callback(this.sendData, res)
             }
           })
         } else {
