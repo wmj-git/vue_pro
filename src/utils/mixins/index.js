@@ -208,7 +208,6 @@ export const emMixin = {
         case 'PromiseRefs':
           promiseFn(100, () => {
             _refs = _this.$refs[_controlId]
-            console.log('_refs', _refs)
             return _refs && _refs.length > 0
           }, function() {
             _refs[0].senderData = JSON.parse(JSON.stringify({
