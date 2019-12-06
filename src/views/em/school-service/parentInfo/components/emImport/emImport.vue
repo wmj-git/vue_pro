@@ -53,7 +53,7 @@ export default {
       },
       uploadLoading: '',
       action: '',
-      files: [], // 选择文件
+      files: [] // 选择文件
     }
   },
   created() {
@@ -107,11 +107,12 @@ export default {
         const fileObj = params.file
         const formData = new FormData()
         this.files = params.file
-        formData.append('files', this.files)
+        console.log(225, this.files)
+        formData.append('files', this.files[0])
         console.log('form数据', formData)
         uploadFile({
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
-          data: formData
+          params: formData
         }).then(response => {
           console.log(response)
           this.$message.info('文件：' + fileObj.name + '上传成功')
