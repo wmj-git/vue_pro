@@ -59,8 +59,10 @@ export const emMixin = {
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
       switch (_controlType) {
         case 'default':
-          if ('meta' in this.senderData) {
+          if (this.senderData && 'meta' in this.senderData) {
             this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
+          } else {
+            this.senderData = JSON.parse(JSON.stringify(_obj))
           }
           this.fetchFn({
             meta: _obj.meta,
@@ -71,8 +73,10 @@ export const emMixin = {
           promiseFn(100, () => {
             return true
           }, () => {
-            if ('meta' in this.senderData) {
+            if (this.senderData && 'meta' in this.senderData) {
               this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
+            } else {
+              this.senderData = JSON.parse(JSON.stringify(_obj))
             }
             this.fetchFn({
               meta: _obj.meta,

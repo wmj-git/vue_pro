@@ -10,6 +10,8 @@
           :data="tableData"
           style="width: 100%;"
           :max-height="set.maxHeight"
+          row-key="id"
+          :tree-props="{children: 'children'}"
           @current-change="handleCurrentChange"
           @selection-change="handleSelectionChange"
           @row-click="handleRowClick"
@@ -36,7 +38,7 @@
               :formatter="formatterFn"
             />
           </template>
-          <el-table-column fixed="right" label="操作">
+          <el-table-column  :width="248" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
@@ -60,7 +62,7 @@
       <el-col :span="48">
         <el-pagination
           :current-page="pagination.currentPage"
-          :page-sizes="[5,10,20,50]"
+          :page-sizes="[10,50,100,500,1000]"
           :page-size="pagination.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pagination.totalSize"
@@ -75,7 +77,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { staticFormatterMap } from '@/utils/formatterMap'
-import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn, toTree } from '@/utils/tool'
 import { add, del, update, query } from '@/api/baseTable/table'
 export default {
   name: 'EmTable',
@@ -88,6 +90,11 @@ export default {
         removeUrl: '',
         updateUrl: '',
         updateMethod: 'post',
+        treeShow: false,
+        treeShow_set: {
+          id: 'id',
+          pid: 'pid'
+        },
         maxHeight: '100',
         tableHeader: []
       },
@@ -119,7 +126,6 @@ export default {
   methods: {
     fn(_obj, _data) {
       Object.assign(_data, _data.row)
-      console.log('table', _data)
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
@@ -166,8 +172,14 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(res => {
-          console.log(res)
-          this.tableData = res.data.list
+          if (this.set.treeShow) {
+            this.tableData = toTree(res.data.list, {
+              id: this.set.treeShow_set.id,
+              pid: this.set.treeShow_set.pid
+            })
+          } else {
+            this.tableData = res.data.list
+          }
           this.pagination.totalSize = res.data.total
           this.listLoading = false
         })
@@ -212,14 +224,15 @@ export default {
       const _this = this
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
-        params: _obj.Form
+        params: _obj.data
       }).then(res => {
         if (res && res.statusCode === 200) {
           _this.$message({
             message: '恭喜你，添加成功',
             type: 'success'
           })
-          this.createDataFn()
+          this.listLoading = false
+          this.callbackFn(this.senderData, res)
         }
       })
     },
@@ -243,7 +256,7 @@ export default {
         }
       })
     },
-    // 删除行
+    // 选择删除行
     delFn(_obj) {
       console.log('del', _obj)
       const _this = this

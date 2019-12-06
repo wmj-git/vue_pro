@@ -2,7 +2,7 @@ import { MessageBox } from 'element-ui'
 // import router from './router'
 // import store from '@/store'
 
-// 树型数据转换
+// 树型数据排序
 function treeWeight(_nodes) {
   function compare(obj1, obj2) {
     const val1 = obj1.weight
@@ -28,7 +28,15 @@ function treeWeight(_nodes) {
   return datalist
 }
 
-function treeStructure(data) {
+function treeStructure(data, set) {
+  console.log('treeStructure', set)
+  const _set = {
+    id: 'id',
+    pid: 'pid'
+  }
+  if (set) {
+    Object.assign(_set, set)
+  }
   // 删除 所有 children,以防止多次调用
   data.forEach(function(item) {
     delete item.children
@@ -37,13 +45,13 @@ function treeStructure(data) {
   // 将数据存储为 以 id 为 KEY 的 map 索引数据列
   const map = {}
   data.forEach(function(item) {
-    map[item.id] = item
+    map[item[_set.id]] = item
   })
   //        console.log(map);
   const val = []
   data.forEach(function(item) {
     // 以当前遍历项，的pid,去map对象中找到索引的id
-    const parent = map[item.pid]
+    const parent = map[item[_set.pid]]
     // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
     if (parent) {
       (parent.children || (parent.children = [])).push(item)
@@ -54,52 +62,20 @@ function treeStructure(data) {
   })
   const _val = {}
   val.forEach((_item) => {
-    if (_item.pid in _val) {
-      _val[_item.pid].push(_item)
+    if (_item[_set.pid] in _val) {
+      _val[_item[_set.pid]].push(_item)
     } else {
-      _val[_item.pid] = []
-      _val[_item.pid].push(_item)
+      _val[_item[_set.pid]] = []
+      _val[_item[_set.pid]].push(_item)
     }
   })
   return _val
   // return val
 }
 
-/* function treeStructure(_nodes) {
-  const nodes = _nodes
-
-  // sort
-  function cmp(a, b) {
-    return a.pid - b.pid
-  }
-
-  nodes.sort(cmp)
-
-  const midObj = {}
-  // 从后向前遍历
-  for (let i = nodes.length - 1; i >= 0; i--) {
-    const nowPid = nodes[i].pid
-    const nowId = nodes[i].id
-    // 建立当前节点的父节点的children 数组
-    if (midObj[nowPid]) {
-      midObj[nowPid].unshift(nodes[i])
-    } else {
-      midObj[nowPid] = []
-      midObj[nowPid].unshift(nodes[i])
-    }
-    // 将children 放入合适的位置
-    if (midObj[nowId]) {
-      nodes[i].children = midObj[nowId]
-      delete midObj[nowId]
-    }
-  }
-
-  return midObj
-}*/
-
-export function toTree(_nodes) {
+export function toTree(_nodes, _set) {
   const _Tree = []
-  const _data = treeStructure(_nodes)
+  const _data = treeStructure(_nodes, _set)
   for (const _k in _data) {
     _data[_k].forEach(function(_obj) {
       _Tree.push(_obj)
