@@ -16,7 +16,6 @@ export function del(obj) { // 表格数据删
 }
 
 export function query(obj) { // 表格数据查
-  console.log('query', obj)
   let _method = 'post'
 
   if ('method' in obj) {
