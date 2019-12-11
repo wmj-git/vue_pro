@@ -86,6 +86,7 @@ export default {
     return {
       set: {
         queryUrl: '',
+        queryMethod: 'post',
         appendUrl: '',
         removeUrl: '',
         updateUrl: '',
@@ -170,6 +171,7 @@ export default {
       } finally {
         query({ // 页面渲染时拿表格数据
           url: this.set.queryUrl,
+          method: this.set.queryMethod,
           params: _params
         }).then(res => {
           if (this.set.treeShow) {
