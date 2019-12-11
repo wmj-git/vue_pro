@@ -331,7 +331,7 @@ export const emMixin = {
             params: _obj.params
           })
           break
-        case 'TableInfo_EmForm_editForm': // 修改-弹框显示(无需传递参数)
+        case 'TableInfo_EmForm_editForm': // 修改-弹框显示(传递行数据给表单)
           console.log(1, _obj.data)
           this[_fn]({
             meta: _meta,

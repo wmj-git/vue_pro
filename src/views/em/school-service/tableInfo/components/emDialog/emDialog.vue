@@ -262,11 +262,10 @@ export default {
               this.temp[i] = new Date(this.temp[i]).getTime()
             }
           }
-          const obj = {
+          editList({
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
-          }
-          editList(obj).then(() => {
+          }).then(() => {
             console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
