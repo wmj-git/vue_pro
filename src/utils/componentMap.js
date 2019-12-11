@@ -11,7 +11,8 @@ const componentMap = {
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
   'TeacherInfo': () => import('@/views/em/school-service/teacherInfo/teacherInfo'),
   'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
-  'BaseTable': () => import('@/views/em/baseTable/baseTable')
+  'BaseTable': () => import('@/views/em/baseTable/baseTable'),
+  'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo')
 }
 
 export default componentMap
