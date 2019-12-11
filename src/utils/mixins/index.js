@@ -319,9 +319,7 @@ export const emMixin = {
           this[_fn](_obj.meta.fn_set, _obj.meta)
           break
         case 'TableInfo_EmImport_ExcelData': // 导入
-          this[_fn]({
-            params: _obj.params
-          })
+          this[_fn](_obj)
           break
         case 'TableInfo_EmForm_queryData': // 查询
           this[_fn]({

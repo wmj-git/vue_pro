@@ -1,37 +1,39 @@
 <template>
   <div class="emImport_container">
-  <el-dialog :title="meta.title" :visible.sync="dialogFormVisible" :modal-append-to-body="false">
-    <el-upload
-      :ref="system_id"
-      class="upload-demo"
-      :action="meta.action"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :file-list="fileList"
-      :headers="headers"
-      :limit="1"
-      name="upfile"
-      accept=".csv "
-      :on-error="uploadFileError"
-      :on-success="uploadFileSuccess"
-      :auto-upload="false"
-    >
-      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="downloadModel">下载模板</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传csv文件</div>
-    </el-upload>
-    <div slot="footer" class="dialog-footer">
-      <el-button class="em-button" @click="dialogFormVisible = false">取 消</el-button>
-      <el-button type="primary" class="em-button" @click="submitUpload">确 定</el-button>
-    </div>
-  </el-dialog>
+    <el-dialog :title="meta.title" :visible.sync="dialogFormVisible" :modal-append-to-body="false">
+      <el-upload
+        :ref="system_id"
+        v-loading="uploadLoading"
+        class="upload-demo"
+        :action="action"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList"
+        :headers="headers"
+        :limit="1"
+        name="file"
+        accept=".xlsx "
+        :on-error="uploadFileError"
+        :on-success="uploadFileSuccess"
+        :auto-upload="false"
+        :http-request="uploadFile"
+        :on-change="fileChange"
+      >
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="downloadModel">下载模板</el-button>
+        <div slot="tip" class="el-upload__tip">请先下载模板，且只能上传csv文件！</div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="em-button" @click="cancelUpload">取 消</el-button>
+        <el-button type="primary" class="em-button" @click="submitUpload">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { emMixin } from '@/utils/mixins'
-import { uploadFile } from '@/api/schoolService/parentInfo'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { getToken } from '@/utils/auth'
+import { uploadFile } from '@/api/schoolService/parentInfo'
 export default {
   name: 'EmImport',
   mixins: [emMixin],
@@ -47,8 +49,11 @@ export default {
       },
       dialogFormVisible: false,
       headers: {
-        'Authorization': getToken()
-      }
+        'Content-Type': 'multipart/form-data'
+      },
+      uploadLoading: '',
+      action: '',
+      files: [] // 选择文件
     }
   },
   created() {
@@ -59,20 +64,6 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
-    fn(_fn, _obj) {
-      const _controlType = _obj.control_type ? _obj.control_type : ''
-      // const _controlId = _obj.item.meta.control_id
-      switch (_controlType) {
-        case 'default':
-          this[_fn](_obj.meta)
-          break
-        default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
-      }
-    },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -81,7 +72,7 @@ export default {
     },
     uploadFileError(err, file, fileList) {
       console.log(err)
-      this.$message.error('错了哦，这是一条错误消息')
+      this.$message.error('文件导入失败')
     },
     uploadFileSuccess(response, file, fileList) {
       console.log(response.data.jsonmsg.ERRORMSG)
@@ -103,20 +94,37 @@ export default {
       window.location.href = process.env.VUE_APP_BASE_API + this.set.downloadUrl
     },
     // 导入csv
-    import(obj) {
+    import() {
       this.dialogFormVisible = true
-      console.log('obj', obj)
       this.action = process.env.VUE_APP_BASE_API + this.set.importUrl
-     /* uploadFile({
-        url: process.env.VUE_APP_BASE_API + this.set.importUrl,
-      }).then(val => {
-        console.log(22, val)
-        this.action = val
-        console.log('action', this.action)
-      })*/
     },
-    submitUpload() {
+    fileChange(file) {
+      this.files.push(file.raw) // 上传文件变化时将文件对象push进files数组
+    },
+    // 上传文件
+    uploadFile(params) {
+      if (this.files) {
+        const fileObj = params.file
+        const formData = new FormData()
+        this.files = params.file
+        console.log(225, this.files)
+        formData.append('files', this.files[0])
+        console.log('form数据', formData)
+        uploadFile({
+          url: process.env.VUE_APP_BASE_API + this.set.importUrl,
+          params: formData
+        }).then(response => {
+          console.log(response)
+          this.$message.info('文件：' + fileObj.name + '上传成功')
+        })
+      }
+    },
+    submitUpload(event) {
       this.$refs[this.system_id].submit()
+    },
+    cancelUpload() {
+      this.dialogFormVisible = false
+      this.$message.info('已取消上传')
     }
   }
 }
