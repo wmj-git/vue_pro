@@ -42,7 +42,7 @@ export function ClassId(obj) {
   return request({
     url: obj.url,
     method: 'post',
-    params: obj
+    params: obj.params
   })
 }
 // csv文件导入

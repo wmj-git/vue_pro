@@ -68,12 +68,6 @@ export default {
       },
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [
-        {
-          value: '',
-          formatterSet: {
-            url: ''
-          }
-        }
       ],
       tableDataEnd: [],
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
@@ -90,11 +84,7 @@ export default {
     this.init()
     this.getList()
     vueBus.$on('query', () => {
-      console.log(123)
       this.getList()
-    })
-    vueBus.$on('device_type', (val) => {
-      this.formatterMap = val // 接受后台获取的动态字段值(传值时已标明字段值)
     })
   },
   methods: {
@@ -134,8 +124,7 @@ export default {
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page,
-        enumType: 'device_type' // 设备类型
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}
@@ -162,10 +151,6 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    /* edit(row) {
-      console.log('选择', Object.assign({}, row))
-      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
-    },*/
     // 删除选中行
     remove() {
       var _val = this.multipleSelection

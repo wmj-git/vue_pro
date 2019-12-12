@@ -103,7 +103,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, schoolInfo, deviceType } from '@/api/schoolService/tableInfo'
+import { addList, editList, schoolInfo } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -140,7 +140,6 @@ export default {
   },
   async created() {
     await this.init()
-    vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
   },
@@ -162,26 +161,6 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学校组织编码下拉选项赋值
-            break
-          case 'type': // 设备管理-设备类型
-            var typeArr = []
-            var _obj = {
-              url: this.set.searchUrl,
-              params: {
-                enumType: 'device_type'
-              }
-            }
-            await deviceType(_obj).then(response => {
-              const _map = new Map()
-              response.data.forEach((_val) => {
-                typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
-                _map.set(_val.id, _val.enumCvalue)
-              })
-              Object.assign(this.typeArrList, { // 表格type字段需要转换为对应的中文显示（需要注明字段名：type）
-                type: _map
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
             break
         }
       }
@@ -235,6 +214,11 @@ export default {
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
+          for (const i in this.temp) { // 寻找时间字段后再转换
+            if (i === 'entryTime') {
+              this.temp[i] = new Date(this.temp[i]).getTime()
+            }
+          }
           const obj = {
             url: this.set.appendUrl,
             params: this.temp
@@ -264,7 +248,7 @@ export default {
           }
           editList({
             url: this.set.updateUrl,
-            params: Object.assign({}, this.temp)
+            params: this.temp
           }).then(() => {
             console.log('修改数据', this.temp)
             const _this = this
