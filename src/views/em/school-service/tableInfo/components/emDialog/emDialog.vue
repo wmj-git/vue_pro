@@ -246,10 +246,11 @@ export default {
               this.temp[i] = new Date(this.temp[i]).getTime()
             }
           }
-          editList({
+          const obj = {
             url: this.set.updateUrl,
-            params: this.temp
-          }).then(() => {
+            params: Object.assign({}, this.temp)
+          }
+          editList(obj).then(() => {
             console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
@@ -270,7 +271,6 @@ export default {
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },

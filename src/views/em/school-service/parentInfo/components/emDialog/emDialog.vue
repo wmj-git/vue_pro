@@ -136,6 +136,7 @@ export default {
   },
   created() {
     this.init()
+    console.log(this.$data)
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.edit()
@@ -231,9 +232,9 @@ export default {
           /* case 'studentIds':
             val.meta.itemFormVisible = false // 修改时该字段应该隐藏
             break*/
-          case 'classId':
+          /* case 'classId':
             val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break
+            break*/
         }
       })
       try {
@@ -250,7 +251,7 @@ export default {
         if (valid) {
           const obj = {
             url: this.set.appendUrl,
-            params: this.temp
+            params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
             console.log('填入数据：', obj)
@@ -273,8 +274,9 @@ export default {
         if (valid) {
           const obj = {
             url: this.set.updateUrl,
-            params: Object.assign({}, this.temp)
+            params: this.temp
           }
+          console.log(25, obj)
           editList(obj).then(() => {
             console.log('修改数据', this.temp)
             const _this = this
@@ -296,7 +298,6 @@ export default {
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },
