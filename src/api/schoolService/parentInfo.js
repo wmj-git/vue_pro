@@ -50,6 +50,6 @@ export function uploadFile(obj) {
   return request({
     url: obj.url,
     method: 'post',
-    params: obj.params
+    data: obj.params
   })
 }

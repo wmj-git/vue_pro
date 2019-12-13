@@ -104,18 +104,22 @@ export default {
     // 上传文件
     uploadFile(params) {
       if (this.files) {
-        const fileObj = params.file
         const formData = new FormData()
         this.files = params.file
-        console.log(225, this.files)
-        formData.append('files', this.files[0])
-        console.log('form数据', formData)
+        formData.append('file', this.files)
         uploadFile({
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
           params: formData
         }).then(response => {
-          console.log(response)
-          this.$message.info('文件：' + fileObj.name + '上传成功')
+          if (response.statusCode === 200) {
+            this.$notify({
+              message: '数据导入成功',
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+          } else {
+            this.$notify.error('数据导入失败')
+          }
         })
       }
     },

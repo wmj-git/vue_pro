@@ -139,11 +139,6 @@ export default {
   },
   created() {
     this.init()
-    console.log(this.$data)
-    vueBus.$on(this.set.vueBusName, val => {
-      this.temp = val // 接收修改时的表单值
-      this.edit()
-    })
   },
   beforeDestroy() {
   },

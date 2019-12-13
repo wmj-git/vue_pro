@@ -149,9 +149,6 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleEdit(row) {
-      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
-    },
     // 删除选中行
     remove() {
       var _val = this.multipleSelection
