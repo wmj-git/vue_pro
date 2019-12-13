@@ -31,6 +31,7 @@
   </div>
 </template>
 <script>
+import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { uploadFile } from '@/api/schoolService/parentInfo'
@@ -111,12 +112,14 @@ export default {
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
           params: formData
         }).then(response => {
+          console.log('导入结果', response)
           if (response.statusCode === 200) {
             this.$notify({
               message: '数据导入成功',
               type: 'success'
             })
             this.dialogFormVisible = false
+            vueBus.$emit('query')
           } else {
             this.$notify.error('数据导入失败')
           }
