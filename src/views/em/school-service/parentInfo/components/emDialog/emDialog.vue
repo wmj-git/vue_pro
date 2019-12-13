@@ -80,13 +80,23 @@
               </el-select>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              {{ temp[item.meta.valueKey] ? temp[item.meta.valueKey] : "" }}
+              <el-row>
+                <el-col :span="16">
+                  <el-image
+                    :src="temp[item.meta.valueKey]"
+                    style="max-height: 120px;overflow: hidden"
+                    fit="fit"
+                  />
+                </el-col>
+                <el-col :span="28">
               <dropzone
                 :id="item.meta.system_id"
                 :url="BASE_API+item.meta.url"
                 :item="item"
                 @dropzone-removedFile="dropzoneR"
                 @dropzone-success="dropzoneS" />
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
         </template>
@@ -194,12 +204,9 @@ export default {
       const _response = JSON.parse(file.xhr.response)
       const _imgUrl = _response.data[0].networkPath
       this.temp[item.meta.valueKey] = _imgUrl // 后台获取到的url地址赋值给表单
-      this.$message({ message: '图片上传成功', type: 'success' })
     },
     // 移除图片
     dropzoneR(file) {
-      console.log(file)
-      this.$message({ message: 'Delete success', type: 'success' })
     },
     // 添加数据显示
     add() {
