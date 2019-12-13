@@ -9,6 +9,7 @@
       <el-table-column
         type="index"
         width="50"
+        :index="tableIndex"
       />
       <el-table-column
         type="selection"
@@ -79,7 +80,10 @@ export default {
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
-      listQuery: {},
+      listQuery: {
+        limit: 10,
+        page: 1
+      },
       ids: [],
       children: {
         columnBtn: []
@@ -116,6 +120,9 @@ export default {
         default:
           this.FN(_obj, _data)
       }
+    },
+    tableIndex(index) { // 第二页开始表格数据行号不从1开始
+      return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
