@@ -33,6 +33,7 @@
                   v-model="item.meta.valueKey"
                   :style="{width: item.meta.selectWidth}"
                   @change="selectInputKey(item.meta.valueKey,item.meta)"
+                  clearable
                 >
                   <template v-for="(option, _index) in item.meta.options_OBJ.data">
                     <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -58,6 +59,7 @@
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
                 multiple
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -69,6 +71,7 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                clearable
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
