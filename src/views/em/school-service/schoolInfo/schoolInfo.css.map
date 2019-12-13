@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AACI,gCAAU;EACR,UAAU,EAAE,eAAe",
-"sources": ["schoolInfo.scss"],
-"names": [],
-"file": "schoolInfo.css"
-}

@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,qBAAqB;EACnB,MAAM,EAAE,KAAK;EACb,+BAAW;IACT,MAAM,EAAE,IAAI;IACZ,QAAQ,EAAE,IAAI",
-"sources": ["studentInfo.scss"],
-"names": [],
-"file": "studentInfo.css"
-}
