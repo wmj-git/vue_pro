@@ -10,18 +10,15 @@
         :on-remove="handleRemove"
         :file-list="fileList"
         :headers="headers"
-        :limit="1"
         name="file"
         accept=".xlsx "
-        :on-error="uploadFileError"
-        :on-success="uploadFileSuccess"
         :auto-upload="false"
         :http-request="uploadFile"
         :on-change="fileChange"
       >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
         <el-button style="margin-left: 10px;" size="small" type="success" @click="downloadModel">下载模板</el-button>
-        <div slot="tip" class="el-upload__tip">请先下载模板，且只能上传csv文件！</div>
+        <div slot="tip" class="el-upload__tip">请先下载模板，再选择文件上传！</div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button class="em-button" @click="cancelUpload">取 消</el-button>
@@ -45,9 +42,6 @@ export default {
         importUrl: ''
       },
       fileList: [], // 文件列表
-      children: {
-        importItem: []
-      },
       dialogFormVisible: false,
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -70,26 +64,6 @@ export default {
     },
     handlePreview(file) {
       console.log(file)
-    },
-    uploadFileError(err, file, fileList) {
-      console.log(err)
-      this.$message.error('文件导入失败')
-    },
-    uploadFileSuccess(response, file, fileList) {
-      console.log(response.data.jsonmsg.ERRORMSG)
-      if (response.data.jsonmsg.ERRORMSG === '') {
-        this.$message({
-          message: '恭喜你，导入成功',
-          type: 'success'
-        })
-        this.init()
-        this.dialogFormVisible = false
-      } else {
-        this.$message({
-          message: response.data.jsonmsg.ERRORMSG.slice(response.data.jsonmsg.ERRORMSG.indexOf('=') + 1),
-          type: 'error'
-        })
-      }
     },
     downloadModel() { // 下载导出需要的模板
       window.location.href = process.env.VUE_APP_BASE_API + this.set.downloadUrl
