@@ -24,12 +24,7 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.row)"
-          >编辑</el-button>
-          <!--<template v-for="(btn, _index ) in children.columnBtn">
+          <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
               :key="_index"
               :ref="btn.meta.system_id"
@@ -40,7 +35,7 @@
             >
               {{ btn.meta.title }}
             </el-button>
-          </template>-->
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -92,7 +87,7 @@ export default {
     })
   },
   methods: {
-   /* fn(_obj, _data) {
+    fn(_obj, _data) {
       Object.assign({}, _data.row)
       console.log('选择数据 ', _data.row)
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
@@ -107,7 +102,7 @@ export default {
         default:
           this.FN(_obj, _data)
       }
-    },*/
+    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)

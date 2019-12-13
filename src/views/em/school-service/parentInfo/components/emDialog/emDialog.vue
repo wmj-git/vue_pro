@@ -206,16 +206,6 @@ export default {
     // 添加数据显示
     add() {
       this.dialogStatus = 'create'
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break*/
-          case 'classId':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break
-        }
-      })
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
         this.$nextTick(() => {
@@ -224,23 +214,10 @@ export default {
       }
     },
     // 修改数据弹框
-    edit() {
+    edit(_data) {
+      this.temp = dataInitFn(_data.data, _data.data)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break*/
-          /* case 'classId':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break*/
-        }
-      })
-      try {
-        this.$refs[this.system_id].resetFields()
-      } catch (e) {
-      }
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -254,7 +231,6 @@ export default {
             params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
-            console.log('填入数据：', obj)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -278,7 +254,6 @@ export default {
           }
           console.log(25, obj)
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {

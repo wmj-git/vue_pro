@@ -23,11 +23,18 @@
       />
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.row)"
-          >编辑</el-button>
+          <template v-for="(btn, _index ) in children.columnBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -73,8 +80,10 @@ export default {
       pageOne: false,
       total: 0,
       listQuery: {},
-      ids: []
-
+      ids: [],
+      children: {
+        columnBtn: []
+      }
     }
   },
   created() {
@@ -92,6 +101,21 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+    },
+    fn(_obj, _data) {
+      Object.assign({}, _data.row)
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'DeviceInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        default:
+          this.FN(_obj, _data)
+      }
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
