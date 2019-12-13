@@ -199,7 +199,8 @@ export default {
     },
     // 修改数据弹框
     edit(_data) {
-      this.temp = dataInitFn(this.temp, _data.data) // 赋值给修改表单
+      /* this.temp = dataInitFn(this.temp, _data.data)*/ // 这里不(设置值不能使用this.temp,否则不会将entryTimeStr传递给后台，将会报参数错误)
+      this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -250,6 +251,7 @@ export default {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
           }
+          console.log('obj', obj)
           editList(obj).then(() => {
             console.log('修改数据', this.temp)
             const _this = this
