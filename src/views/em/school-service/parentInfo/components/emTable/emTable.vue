@@ -23,6 +23,11 @@
         :formatter="formatterFn"
       >
       </el-table-column>
+      <el-table-column label="头像">
+        <template slot-scope="scope">
+          <img :src="scope.row.headImage" width="40" height="40" class="head_pic"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">

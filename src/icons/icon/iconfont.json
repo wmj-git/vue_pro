@@ -1,0 +1,23 @@
+{
+  "id": "1562605",
+  "name": "zhxy",
+  "font_family": "zhxy_element_iconfont",
+  "css_prefix_text": "el-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "3203565",
+      "name": "导出Excel",
+      "font_class": "excel_out",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "4996140",
+      "name": "导入excel",
+      "font_class": "excel_in",
+      "unicode": "e9a5",
+      "unicode_decimal": 59813
+    }
+  ]
+}
