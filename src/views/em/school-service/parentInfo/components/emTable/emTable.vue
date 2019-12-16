@@ -5,6 +5,7 @@
       border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @row-dblclick="showDrawer"
     >
       <el-table-column
         type="index"
@@ -15,6 +16,11 @@
         type="selection"
         width="55"
       />
+      <el-table-column label="头像" v-if="meta.tableHeader[0].key==='studentName'">
+        <template slot-scope="scope">
+          <img :src="scope.row.headImage" width="40" height="40"/>
+        </template>
+      </el-table-column>
       <el-table-column
         v-for="info in meta.tableHeader"
         :key="info.key"
@@ -22,11 +28,6 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-     <!-- <el-table-column>
-        <template slot-scope="scope">
-          <img :src="scope.row.headImage" width="40" height="40"/>
-        </template>
-      </el-table-column>-->
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
@@ -71,7 +72,7 @@ export default {
         appendUrl: '',
         removeUrl: '',
         updateUrl: '',
-        vueBusName: ''
+        vueBusName: '' // 区分抽屉
       },
       tableHeader: [],
       tableDataEnd: [],
@@ -116,6 +117,7 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+      console.log(this.meta.tableHeader)
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
@@ -216,6 +218,10 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    // 双击行显示抽屉
+    showDrawer(row) {
+      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
     }
   }
 }
