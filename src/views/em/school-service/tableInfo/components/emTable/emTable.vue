@@ -98,7 +98,6 @@ export default {
     },
     fn(_obj, _data) {
       Object.assign({}, _data.row)
-      console.log('选择数据 ', _data.row)
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {

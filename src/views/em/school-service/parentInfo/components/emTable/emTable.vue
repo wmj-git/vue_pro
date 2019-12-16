@@ -100,7 +100,6 @@ export default {
   methods: {
     fn(_obj, _data) {
       Object.assign({}, _data.row)
-      console.log('选择数据 ', _data.row)
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
@@ -117,7 +116,6 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      console.log(this.meta.tableHeader)
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {

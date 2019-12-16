@@ -30,6 +30,15 @@ export const staticFormatterMap = {
     [2, '女'],
     [1, '男'],
     [3, '未知']
+  ]),
+  kinshipName: new Map([ // 学生与家长的亲属关系
+    ['dad', '爸爸'],
+    ['mom', '妈妈'],
+    ['grandpa', '爷爷'],
+    ['grandma', '奶奶'],
+    ['grandFa', '外公'],
+    ['grandMo', '外婆'],
+    ['other', '其他']
   ])
 }
 
