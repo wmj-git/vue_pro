@@ -5,6 +5,7 @@
       border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @row-dblclick="showDrawer"
     >
       <el-table-column
         type="index"
@@ -68,8 +69,7 @@ export default {
         vueBusName: ''
       },
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
-      tableHeader: [
-      ],
+      tableHeader: [],
       tableDataEnd: [],
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
@@ -204,6 +204,10 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    // 双击行显示抽屉
+    showDrawer(row) {
+      vueBus.$emit('tableDetail', { row: row, label: this.meta.tableHeader })
     }
   }
 }
