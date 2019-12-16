@@ -5,7 +5,7 @@
       :visible.sync="set.visible"
       direction="rtl"
       :modal="set.modal"
-      :append-to-body="set.appendToBody"
+      :modal-append-to-body="set.appendToBody"
       :show-close="true"
       :destroy-on-close="true"
       :size="set.size"
@@ -34,8 +34,8 @@ export default {
         drawerItem: []
       },
       set: {
-        modal: true, // 是否添加遮罩
-        appendToBody: true,
+        modal: false, // 是否添加遮罩(添加遮罩)
+        appendToBody: false, // 遮罩和body有冲突
         visible: false,
         size: '20%',
         vueBusName: '' // 区分抽屉

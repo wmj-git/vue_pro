@@ -5,6 +5,7 @@
       border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @row-dblclick="showDrawer"
     >
       <el-table-column
         type="index"
@@ -65,7 +66,7 @@ export default {
       set: {
         queryUrl: '',
         removeUrl: '',
-        vueBusName: ''
+        vueBusName: ''// 抽屉
       },
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [
@@ -217,6 +218,9 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    showDrawer(row) {
+      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
     }
   }
 }

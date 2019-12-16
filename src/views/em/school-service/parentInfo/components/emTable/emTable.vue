@@ -204,12 +204,6 @@ export default {
     },
     // 过滤字段
     formatterFn(row, column) {
-      switch (column.property) {
-        case 'headImage':
-          /* const div = '<img :src="row[column.property]" width="40" height="40">'*/
-          var _url = row[column.property]
-          break
-      }
       let _val = ''
       const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
       if (column.property in _formatterMap) {
