@@ -21,13 +21,12 @@
         :label="info.label"
         :prop="info.key"
         :formatter="formatterFn"
-      >
-      </el-table-column>
-      <el-table-column label="头像">
+      />
+     <!-- <el-table-column>
         <template slot-scope="scope">
-          <img :src="scope.row.headImage" width="40" height="40" class="head_pic"/>
+          <img :src="scope.row.headImage" width="40" height="40"/>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
@@ -60,6 +59,7 @@ import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { fetchList, delList } from '@/api/schoolService/classInfo'
+import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -85,7 +85,8 @@ export default {
       ids: [],
       children: {
         columnBtn: []
-      }
+      },
+      formatterMap: {}
     }
   },
   created() {
@@ -201,17 +202,18 @@ export default {
     },
     // 过滤字段
     formatterFn(row, column) {
-      let _val = ''
-      // console.log('formatter', row, column.property)
       switch (column.property) {
-        case 'parentSex':
-          _val = row[column.property] === 2 ? '女' : '男'
+        case 'headImage':
+          /* const div = '<img :src="row[column.property]" width="40" height="40">'*/
+          var _url = row[column.property]
           break
-        case 'studentSex':
-          _val = row[column.property] === 2 ? '女' : '男'
-          break
-        default:
-          _val = row[column.property]
+      }
+      let _val = ''
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
       }
       return _val
     }

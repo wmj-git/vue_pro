@@ -165,7 +165,8 @@ export default {
     },
     getTemp() {
       return this.temp
-    }
+    },
+    selectInputKey() {}
   }
 }
 </script>

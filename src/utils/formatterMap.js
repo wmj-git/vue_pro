@@ -20,6 +20,16 @@ export const staticFormatterMap = {
     [1, '在职'],
     [0, '离职'],
     [-1, '开除']
+  ]),
+  parentSex: new Map([ // 家长性别
+    [2, '女'],
+    [1, '男'],
+    [3, '未知']
+  ]),
+  studentSex: new Map([ // 学生性别
+    [2, '女'],
+    [1, '男'],
+    [3, '未知']
   ])
 }
 
