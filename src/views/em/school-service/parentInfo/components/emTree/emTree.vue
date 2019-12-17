@@ -30,9 +30,7 @@ export default {
         gradeUrl: ''
       },
       classData: [], // 班级
-      gradeData: [], // 年级
-      gradeKeys: [],
-      gradeValues: []
+      gradeData: [] // 年级
     }
   },
   created() {
@@ -46,7 +44,6 @@ export default {
     handleNodeClick(data) {
     },
     async loadNode(node, resolve) {
-      console.log('节点', node)
       if (node.level === 0) {
         // 树根节点名称为当前登录学校名称（以中横线为分界取第一个字符串）
         const name = (this.$store.getters.currentRole.description).split('-')[0]
@@ -66,7 +63,6 @@ export default {
       if (node.level === 2) { // 子节点二级
         var classArr = []
         const _data = node.data
-        console.log('gradeValues', classArr)
         var _params = {
           gradeKey: _data.value
         }
