@@ -53,3 +53,19 @@ export function uploadFile(obj) {
     data: obj.params
   })
 }
+// 获取当前组织
+export function currentUser(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}
+// 获取年级编码
+export function gradeCode(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}

@@ -112,7 +112,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
+import { addList, studentInfo, editList, ClassId, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
@@ -126,6 +126,7 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        searchUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -144,7 +145,8 @@ export default {
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
-      dialogStatus: ''
+      dialogStatus: '',
+      organizationCode: '' // 当前用户的组织编码
     }
   },
   created() {
@@ -153,7 +155,7 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    init() {
+    async init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
@@ -182,6 +184,25 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 班级id下拉选项赋值
+            break
+          case 'siOrgCode':
+            await currentUser({
+              url: this.set.selectUrl
+            }).then(response => {
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
+            })
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
+            break
+          case 'gradeKey':
+            var gradeArr = []
+            gradeCode({
+              url: this.set.searchUrl
+            }).then(res => {
+              res.data.forEach(val => {
+                gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
             break
         }
       }
@@ -236,6 +257,7 @@ export default {
             params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
+            console.log('res', res)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',

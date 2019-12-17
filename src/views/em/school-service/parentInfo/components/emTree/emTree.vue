@@ -1,6 +1,7 @@
 <template>
   <div class="emTree_container">
     <el-tree
+      ref="tree"
       :data="treeData"
       :props="defaultProps"
       :load="loadNode"
@@ -9,6 +10,7 @@
   </div>
 </template>
 <script>
+import { fetchList } from '@/api/schoolService/classInfo'
 export default {
   name: 'EmTree',
   data() {
@@ -18,6 +20,9 @@ export default {
         children: 'children',
         label: 'label',
         isLeaf: 'leaf'
+      },
+      set: {
+        queryUrl: ''
       }
     }
   },
@@ -26,6 +31,11 @@ export default {
   },
   methods: {
     init() {
+      fetchList({ // 班级信息
+        url: 'school/class/queryAllByPage'
+      }).then(response => {
+        console.log('班级信息', response.data.list)
+      })
     },
     handleNodeClick(data) {
       console.log(data)
