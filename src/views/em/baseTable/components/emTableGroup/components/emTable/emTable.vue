@@ -222,7 +222,6 @@ export default {
     },
     // 添加一行数据
     addFn(_obj) { // 添加一行数据
-      console.log('addFn', _obj)
       const _this = this
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
