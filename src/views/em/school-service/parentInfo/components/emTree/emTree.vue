@@ -30,7 +30,9 @@ export default {
         gradeUrl: ''
       },
       classData: [], // 班级
-      gradeData: [] // 年级
+      gradeData: [], // 年级
+      gradeKeys: [],
+      gradeValues: []
     }
   },
   created() {
@@ -44,42 +46,40 @@ export default {
     handleNodeClick(data) {
     },
     async loadNode(node, resolve) {
+      console.log('节点', node)
       if (node.level === 0) {
         // 树根节点名称为当前登录学校名称（以中横线为分界取第一个字符串）
         const name = (this.$store.getters.currentRole.description).split('-')[0]
         return resolve([{ label: name }])
       }
-      if (node.level === 1) {
+      if (node.level === 1) { // 子节点一级
         var gradeArr = []
         await gradeCode({ // 年级信息
           url: this.set.gradeUrl
         }).then(response => {
           response.data.forEach(val => {
-            gradeArr.push({ 'label': val.gradeName })
+            gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey })
           })
         })
-        for (const i in gradeArr) {
-          this.gradeData.push({ label: gradeArr[i].label })
-        }
-        return resolve(this.gradeData)
+        return resolve(gradeArr)
       }
-      if (node.level === 2) {
+      if (node.level === 2) { // 子节点二级
         var classArr = []
+        const _data = node.data
+        console.log('gradeValues', classArr)
+        var _params = {
+          gradeKey: _data.value
+        }
         await fetchList({ // 班级信息
-          url: this.set.queryUrl
+          url: this.set.queryUrl,
+          params: _params
         }).then(response => {
           response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name })
+            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true })
           })
         })
-        for (const i in classArr) {
-          this.classData.push({ label: classArr[i].label })
-        }
-        return resolve(this.classData)
+        return resolve(classArr)
       }
-      if (node.level > 1) return resolve([])
-      setTimeout(() => {
-      }, 300)
     }
   }
 }
