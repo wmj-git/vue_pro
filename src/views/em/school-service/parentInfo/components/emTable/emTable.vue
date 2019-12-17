@@ -128,7 +128,7 @@ export default {
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {
-        console.log('接受参数', _obj.temp) // 接受后需要传递给查询接口，不然还是查询不到
+        // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
       }
     },

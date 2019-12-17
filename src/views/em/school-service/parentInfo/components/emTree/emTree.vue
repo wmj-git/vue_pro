@@ -32,7 +32,7 @@ export default {
     init(params) {
       console.log(11)
       const _params = {
-        orgType: 5 // 查询学校
+        /* orgType: 5 */// 查询学校
       }
       try {
         let _val = {}
