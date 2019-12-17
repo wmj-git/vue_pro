@@ -375,7 +375,7 @@ export const emMixin = {
             }
           }
           this[_fn]({
-            Form: val
+            data: val
           })
           break
         case 'BaseTable_EmDialog_openFn':
