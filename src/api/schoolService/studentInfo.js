@@ -2,7 +2,7 @@ import request from '@/utils/request'
 export function fetchList(obj) {
   return request({
     url: obj.url,
-    method: 'get',
+    method: 'post',
     params: obj.params
   })
 }
@@ -34,7 +34,7 @@ export function delList(obj) {
 export function ClassId(obj) {
   return request({
     url: obj.url,
-    method: 'get',
+    method: 'post',
     params: obj
   })
 }
@@ -42,7 +42,7 @@ export function ClassId(obj) {
 // 下载导入模板
 export function downModel(obj) {
   return request({
-    url: '/school/student/downModel',
+    url: obj.url,
     method: 'get',
     params: obj
   })

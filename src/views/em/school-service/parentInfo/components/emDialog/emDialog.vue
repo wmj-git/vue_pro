@@ -33,6 +33,7 @@
                   v-model="item.meta.valueKey"
                   :style="{width: item.meta.selectWidth}"
                   @change="selectInputKey(item.meta.valueKey,item.meta)"
+                  clearable
                 >
                   <template v-for="(option, _index) in item.meta.options_OBJ.data">
                     <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -58,6 +59,7 @@
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
                 multiple
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -69,6 +71,7 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                clearable
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
@@ -77,13 +80,23 @@
               </el-select>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              {{ temp[item.meta.valueKey] ? temp[item.meta.valueKey] : "" }}
+              <el-row>
+                <el-col :span="16">
+                  <el-image
+                    :src="temp[item.meta.valueKey]"
+                    style="max-height: 120px;overflow: hidden"
+                    fit="fit"
+                  />
+                </el-col>
+                <el-col :span="28">
               <dropzone
                 :id="item.meta.system_id"
                 :url="BASE_API+item.meta.url"
                 :item="item"
                 @dropzone-removedFile="dropzoneR"
                 @dropzone-success="dropzoneS" />
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
         </template>
@@ -99,7 +112,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
+import { addList, studentInfo, editList, ClassId, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
@@ -113,6 +126,7 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        searchUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -131,20 +145,17 @@ export default {
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
-      dialogStatus: ''
+      dialogStatus: '',
+      organizationCode: '' // 当前用户的组织编码
     }
   },
   created() {
     this.init()
-    vueBus.$on(this.set.vueBusName, val => {
-      this.temp = val // 接收修改时的表单值
-      this.edit()
-    })
   },
   beforeDestroy() {
   },
   methods: {
-    init() {
+    async init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
@@ -174,6 +185,25 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 班级id下拉选项赋值
             break
+          case 'siOrgCode':
+            await currentUser({
+              url: this.set.selectUrl
+            }).then(response => {
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
+            })
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
+            break
+          case 'gradeKey':
+            var gradeArr = []
+            gradeCode({
+              url: this.set.searchUrl
+            }).then(res => {
+              res.data.forEach(val => {
+                gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            break
         }
       }
       this.defaultFn(this.children.formItem)
@@ -195,26 +225,13 @@ export default {
       const _response = JSON.parse(file.xhr.response)
       const _imgUrl = _response.data[0].networkPath
       this.temp[item.meta.valueKey] = _imgUrl // 后台获取到的url地址赋值给表单
-      this.$message({ message: '图片上传成功', type: 'success' })
     },
     // 移除图片
     dropzoneR(file) {
-      console.log(file)
-      this.$message({ message: 'Delete success', type: 'success' })
     },
     // 添加数据显示
     add() {
       this.dialogStatus = 'create'
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break*/
-          case 'classId':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break
-        }
-      })
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
         this.$nextTick(() => {
@@ -223,23 +240,10 @@ export default {
       }
     },
     // 修改数据弹框
-    edit() {
+    edit(_data) {
+      this.temp = dataInitFn(_data.data, _data.data)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break*/
-          case 'classId':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break
-        }
-      })
-      try {
-        this.$refs[this.system_id].resetFields()
-      } catch (e) {
-      }
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -250,10 +254,10 @@ export default {
         if (valid) {
           const obj = {
             url: this.set.appendUrl,
-            params: this.temp
+            params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
-            console.log('填入数据：', obj)
+            console.log('res', res)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
@@ -273,10 +277,10 @@ export default {
         if (valid) {
           const obj = {
             url: this.set.updateUrl,
-            params: Object.assign({}, this.temp)
+            params: this.temp
           }
+          console.log(25, obj)
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -296,7 +300,6 @@ export default {
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },

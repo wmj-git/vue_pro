@@ -2,7 +2,7 @@ import request from '@/utils/request'
 export function fetchList(obj) {
   return request({
     url: obj.url,
-    method: 'get',
+    method: 'post',
     params: obj.params
   })
 }
@@ -33,10 +33,10 @@ export function delList(obj) {
 export function schoolInfo(obj) {
   return request({
     url: obj.url,
-    method: 'get'
+    method: 'post'
   })
 }
-// 获取学校组织编码
+// 获取设备类型
 export function deviceType(obj) {
   return request({
     url: obj.url,

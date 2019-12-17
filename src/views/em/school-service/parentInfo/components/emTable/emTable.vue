@@ -5,30 +5,43 @@
       border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @row-dblclick="showDrawer"
     >
       <el-table-column
         type="index"
         width="50"
+        :index="tableIndex"
       />
       <el-table-column
         type="selection"
         width="55"
       />
+      <el-table-column label="头像" v-if="meta.tableHeader[0].key==='studentName'">
+        <template slot-scope="scope">
+          <img :src="scope.row.headImage" width="40" height="40"/>
+        </template>
+      </el-table-column>
       <el-table-column
         v-for="info in meta.tableHeader"
         :key="info.key"
         :label="info.label"
         :prop="info.key"
         :formatter="formatterFn"
-      >
-      </el-table-column>
+      />
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.row)"
-          >编辑</el-button>
+          <template v-for="(btn, _index ) in children.columnBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -47,6 +60,7 @@ import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { fetchList, delList } from '@/api/schoolService/classInfo'
+import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'EmTable',
   mixins: [emMixin],
@@ -58,16 +72,22 @@ export default {
         appendUrl: '',
         removeUrl: '',
         updateUrl: '',
-        vueBusName: ''
+        vueBusName: '' // 区分抽屉
       },
       tableHeader: [],
       tableDataEnd: [],
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
-      listQuery: {},
-      ids: []
-
+      listQuery: {
+        limit: 10,
+        page: 1
+      },
+      ids: [],
+      children: {
+        columnBtn: []
+      },
+      formatterMap: {}
     }
   },
   created() {
@@ -78,6 +98,21 @@ export default {
     })
   },
   methods: {
+    fn(_obj, _data) {
+      Object.assign({}, _data.row)
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'ParentInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
@@ -87,10 +122,13 @@ export default {
       this.listQuery = res
       this.getList()
     },
+    tableIndex(index) { // 第二页开始表格数据行号不从1开始
+      return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
+    },
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {
-        console.log('接受参数', _obj.temp) // 接受后需要传递给查询接口，不然还是查询不到
+        // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
       }
     },
@@ -123,9 +161,6 @@ export default {
     handleCurrentChange(val) {},
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    handleEdit(row) {
-      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
     },
     // 删除选中行
     remove() {
@@ -168,18 +203,17 @@ export default {
     // 过滤字段
     formatterFn(row, column) {
       let _val = ''
-      // console.log('formatter', row, column.property)
-      switch (column.property) {
-        case 'parentSex':
-          _val = row[column.property] === 2 ? '女' : '男'
-          break
-        case 'studentSex':
-          _val = row[column.property] === 2 ? '女' : '男'
-          break
-        default:
-          _val = row[column.property]
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
       }
       return _val
+    },
+    // 双击行显示抽屉
+    showDrawer(row) {
+      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
     }
   }
 }

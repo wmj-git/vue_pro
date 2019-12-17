@@ -10,6 +10,35 @@ export const staticFormatterMap = {
     [3, '市教委'],
     [4, '县教委'],
     [5, '学校']
+  ]),
+  sex: new Map([ // 教师性别
+    [2, '女'],
+    [1, '男'],
+    [3, '未知']
+  ]),
+  tncumbency: new Map([ // 教师任职状态
+    [1, '在职'],
+    [0, '离职'],
+    [-1, '开除']
+  ]),
+  parentSex: new Map([ // 家长性别
+    [2, '女'],
+    [1, '男'],
+    [3, '未知']
+  ]),
+  studentSex: new Map([ // 学生性别
+    [2, '女'],
+    [1, '男'],
+    [3, '未知']
+  ]),
+  kinshipName: new Map([ // 学生与家长的亲属关系
+    ['dad', '爸爸'],
+    ['mom', '妈妈'],
+    ['grandpa', '爷爷'],
+    ['grandma', '奶奶'],
+    ['grandFa', '外公'],
+    ['grandMo', '外婆'],
+    ['other', '其他']
   ])
 }
 

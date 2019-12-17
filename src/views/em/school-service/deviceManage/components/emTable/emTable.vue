@@ -5,10 +5,12 @@
       border
       style="width: 100%;"
       @selection-change="handleSelectionChange"
+      @row-dblclick="showDrawer"
     >
       <el-table-column
         type="index"
         width="50"
+        :index="tableIndex"
       />
       <el-table-column
         type="selection"
@@ -23,11 +25,18 @@
       />
       <el-table-column label="操作" fixed="right" width="auto">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.row)"
-          >编辑</el-button>
+          <template v-for="(btn, _index ) in children.columnBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -57,7 +66,7 @@ export default {
       set: {
         queryUrl: '',
         removeUrl: '',
-        vueBusName: ''
+        vueBusName: ''// 抽屉
       },
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [
@@ -72,15 +81,21 @@ export default {
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
-      listQuery: {},
-      ids: []
-
+      listQuery: {
+        limit: 10,
+        page: 1
+      },
+      ids: [],
+      children: {
+        columnBtn: []
+      }
     }
   },
   created() {
     this.init()
     this.getList()
     vueBus.$on('query', () => {
+      console.log(123)
       this.getList()
     })
     vueBus.$on('device_type', (val) => {
@@ -91,6 +106,24 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+    },
+    fn(_obj, _data) {
+      Object.assign({}, _data.row)
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'DeviceInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
+    tableIndex(index) { // 第二页开始表格数据行号不从1开始
+      return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
     },
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
@@ -185,6 +218,9 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    showDrawer(row) {
+      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
     }
   }
 }

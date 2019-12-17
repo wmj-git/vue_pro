@@ -83,6 +83,7 @@
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -216,7 +217,8 @@ export default {
       }
     },
     // 修改数据弹框
-    edit() {
+    edit(_data) {
+      this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -283,7 +285,6 @@ export default {
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },

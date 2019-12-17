@@ -326,9 +326,16 @@ export const emMixin = {
             temp: _obj.temp
           })
           break
-        case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
+        case 'ParentInfo_EmForm_addForm': // 添加-弹框显示(无需传递参数)
           this[_fn]({
             params: _obj.params
+          })
+          break
+        case 'TableInfo_EmForm_editForm': // 修改-弹框显示(传递行数据给表单)
+          console.log(1, _obj.data)
+          this[_fn]({
+            meta: _meta,
+            data: _obj.data
           })
           break
         case 'ParentInfo_EmTable_deleteData':
