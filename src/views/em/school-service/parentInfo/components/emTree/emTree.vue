@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import { fetchList } from '@/api/schoolService/classInfo'
+import { fetchList, gradeCode } from '@/api/schoolService/parentInfo'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { emMixin } from '@/utils/mixins'
 export default {
@@ -26,9 +26,11 @@ export default {
         isLeaf: 'leaf'
       },
       set: {
-        queryUrl: ''
+        queryUrl: '',
+        gradeUrl: ''
       },
-      classData: [] // 班级
+      classData: [], // 班级
+      gradeData: [] // 年级
     }
   },
   created() {
@@ -40,7 +42,6 @@ export default {
       this.children = childrenInitFn(this.children, this.componentData)
     },
     handleNodeClick(data) {
-      console.log(data)
     },
     async loadNode(node, resolve) {
       if (node.level === 0) {
@@ -48,8 +49,21 @@ export default {
         const name = (this.$store.getters.currentRole.description).split('-')[0]
         return resolve([{ label: name }])
       }
-      if (node.level === 2) return resolve([])
-      setTimeout(async() => {
+      if (node.level === 1) {
+        var gradeArr = []
+        await gradeCode({ // 年级信息
+          url: this.set.gradeUrl
+        }).then(response => {
+          response.data.forEach(val => {
+            gradeArr.push({ 'label': val.gradeName })
+          })
+        })
+        for (const i in gradeArr) {
+          this.gradeData.push({ label: gradeArr[i].label })
+        }
+        return resolve(this.gradeData)
+      }
+      if (node.level === 2) {
         var classArr = []
         await fetchList({ // 班级信息
           url: this.set.queryUrl
@@ -60,8 +74,11 @@ export default {
         })
         for (const i in classArr) {
           this.classData.push({ label: classArr[i].label })
-          resolve(this.classData)
         }
+        return resolve(this.classData)
+      }
+      if (node.level > 1) return resolve([])
+      setTimeout(() => {
       }, 300)
     }
   }
