@@ -3,10 +3,6 @@
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    <div class="school-name">
-      <img src="../../../src/assets/images/logo.png">
-      <span class="school-title">经纬大道小学</span>
-    </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
@@ -181,20 +177,6 @@ export default {
           font-size: 12px;
         }
       }
-    }
-  }
-  .school-name{
-    line-height: 50px;
-    position: absolute;
-    transform: translate(10%, 0%);
-    left: 50%;
-    font-size: 18px;
-    img {
-      width: 32px;
-      height: 36px;
-      line-height: 50px;
-      vertical-align: middle;
-      overflow: hidden;
     }
   }
 }

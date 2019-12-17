@@ -53,11 +53,3 @@ export function uploadFile(obj) {
     data: obj.params
   })
 }
-// 获取学校
-export function schoolName(obj) {
-  return request({
-    url: obj.url,
-    method: 'post',
-    data: obj.params
-  })
-}

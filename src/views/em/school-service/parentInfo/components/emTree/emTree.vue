@@ -9,7 +9,6 @@
   </div>
 </template>
 <script>
-import { schoolName } from '@/api/schoolService/parentInfo'
 export default {
   name: 'EmTree',
   data() {
@@ -19,9 +18,6 @@ export default {
         children: 'children',
         label: 'label',
         isLeaf: 'leaf'
-      },
-      set: {
-        queryUrl: ''
       }
     }
   },
@@ -29,36 +25,16 @@ export default {
     this.init()
   },
   methods: {
-    init(params) {
-      console.log(11)
-      const _params = {
-        /* orgType: 5 */// 查询学校
-      }
-      try {
-        let _val = {}
-        if (params) {
-          _val = params
-        }
-        for (const k in _val) {
-          _params[k] = _val[k]
-        }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        schoolName({
-          url: this.set.queryUrl,
-          params: _params
-        }).then(response => {
-          console.log(55, response)
-        })
-      }
+    init() {
     },
     handleNodeClick(data) {
       console.log(data)
     },
     loadNode(node, resolve) {
       if (node.level === 0) {
-        return resolve([{ label: 'region' }])
+        // 树根节点名称为当前登录学校名称（以中横线为分界取第一个字符串）
+        const name = (this.$store.getters.currentRole.description).split('-')[0]
+        return resolve([{ label: name }])
       }
       if (node.level > 1) return resolve([])
       setTimeout(() => {
