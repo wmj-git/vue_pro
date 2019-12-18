@@ -58,7 +58,7 @@ export const emMixin = {
       const _controlId = _obj.meta.control_id
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
       switch (_controlType) {
-        case 'default':
+        case 'default': // 操作本组件
           if (this.senderData && 'meta' in this.senderData) {
             this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
           } else {
@@ -69,7 +69,7 @@ export const emMixin = {
             data: _data
           })
           break
-        case 'promiseDefault':
+        case 'promiseDefault': // 异步
           promiseFn(100, () => {
             return true
           }, () => {

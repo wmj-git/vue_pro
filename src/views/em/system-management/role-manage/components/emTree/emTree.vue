@@ -13,6 +13,7 @@
             :data="treeData"
             :props="defaultProps"
             node-key="id"
+            accordion
             :show-checkbox="set.checkbox"
             :default-expand-all="set.expandAll"
             :expand-on-click-node="false"
@@ -67,7 +68,7 @@ export default {
       set: {
         title: '',
         maxHeight: '',
-        expandAll: true,
+        expandAll: false,
         buttons: false,
         appendUrl: '',
         appendSuccess: '',

@@ -87,7 +87,8 @@ export default {
       children: {
         columnBtn: []
       },
-      formatterMap: {}
+      formatterMap: {},
+      currentClass: '' // 接收班级id
     }
   },
   created() {
@@ -95,6 +96,9 @@ export default {
     this.getList()
     vueBus.$on('query', () => {
       this.getList()
+    })
+    vueBus.$on('classId', val => {
+      this.currentClass = val // 异步获取班级传过来的数据，不是初始化获取
     })
   },
   methods: {
