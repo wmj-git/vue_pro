@@ -5,10 +5,10 @@
       :data="treeData"
       :props="defaultProps"
       :load="loadNode"
-      show-checkbox
+      accordion
+      empty-text="暂无内容"
       node-key="id"
       :default-expand-all="expandAll"
-      :default-expanded-keys="defaultEexpandedkeys"
       :filter-node-method="filterNode"
       lazy
       @node-click="handleNodeClick"
@@ -43,7 +43,6 @@ export default {
   data() {
     return {
       treeData: [],
-      defaultEexpandedkeys: [1], // 默认展开第二级
       defaultProps: {
         children: 'children',
         label: 'label',
@@ -75,7 +74,7 @@ export default {
       if (node.level === 0) {
         // 树根节点名称为当前登录学校名称（以中横线为分界取第一个字符串）
         const name = (this.$store.getters.currentRole.description).split('-')[0]
-        return resolve([{ label: name }])
+        return resolve([{label: name}])
       }
       if (node.level === 1) { // 子节点一级
         var gradeArr = []
@@ -83,7 +82,7 @@ export default {
           url: this.set.gradeUrl
         }).then(response => {
           response.data.forEach(val => {
-            gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey })
+            gradeArr.push({'label': val.gradeName, 'value': val.gradeKey})
           })
         })
         return resolve(gradeArr)
@@ -99,7 +98,7 @@ export default {
           params: _params
         }).then(response => {
           response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true })
+            classArr.push({'label': val.name, 'value': val.gradeKey, leaf: true})
           })
         })
         return resolve(classArr)
@@ -126,7 +125,7 @@ export default {
         delList({
           url: this.set.removeUrl,
           params: ids
-        }).then(function(response) {
+        }).then(function (response) {
           if (response.statusCode === 200) {
             _this.$notify({
               message: '删除成功',
@@ -145,7 +144,7 @@ export default {
           message: '已取消删除'
         })
       })
-    }
+    },
   }
 }
 </script>

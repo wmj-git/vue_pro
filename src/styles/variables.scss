@@ -1,3 +1,4 @@
+$r:32;
 // base color
 $blue:#324157;
 $light-blue:#3A71A8;
@@ -36,3 +37,14 @@ $sideBarWidth: 210px;
 
 /* 滚动条*/
 $em-scrollbar-background-color: #cdcdcd;
+/*font-color*/
+$em-text-color-base: #ffffff; //常规表格文本颜色
+$em-text-highlight-base: #6f9fd4;//高亮文本颜色
+/*border-color*/
+$em-border-color-base: rgba(255, 255, 255, 0.5);//基本边框颜色
+$em-highlight-border-color-base:#6f9fd4;//高亮边框颜色
+
+/*background-color*/
+$em-bg-color-base:#ececec;//基本背景颜色
+$em-highlight-bg-color-base:#6f9fd4;//高亮背景颜色
+$em-highlight-bg2-color-base: rgb(41, 60, 83);//深色背景
