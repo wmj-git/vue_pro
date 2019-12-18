@@ -5,13 +5,36 @@
       :data="treeData"
       :props="defaultProps"
       :load="loadNode"
+      show-checkbox
+      node-key="id"
+      :default-expand-all="expandAll"
+      :default-expanded-keys="defaultEexpandedkeys"
+      :filter-node-method="filterNode"
       lazy
       @node-click="handleNodeClick"
-    />
+    >
+      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => update(node, data)">
+            修改
+          </el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => remove(node, data)">
+            删除
+          </el-button>
+        </span>
+      </span>
+    </el-tree>
   </div>
 </template>
 <script>
-import { fetchList, gradeCode } from '@/api/schoolService/parentInfo'
+import { fetchList, gradeCode, delList } from '@/api/schoolService/parentInfo'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { emMixin } from '@/utils/mixins'
 export default {
@@ -20,6 +43,7 @@ export default {
   data() {
     return {
       treeData: [],
+      defaultEexpandedkeys: [1], // 默认展开第二级
       defaultProps: {
         children: 'children',
         label: 'label',
@@ -27,10 +51,10 @@ export default {
       },
       set: {
         queryUrl: '',
-        gradeUrl: ''
+        gradeUrl: '',
+        removeUrl: ''
       },
-      classData: [], // 班级
-      gradeData: [] // 年级
+      expandAll: false
     }
   },
   created() {
@@ -40,6 +64,10 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+    },
+    filterNode(value, data) {
+      if (!value) return true
+      return data[this.defaultProps.label].indexOf(value) !== -1
     },
     handleNodeClick(data) {
     },
@@ -76,6 +104,47 @@ export default {
         })
         return resolve(classArr)
       }
+    },
+    // 修改节点
+    update(node) {
+    },
+    // 删除节点
+    remove(node, data) {
+      // 获取子集id
+      const ids = [] // node的id和列表数据的id不一样？？
+      console.log(56, node.id)
+      if (node.id) {
+        ids.push(node.id)
+      }
+      console.log('ids', ids)
+      const _this = this
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning'
+      }).then(() => {
+        delList({
+          url: this.set.removeUrl,
+          params: ids
+        }).then(function(response) {
+          if (response.statusCode === 200) {
+            _this.$notify({
+              message: '删除成功',
+              type: 'success'
+            })
+          } else {
+            _this.$notify({
+              message: '删除失败',
+              type: 'error'
+            })
+          }
+        })
+      }).catch(() => {
+        _this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
