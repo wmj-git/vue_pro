@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible" v-if="dialogFormVisible">
+    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -32,8 +32,8 @@
                   slot="prepend"
                   v-model="item.meta.valueKey"
                   :style="{width: item.meta.selectWidth}"
-                  @change="selectInputKey(item.meta.valueKey,item.meta)"
                   clearable
+                  @change="selectInputKey(item.meta.valueKey,item.meta)"
                 >
                   <template v-for="(option, _index) in item.meta.options_OBJ.data">
                     <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -89,12 +89,13 @@
                   />
                 </el-col>
                 <el-col :span="28">
-              <dropzone
-                :id="item.meta.system_id"
-                :url="BASE_API+item.meta.url"
-                :item="item"
-                @dropzone-removedFile="dropzoneR"
-                @dropzone-success="dropzoneS" />
+                  <dropzone
+                    :id="item.meta.system_id"
+                    :url="BASE_API+item.meta.url"
+                    :item="item"
+                    @dropzone-removedFile="dropzoneR"
+                    @dropzone-success="dropzoneS"
+                  />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -112,13 +113,13 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList, ClassId, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
+import { addList, studentInfo, editList, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
-  mixins: [emMixin],
   components: { Dropzone },
+  mixins: [emMixin],
   data() {
     return {
       id: '',
@@ -146,11 +147,16 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
-      organizationCode: '' // 当前用户的组织编码
+      organizationCode: '', // 当前用户的组织编码
+      currentClass: '' // 当前选中的班级id
     }
   },
   created() {
     this.init()
+    vueBus.$on('classId', val => {
+      this.currentClass = val
+      this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+    })
   },
   beforeDestroy() {
   },
@@ -172,18 +178,6 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学生id下拉选项赋值
-            break
-          case 'classId':
-            var optionsArrs = []
-            var _obj = {
-              url: this.set.selectUrl
-            }
-            ClassId(_obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArrs.push({ 'label': _val.name, 'value': _val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 班级id下拉选项赋值
             break
           case 'siOrgCode':
             await currentUser({
@@ -229,6 +223,19 @@ export default {
     // 移除图片
     dropzoneR(file) {
     },
+    // 添加学生
+    append() {
+      if (this.currentClass) {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请先选择左侧树状中对应的班级！',
+          type: 'warning'
+        })
+      }
+    },
     // 添加数据显示
     add() {
       this.dialogStatus = 'create'
@@ -257,7 +264,6 @@ export default {
             params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
-            console.log('res', res)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
