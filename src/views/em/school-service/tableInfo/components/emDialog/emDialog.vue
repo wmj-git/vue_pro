@@ -96,8 +96,20 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="changeDialogHidden">取 消</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
+        <!-- <el-button @click="changeDialogHidden">取 消</el-button>-->
+        <!--<el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>-->
+        <template v-for="(btn, _index ) in children.columnBtn">
+          <el-button
+            :key="_index"
+            :ref="btn.meta.system_id"
+            class="em-btn-operation"
+            size="mini"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+            @click="fn(btn,temp)"
+          >
+            {{ btn.meta.title }}
+          </el-button>
+        </template>
       </div>
     </el-dialog>
   </div>
@@ -130,7 +142,8 @@ export default {
         type: Boolean
       },
       children: {
-        formItem: []
+        formItem: [],
+        columnBtn: []
       },
       temp: {},
       rules: {}, // 验证数据
@@ -147,6 +160,28 @@ export default {
   beforeDestroy() {
   },
   methods: {
+    fn(_obj, _data) {
+      console.log('methods', _obj, _data)
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id ? _obj.meta.control_id : ''
+      switch (_controlType) {
+        case 'TableInfo_editData_dialogVisible':
+          vueBus.$on(_controlId, val => {
+            this.temp = val // 接收修改时的表单值
+          })
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     async  init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
@@ -169,36 +204,11 @@ export default {
       }
       this.defaultFn(this.children.formItem)
     },
-    fn(_obj) {
-      const _fn = _obj.meta.fn
-      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id ? _obj.meta.control_id : ''
-      console.log('type', _controlType)
-      switch (_controlType) {
-        case 'TableInfo_editData_dialogVisible':
-          vueBus.$on(_controlId, val => {
-            this.temp = val // 接收修改时的表单值
-          })
-          break
-        case 'default':
-          this[_fn](_obj.meta)
-          break
-      }
-    },
     // 添加数据显示
     add() {
       this.dialogStatus = 'create'
       this.temp = {}
       this.dialogFormVisible = true
-      if (this.$refs[this.system_id] !== undefined) {
-        try {
-          this.$nextTick(() => {
-            this.$refs[this.system_id].resetFields()
-          })
-        } catch (e) {
-          e
-        }
-      }
     },
     // 修改数据弹框
     edit(_data) {
@@ -209,6 +219,11 @@ export default {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
+      this.$message({
+        showClose: true,
+        message: '取消提交！',
+        type: 'info'
+      })
       try {
         this.$refs[this.system_id].resetFields()
       } catch (e) {
@@ -319,6 +334,10 @@ export default {
     },
     getTemp() {
       return this.temp
+    },
+    submitFn({ meta, data }) {
+      console.log('submitFn', meta, data)
+      this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
 }

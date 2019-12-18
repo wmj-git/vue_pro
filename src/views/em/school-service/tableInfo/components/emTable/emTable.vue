@@ -6,6 +6,7 @@
       style="width: 100%;"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
+      @row-click="handleRowClick"
     >
       <el-table-column
         type="index"
@@ -81,7 +82,8 @@ export default {
       ids: [],
       children: {
         columnBtn: [] // 行内按钮
-      }
+      },
+      rowClick: 'none'
     }
   },
   created() {
@@ -118,6 +120,15 @@ export default {
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
+    },
+    // 单击行
+    handleRowClick(row, column, event) {
+      if (this.set.rowClick !== 'none') {
+        this.fn({
+          meta: this.set.rowClick
+        }, row)
+      }
+      console.log(1, row, column, event)
     },
     // 查询
     handleFilter(_obj) {

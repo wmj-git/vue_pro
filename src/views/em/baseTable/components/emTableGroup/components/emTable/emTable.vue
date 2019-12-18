@@ -38,7 +38,7 @@
               :formatter="formatterFn"
             />
           </template>
-          <el-table-column  :width="248" fixed="right" label="操作">
+          <el-table-column :width="248" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
@@ -91,6 +91,7 @@ export default {
         removeUrl: '',
         updateUrl: '',
         updateMethod: 'post',
+        rowClick: 'none',
         treeShow: false,
         treeShow_set: {
           id: 'id',
@@ -206,6 +207,11 @@ export default {
     },
     // 单击行
     handleRowClick(row, column, event) {
+      if (this.set.rowClick !== 'none') {
+        this.fn({
+          meta: this.set.rowClick
+        }, row)
+      }
       console.log(1, row, column, event)
     },
     // 双击行
