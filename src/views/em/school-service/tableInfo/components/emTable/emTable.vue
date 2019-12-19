@@ -123,12 +123,12 @@ export default {
     },
     // 单击行
     handleRowClick(row, column, event) {
-      if (this.set.rowClick !== 'none') {
+      /* if (this.set.rowClick !== 'none') {
         this.fn({
           meta: this.set.rowClick
         }, row)
       }
-      console.log(1, row, column, event)
+      console.log('单击行', row, column, event)*/
     },
     // 查询
     handleFilter(_obj) {

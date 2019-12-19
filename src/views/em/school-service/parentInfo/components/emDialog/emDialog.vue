@@ -285,7 +285,6 @@ export default {
             url: this.set.updateUrl,
             params: this.temp
           }
-          console.log(25, obj)
           editList(obj).then(() => {
             const _this = this
             for (const v in _this.tableDataEnd) {

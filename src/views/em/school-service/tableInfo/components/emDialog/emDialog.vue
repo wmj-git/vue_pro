@@ -96,9 +96,7 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <!-- <el-button @click="changeDialogHidden">取 消</el-button>-->
-        <!--<el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>-->
-        <template v-for="(btn, _index ) in children.columnBtn">
+        <template v-for="(btn, _index ) in children.formBtn">
           <el-button
             :key="_index"
             :ref="btn.meta.system_id"
@@ -143,7 +141,7 @@ export default {
       },
       children: {
         formItem: [],
-        columnBtn: []
+        formBtn: []
       },
       temp: {},
       rules: {}, // 验证数据
@@ -171,13 +169,7 @@ export default {
         }
       })
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id ? _obj.meta.control_id : ''
       switch (_controlType) {
-        case 'TableInfo_editData_dialogVisible':
-          vueBus.$on(_controlId, val => {
-            this.temp = val // 接收修改时的表单值
-          })
-          break
         default:
           this.FN(_obj, _data)
       }
@@ -219,16 +211,6 @@ export default {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
-      this.$message({
-        showClose: true,
-        message: '取消提交！',
-        type: 'info'
-      })
-      try {
-        this.$refs[this.system_id].resetFields()
-      } catch (e) {
-        e
-      }
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
@@ -269,9 +251,7 @@ export default {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
           }
-          console.log('obj', obj)
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -335,6 +315,7 @@ export default {
     getTemp() {
       return this.temp
     },
+    // 提交表单
     submitFn({ meta, data }) {
       console.log('submitFn', meta, data)
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
