@@ -283,7 +283,6 @@ export default {
             params: Object.assign({}, this.temp)
           }
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {

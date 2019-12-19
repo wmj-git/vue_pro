@@ -95,7 +95,6 @@ export default {
     this.init()
     this.getList()
     vueBus.$on('query', () => {
-      console.log(123)
       this.getList()
     })
     vueBus.$on('device_type', (val) => {

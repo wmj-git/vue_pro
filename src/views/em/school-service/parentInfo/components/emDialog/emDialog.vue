@@ -219,7 +219,6 @@ export default {
         if (valid) {
           return true
         } else {
-          console.log('error submit!!')
           return false
         }
       })

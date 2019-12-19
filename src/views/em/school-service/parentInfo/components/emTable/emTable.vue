@@ -99,6 +99,7 @@ export default {
     })
     vueBus.$on('classId', val => {
       this.currentClass = val // 异步获取班级传过来的数据，不是初始化获取
+      this.getList()
     })
   },
   methods: {
@@ -140,7 +141,8 @@ export default {
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        pageNum: this.listQuery.page,
+        classId: this.currentClass
       }
       try {
         let _val = {}

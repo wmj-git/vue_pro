@@ -54,8 +54,7 @@ export default {
         gradeUrl: '',
         removeUrl: ''
       },
-      expandAll: false,
-      currentNode: []
+      expandAll: false
     }
   },
   created() {
@@ -66,6 +65,20 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
+    fn(_obj, _data) {
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'clickClass_currentCode_data_emit':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: this.currentNode
+          })
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     filterNode(value, data) {
       if (!value) return true
       return data[this.defaultProps.label].indexOf(value) !== -1
@@ -74,6 +87,7 @@ export default {
       if (_data.level === 3) {
         vueBus.$emit('classId', _data.data.nodeData.id)
       }
+      console.log('node_ids', _data.data.nodeData.id)
     },
     async loadNode(node, resolve) {
       if (node.level === 0) {
