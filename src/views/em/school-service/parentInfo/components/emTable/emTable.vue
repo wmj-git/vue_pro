@@ -6,6 +6,7 @@
       style="width: 100%;"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
+      @row-click="onClickRow"
     >
       <el-table-column
         type="index"
@@ -59,7 +60,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList } from '@/api/schoolService/classInfo'
+import { fetchList, delList, searchList } from '@/api/schoolService/classInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'EmTable',
@@ -135,6 +136,35 @@ export default {
       if (_obj.temp) {
         // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
+      }
+    },
+    onClickRow() {
+      this.searchList()
+    },
+    searchList(params) {
+      const _params = {
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page,
+        studentId: 6
+      }
+      try {
+        let _val = {}
+        if (params) {
+          _val = params
+        }
+        for (const k in _val) {
+          _params[k] = _val[k]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        searchList({
+          url: 'school/parent/selectByStudentId',
+          params: _params
+        }).then(res => {
+          console.log('结果', res)
+          this.tableDataEnd = res.data
+        })
       }
     },
     // 渲染数据

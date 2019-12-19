@@ -37,3 +37,10 @@ export function schoolInfo(obj) {
   })
 }
 
+export function searchList(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}
