@@ -13,19 +13,34 @@
       lazy
       @node-click="handleNodeClick"
     >
-      <span class="custom-tree-node" slot-scope="{ node, data }">
+      <span slot-scope="{ node, data }" class="custom-tree-node">
         <span>{{ node.label }}</span>
         <span>
-          <el-button
+          <template v-for="(btn, _index ) in children.treeBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="() => fn(btn, {'control_type': btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
+        </span>
+        <span>
+          <!-- <el-button
             type="text"
             size="mini"
             @click="() => update(node, data)">
             修改
-          </el-button>
+          </el-button>-->
           <el-button
             type="text"
             size="mini"
-            @click="() => remove(node, data)">
+            @click="() => remove(node, data)"
+          >
             删除
           </el-button>
         </span>
@@ -49,6 +64,9 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
+      children: {
+        treeBtn: []
+      },
       set: {
         queryUrl: '',
         gradeUrl: '',
@@ -68,11 +86,12 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
+      const treeRow = this.update()
       switch (_controlType) {
-        case 'clickClass_currentCode_data_emit':
+        case 'TreeInfo_editData_dialogVisible': // 修改班级-树弹框
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
-            data: this.currentNode
+            data: treeRow
           })
           break
         default:
@@ -87,7 +106,6 @@ export default {
       if (_data.level === 3) {
         vueBus.$emit('classId', _data.data.nodeData.id)
       }
-      console.log('node_ids', _data.data.nodeData.id)
     },
     async loadNode(node, resolve) {
       if (node.level === 0) {
@@ -124,10 +142,13 @@ export default {
       }
     },
     // 修改节点
-    update(node) {
+    update(_data) {
+      /* if (_data.level === 3) {
+        console.log('节点数据', _data)
+      }*/
     },
     // 删除节点
-    remove(node, data) {
+    remove(node) {
       // 获取子集id
       const ids = [] // node的id和列表数据的id不一样？？
       if (node.data.nodeData.id) {

@@ -97,7 +97,7 @@ export default {
     vueBus.$on('query', () => {
       this.getList()
     })
-    vueBus.$on('classId', val => {
+    vueBus.$on('classId', val => { // 根据班级查询学生信息
       this.currentClass = val // 异步获取班级传过来的数据，不是初始化获取
       this.getList()
     })
