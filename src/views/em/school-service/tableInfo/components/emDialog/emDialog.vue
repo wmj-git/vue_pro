@@ -317,7 +317,6 @@ export default {
     },
     // 提交表单
     submitFn({ meta, data }) {
-      console.log('submitFn', meta, data)
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }

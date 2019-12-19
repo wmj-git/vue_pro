@@ -94,8 +94,18 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="changeDialogHidden">取 消</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
+        <template v-for="(btn, _index ) in children.formBtn">
+          <el-button
+            :key="_index"
+            :ref="btn.meta.system_id"
+            class="em-btn-operation"
+            size="mini"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+            @click="fn(btn,temp)"
+          >
+            {{ btn.meta.title }}
+          </el-button>
+        </template>
       </div>
     </el-dialog>
   </div>
@@ -128,7 +138,8 @@ export default {
         type: Boolean
       },
       children: {
-        formItem: []
+        formItem: [],
+        formBtn: []
       },
       temp: {},
       rules: {}, // 验证数据
@@ -192,13 +203,20 @@ export default {
       }
       this.defaultFn(this.children.formItem)
     },
-    fn(_obj) {
-      const _fn = _obj.meta.fn
+    fn(_obj, _data) {
+      console.log('methods', _obj, _data)
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       switch (_controlType) {
-        case 'default':
-          this[_fn](_obj.meta)
-          break
+        default:
+          this.FN(_obj, _data)
       }
     },
     // 添加数据显示
@@ -325,6 +343,10 @@ export default {
 
       this.temp = _temp
       this.rules = _rules
+    },
+    // 提交表单
+    submitFn({ meta, data }) {
+      this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
 }
