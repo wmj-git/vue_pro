@@ -98,9 +98,6 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on('query', () => {
-      this.getList()
-    })
   },
   methods: {
     fn(_obj, _data) {

@@ -71,9 +71,10 @@ export default {
         queryUrl: '',
         gradeUrl: '',
         removeUrl: '',
-        set_fn: {
+        fn_set: {
           control_id: null // 区别哪个table的getList()
-        }
+        },
+        fn_append: ''
       },
       expandAll: false
     }
@@ -107,12 +108,13 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        vueBus.$emit(this.set.set_fn.control_id || this.system_id, {
+        vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 点击班级查询相应学生
           fn: 'getList',
           data: {
             'classId': _data.data.nodeData.id
           }
         })
+        vueBus.$emit('class', _data.data.nodeData.id) // 添加学生需要的班级id
       }
     },
     async loadNode(node, resolve) {

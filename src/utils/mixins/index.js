@@ -254,6 +254,7 @@ export const emMixin = {
     },
     receiverFn(_obj) {
       if (!(_obj && 'meta' in _obj)) {
+        console.log(25, _obj)
         this[_obj.fn](_obj.data) // 调用方法:fn, 传递参数:data(解耦)
         return
       }

@@ -143,7 +143,11 @@ export default {
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: ''
+        vueBusName: '',
+        fn_set: {
+          control_id: '',
+          control_type: ''
+        }
       },
       multiple: {
         type: Boolean
@@ -164,7 +168,7 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on('classId', val => {
+    vueBus.$on('class', val => {
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
     })
@@ -287,7 +291,10 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit('query')
+              vueBus.$emit(this.set.fn_set.control_id || this.system_id, {  // 刷新表格数据
+                fn: 'getList',
+                data: ''
+              })
             } else {
               this.$notify.error('添加失败')
             }
@@ -312,7 +319,10 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
+            vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 刷新表格数据
+              fn: 'getList',
+              data: ''
+            })
             this.$notify({
               title: 'Success',
               message: '修改成功',
