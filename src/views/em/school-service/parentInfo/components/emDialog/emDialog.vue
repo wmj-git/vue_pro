@@ -291,10 +291,10 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit(this.set.fn_set.control_id || this.system_id, {  // 刷新表格数据
+              /* vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
                 fn: 'getList',
-                data: ''
-              })
+                data: {}
+              })*/
             } else {
               this.$notify.error('添加失败')
             }
@@ -319,9 +319,8 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 刷新表格数据
-              fn: 'getList',
-              data: ''
+            vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
+              fn: 'getList'
             })
             this.$notify({
               title: 'Success',
