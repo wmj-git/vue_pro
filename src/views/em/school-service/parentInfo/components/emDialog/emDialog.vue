@@ -123,7 +123,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
+import { addList, editList, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
@@ -163,7 +163,8 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
-      currentClass: '' // 当前选中的班级id
+      currentClass: '', // 当前选中的班级id
+      currentStu: ''
     }
   },
   created() {
@@ -171,6 +172,10 @@ export default {
     vueBus.$on('class', val => {
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+    })
+    vueBus.$on('stuId', val => {
+      this.currentStu = val
+      this.temp['studentIds'] = val
     })
   },
   beforeDestroy() {
@@ -182,7 +187,7 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'studentIds':
+          /* case 'studentIds':
             var optionsArr = []
             var obj = {
               url: this.set.selectUrl
@@ -193,7 +198,7 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学生id下拉选项赋值
-            break
+            break*/
           case 'siOrgCode':
             await currentUser({
               url: this.set.selectUrl
@@ -246,15 +251,21 @@ export default {
     },
     // 添加学生
     append() {
-      if (this.currentClass) {
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      } else {
+      if (!this.currentClass) {
         this.$message({
           showClose: true,
           message: '请先选择左侧树状中对应的班级！',
           type: 'warning'
         })
+      } else if (!this.currentStu) {
+        this.$message({
+          showClose: true,
+          message: '请先选择学生！',
+          type: 'warning'
+        })
+      } else {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
       }
     },
     // 添加数据显示

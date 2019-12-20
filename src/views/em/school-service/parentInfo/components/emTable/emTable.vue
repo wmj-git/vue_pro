@@ -139,12 +139,13 @@ export default {
       if (!this.set.rowClick) {
         return
       } else if (row.id) {
-        vueBus.$emit(this.set.clickRow.control_id || this.system_id, {
+        vueBus.$emit(this.set.clickRow.control_id, {
           fn: 'getList',
           data: {
             studentId: row.id
           }
         })
+        vueBus.$emit('stuId', row.id)
       } else {
         this.tableDataEnd = null
       }
