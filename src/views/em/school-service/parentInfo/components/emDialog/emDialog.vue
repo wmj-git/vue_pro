@@ -265,7 +265,7 @@ export default {
     },
     // 修改数据弹框
     edit(_data) {
-      /* this.temp = dataInitFn(_data.data, _data.data)*/
+      this.temp = dataInitFn(_data.data, _data.data)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },

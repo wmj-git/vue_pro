@@ -70,7 +70,10 @@ export default {
       set: {
         queryUrl: '',
         gradeUrl: '',
-        removeUrl: ''
+        removeUrl: '',
+        set_fn: {
+          control_id: null // 区别哪个table的getList()
+        }
       },
       expandAll: false
     }
@@ -104,7 +107,12 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        vueBus.$emit('classId', _data.data.nodeData.id)
+        vueBus.$emit(this.set.set_fn.control_id || this.system_id, {
+          fn: 'getList',
+          data: {
+            'classId': _data.data.nodeData.id
+          }
+        })
       }
     },
     async loadNode(node, resolve) {

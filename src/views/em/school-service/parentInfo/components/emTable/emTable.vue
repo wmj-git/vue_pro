@@ -4,6 +4,7 @@
       :data="tableDataEnd "
       border
       style="width: 100%;"
+      :row-click="meta.rowClick"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
       @row-click="onClickRow"
@@ -17,9 +18,9 @@
         type="selection"
         width="55"
       />
-      <el-table-column label="头像" v-if="meta.tableHeader[0].key==='studentName'">
+      <el-table-column v-if="meta.tableHeader[0].key==='studentName'" label="头像">
         <template slot-scope="scope">
-          <img :src="scope.row.headImage" width="40" height="40"/>
+          <img :src="scope.row.headImage" width="40" height="40">
         </template>
       </el-table-column>
       <el-table-column
@@ -60,7 +61,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { fetchList, delList, searchList } from '@/api/schoolService/classInfo'
+import { fetchList, delList } from '@/api/schoolService/classInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'EmTable',
@@ -73,7 +74,11 @@ export default {
         appendUrl: '',
         removeUrl: '',
         updateUrl: '',
-        vueBusName: '' // 区分抽屉
+        vueBusName: '', // 区分抽屉
+        clickRow: {
+          control_id: null // 区别哪个table的getList()
+        },
+        rowClick: false
       },
       tableHeader: [],
       tableDataEnd: [],
@@ -88,18 +93,12 @@ export default {
       children: {
         columnBtn: []
       },
-      formatterMap: {},
-      currentClass: '' // 接收班级id
+      formatterMap: {}
     }
   },
   created() {
     this.init()
-    this.getList()
     vueBus.$on('query', () => {
-      this.getList()
-    })
-    vueBus.$on('classId', val => { // 根据班级查询学生信息
-      this.currentClass = val // 异步获取班级传过来的数据，不是初始化获取
       this.getList()
     })
   },
@@ -138,41 +137,26 @@ export default {
         this.getList(_obj.temp)
       }
     },
-    onClickRow() {
-      this.searchList()
-    },
-    searchList(params) {
-      const _params = {
-        pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page,
-        studentId: 6
-      }
-      try {
-        let _val = {}
-        if (params) {
-          _val = params
-        }
-        for (const k in _val) {
-          _params[k] = _val[k]
-        }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        searchList({
-          url: 'school/parent/selectByStudentId',
-          params: _params
-        }).then(res => {
-          console.log('结果', res)
-          this.tableDataEnd = res.data
+    // 单击行获取指定学生的家长信息
+    onClickRow(row) {
+      if (!this.set.rowClick) {
+        return
+      } else if (row.id) {
+        vueBus.$emit(this.set.clickRow.control_id || this.system_id, {
+          fn: 'getList',
+          data: {
+            studentId: row.id
+          }
         })
+      } else {
+        this.tableDataEnd = null
       }
     },
     // 渲染数据
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page,
-        classId: this.currentClass
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}
