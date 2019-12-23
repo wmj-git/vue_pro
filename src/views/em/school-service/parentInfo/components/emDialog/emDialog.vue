@@ -12,6 +12,15 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+              <el-form-item v-if="item.meta.itemType==='inputs'" :label="item.meta.title" :prop="item.meta.valueKey">
+                <el-input
+                  :ref="item.meta.system_id"
+                  v-model="temp[item.meta.valueKey][0]"
+                  clearable
+                  :disabled="item.meta.disabled"
+                  :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                />
+              </el-form-item>
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -174,7 +183,7 @@ export default {
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
     })
     vueBus.$on('stuId', val => {
-      this.currentStu = [val]
+      this.currentStu = val
       this.temp['studentIds'] = [val]
     })
   },
@@ -239,16 +248,16 @@ export default {
     },
     // 添加学生
     append() {
-      if (!this.currentClass) {
-        this.$message({
-          showClose: true,
-          message: '请先选择左侧树状中对应的班级！',
-          type: 'warning'
-        })
-      } else if (!this.currentStu) {
+      if (this.currentStu === null) {
         this.$message({
           showClose: true,
           message: '请先选择学生！',
+          type: 'warning'
+        })
+      } else if (!this.currentClass) {
+        this.$message({
+          showClose: true,
+          message: '请先选择左侧树状中对应的班级！',
           type: 'warning'
         })
       } else {
@@ -318,9 +327,9 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
+          /*  vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
               fn: 'getList'
-            })
+            })*/
             this.$notify({
               title: 'Success',
               message: '修改成功',

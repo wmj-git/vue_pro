@@ -3,6 +3,7 @@
     <el-table
       :data="tableDataEnd "
       border
+      :ref="system_id"
       style="width: 100%;"
       :row-click="meta.rowClick"
       @selection-change="handleSelectionChange"
@@ -147,6 +148,9 @@ export default {
           }
         })
         vueBus.$emit('stuId', row.id)
+        /* this.$refs[this.system_id].toggleRowSelection(row)*/
+      } else {
+        row.id = null
       }
     },
     // 渲染数据
@@ -166,7 +170,6 @@ export default {
         url: this.set.queryUrl,
         params: _params
       }).then(response => {
-        console.log('response:', response)
         if (response.statusCode === 200) {
           this.total = response.data.total
           this.tableDataEnd = response.data.list
