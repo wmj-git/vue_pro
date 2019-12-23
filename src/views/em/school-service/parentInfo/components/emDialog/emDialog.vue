@@ -153,9 +153,8 @@ export default {
         labelPosition: '',
         textMap: {},
         vueBusName: '',
-        fn_set: {
-          control_id: '',
-          control_type: ''
+        clickRow: {
+          control_id: ''
         }
       },
       multiple: {
@@ -327,9 +326,6 @@ export default {
               }
             }
             this.changeDialogHidden()
-          /*  vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
-              fn: 'getList'
-            })*/
             this.$notify({
               title: 'Success',
               message: '修改成功',

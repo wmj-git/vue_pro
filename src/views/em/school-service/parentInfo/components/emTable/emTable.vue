@@ -78,7 +78,7 @@ export default {
         updateUrl: '',
         vueBusName: '', // 区分抽屉
         clickRow: {
-          control_id: null // 区别哪个table的getList()
+          control_id: '' // 区别哪个table的getList()
         },
         rowClick: false
       },
@@ -208,7 +208,6 @@ export default {
                 message: '删除成功',
                 type: 'success'
               })
-              this.getList()
             }
           })
         }).catch(() => {
