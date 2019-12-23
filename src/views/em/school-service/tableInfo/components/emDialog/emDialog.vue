@@ -116,7 +116,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, schoolInfo } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -128,7 +128,6 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
-        searchUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -145,15 +144,22 @@ export default {
       },
       temp: {},
       rules: {}, // 验证数据
+      organizationCode: '', // 当前用户的组织编码
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
-      typeArrList: {} // 设备类型传递给表格
+      typeArrList: {}, // 设备类型传递给表格
+      currentClass: ''
     }
   },
-  async created() {
-    await this.init()
+  created() {
+    this.init()
+    this.temp['siOrgCode'] = this.organizationCode
+    vueBus.$on('class', val => {
+      this.currentClass = val
+      this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+    })
   },
   beforeDestroy() {
   },
@@ -174,23 +180,19 @@ export default {
           this.FN(_obj, _data)
       }
     },
-    async  init() { // 异步转换为同步进行
+    init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
-        const optionsArr = []
-        const obj = {
-          url: this.set.selectUrl
-        }
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'siOrgCode': // 学校组织代码
-            schoolInfo(obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
-              })
+          case 'siOrgCode':
+            currentUser({
+              url: this.set.selectUrl
+            }).then(response => {
+              console.log('response', response)
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学校组织编码下拉选项赋值
             break
         }
       }
@@ -198,9 +200,17 @@ export default {
     },
     // 添加数据显示
     add() {
-      this.dialogStatus = 'create'
-      this.temp = {}
-      this.dialogFormVisible = true
+      if (!this.currentClass) {
+        this.$message({
+          showClose: true,
+          message: '请先选择左侧树状中对应的班级！',
+          type: 'warning'
+        })
+      } else {
+        this.dialogStatus = 'create'
+        this.temp = {}
+        this.dialogFormVisible = true
+      }
     },
     // 修改数据弹框
     edit(_data) {
