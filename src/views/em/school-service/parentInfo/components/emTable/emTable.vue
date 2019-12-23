@@ -8,6 +8,7 @@
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
       @row-click="onClickRow"
+      empty-text="暂无数据"
     >
       <el-table-column
         type="index"
@@ -137,7 +138,7 @@ export default {
     // 单击行获取指定学生的家长信息
     onClickRow(row) {
       if (!this.set.rowClick) {
-        return false
+        return
       } else if (row.id) {
         vueBus.$emit(this.set.clickRow.control_id, {
           fn: 'getList',
@@ -149,8 +150,7 @@ export default {
       }
     },
     // 渲染数据
-    async getList(params) {
-      console.log('params', params)
+    getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
@@ -162,13 +162,18 @@ export default {
       for (const k in _val) {
         _params[k] = _val[k]
       }
-      await fetchList({
+      fetchList({
         url: this.set.queryUrl,
         params: _params
       }).then(response => {
         console.log('response:', response)
-        this.total = response.data.total
-        this.tableDataEnd = response.data.list
+        if (response.statusCode === 200) {
+          this.total = response.data.total
+          this.tableDataEnd = response.data.list
+        } else if (response.statusCode === 503) { // 数据为空时不渲染表格
+          this.total = 0
+          this.tableDataEnd = null
+        }
       })
     },
     handleCurrentChange(val) {},

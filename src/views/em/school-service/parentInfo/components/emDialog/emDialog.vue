@@ -175,7 +175,6 @@ export default {
     })
     vueBus.$on('stuId', val => {
       this.currentStu = [val]
-      console.log('学生id:', this.currentStu)
       this.temp['studentIds'] = [val]
     })
   },
@@ -188,18 +187,6 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          /* case 'studentIds':
-            var optionsArr = []
-            var obj = {
-              url: this.set.selectUrl
-            }
-            studentInfo(obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学生id下拉选项赋值
-            break*/
           case 'siOrgCode':
             await currentUser({
               url: this.set.selectUrl
