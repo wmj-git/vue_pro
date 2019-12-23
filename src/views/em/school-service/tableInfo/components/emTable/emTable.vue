@@ -41,14 +41,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <Pagination
+   <!-- <Pagination
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       :hide-on-single-page="pageOne"
       @pagination="handlePaginationChange"
       @current-change="handleCurrentChange"
-    />
+    />-->
   </div>
 </template>
 <script>
@@ -88,7 +88,6 @@ export default {
   },
   created() {
     this.init()
-    this.getList()
     vueBus.$on('query', () => {
       this.getList()
     })
@@ -122,14 +121,7 @@ export default {
       this.getList()
     },
     // 单击行
-    handleRowClick(row, column, event) {
-      /* if (this.set.rowClick !== 'none') {
-        this.fn({
-          meta: this.set.rowClick
-        }, row)
-      }
-      console.log('单击行', row, column, event)*/
-    },
+    handleRowClick(row, column, event) {},
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {
@@ -139,6 +131,7 @@ export default {
     },
     // 渲染数据
     getList(params) {
+      console.log('params', params)
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
@@ -158,8 +151,12 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          this.total = response.data.total
-          this.tableDataEnd = response.data.list
+          console.log(response)
+          if (response.statusCode === 200) {
+            this.tableDataEnd = response.data
+          } else if (response.statusCode === 503) { // 数据为空时不渲染表格
+            this.tableDataEnd = null
+          }
         })
       }
     },
