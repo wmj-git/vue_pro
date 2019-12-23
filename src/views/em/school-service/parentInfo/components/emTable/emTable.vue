@@ -137,44 +137,39 @@ export default {
     // 单击行获取指定学生的家长信息
     onClickRow(row) {
       if (!this.set.rowClick) {
-        return
+        return false
       } else if (row.id) {
         vueBus.$emit(this.set.clickRow.control_id, {
           fn: 'getList',
-          data: {
+          params: {
             studentId: row.id
           }
         })
         vueBus.$emit('stuId', row.id)
-      } else {
-        this.tableDataEnd = null
       }
     },
     // 渲染数据
-    getList(params) {
+    async getList(params) {
+      console.log('params', params)
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
       }
-      try {
-        let _val = {}
-        if (params) {
-          _val = params
-        }
-        for (const k in _val) {
-          _params[k] = _val[k]
-        }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        fetchList({
-          url: this.set.queryUrl,
-          params: _params
-        }).then(response => {
-          this.total = response.data.total
-          this.tableDataEnd = response.data.list
-        })
+      let _val = {}
+      if (params) {
+        _val = params
       }
+      for (const k in _val) {
+        _params[k] = _val[k]
+      }
+      await fetchList({
+        url: this.set.queryUrl,
+        params: _params
+      }).then(response => {
+        console.log('response:', response)
+        this.total = response.data.total
+        this.tableDataEnd = response.data.list
+      })
     },
     handleCurrentChange(val) {},
     handleSelectionChange(val) {

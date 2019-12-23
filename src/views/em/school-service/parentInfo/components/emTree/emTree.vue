@@ -110,7 +110,7 @@ export default {
       if (_data.level === 3) {
         vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 点击班级查询相应学生
           fn: 'getList',
-          data: {
+          params: {
             'classId': _data.data.nodeData.id
           }
         })

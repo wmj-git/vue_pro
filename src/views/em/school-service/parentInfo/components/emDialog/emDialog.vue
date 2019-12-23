@@ -164,7 +164,7 @@ export default {
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
       currentClass: '', // 当前选中的班级id
-      currentStu: ''
+      currentStu: []
     }
   },
   created() {
@@ -174,8 +174,9 @@ export default {
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
     })
     vueBus.$on('stuId', val => {
-      this.currentStu = val
-      this.temp['studentIds'] = val
+      this.currentStu = [val]
+      console.log('学生id:', this.currentStu)
+      this.temp['studentIds'] = [val]
     })
   },
   beforeDestroy() {
