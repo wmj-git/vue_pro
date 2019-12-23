@@ -172,6 +172,19 @@ export default {
           if (typeof val[_k] === 'string') {
             val[_k] = val[_k].trim()
           }
+          if ('id' in val && val.id === 'none') {
+            this.children.formItem.forEach((_item) => {
+              if (_item.meta.itemType === 'button') {
+                _item.meta.disabled = true
+              }
+            })
+          } else {
+            this.children.formItem.forEach((_item) => {
+              if (_item.meta.itemType === 'button') {
+                _item.meta.disabled = false
+              }
+            })
+          }
         }
         return val
       },

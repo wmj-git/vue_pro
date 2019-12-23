@@ -12,8 +12,12 @@
             ref="tree"
             :data="treeData"
             :props="defaultProps"
+            :highlight-current="true"
+            :auto-expand-parent="true"
+            :current-node-key="currentKey"
+            :default-expanded-keys="[currentKey]"
             node-key="id"
-            accordion
+            :accordion="true"
             :show-checkbox="set.checkbox"
             :default-expand-all="set.expandAll"
             :expand-on-click-node="false"
@@ -66,7 +70,7 @@ export default {
   data() {
     return {
       set: {
-        title: '',
+        title: '', // 标题
         maxHeight: '',
         expandAll: false,
         buttons: false,
@@ -89,6 +93,7 @@ export default {
       },
       treeData: [],
       filterText: '',
+      currentKey: null,
       defaultProps: {
         children: 'children',
         label: 'label'
