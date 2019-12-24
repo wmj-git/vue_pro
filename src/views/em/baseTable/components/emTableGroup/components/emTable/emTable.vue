@@ -24,8 +24,10 @@
           />
           <el-table-column
             type="index"
+            width="54"
             fixed="left"
             align="center"
+            label="序号"
             :index="tableIndex"
           />
           <template v-for="(column,index) in set.tableHeader">
@@ -38,7 +40,7 @@
               :formatter="formatterFn"
             />
           </template>
-          <el-table-column :width="248" fixed="right" label="操作">
+          <el-table-column v-if="children.columnBtn.length > 0" :width="248" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button

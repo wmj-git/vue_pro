@@ -140,7 +140,6 @@ export const emMixin = {
           }, 500).run()
           break
         default:
-          console.log(_controlType, _obj)
           this.$message({
             message: '(control_type)参数无效',
             type: 'error'
@@ -196,7 +195,6 @@ export const emMixin = {
           break
         case 'refs':
           _refs = this.$refs[_controlId]
-          console.log('refs', _refs)
           if (_refs && _refs.length > 0) {
             _refs[0].senderData = JSON.parse(JSON.stringify({
               meta: _query.meta,
@@ -213,6 +211,7 @@ export const emMixin = {
         case 'PromiseRefs':
           promiseFn(100, () => {
             _refs = _this.$refs[_controlId]
+            console.log('refs', _refs, _controlId)
             return _refs && _refs.length > 0
           }, function() {
             _refs[0].senderData = JSON.parse(JSON.stringify({

@@ -34,14 +34,14 @@
                 <el-button
                   class="em-btn-gradient em-btn-uniform-gradient"
                   size="mini"
-                  @click="() => append(node,data)"
+                  @click.stop="() => append(node,data)"
                 >
                   添加
                 </el-button>
                 <el-button
                   class="em-btn-gradient em-btn-uniform-gradient"
                   size="mini"
-                  @click="() => remove(node, data)"
+                  @click.stop="() => remove(node, data)"
                 >
                   删除
                 </el-button>
@@ -320,6 +320,7 @@ export default {
       })
     },
     handleNodeClick(data) {
+      this.currentKey = data.id
       const _componentData = this.componentData
       if (_componentData.meta.handleNodeClickControlType) {
         _componentData.meta.control_type = _componentData.meta.handleNodeClickControlType
