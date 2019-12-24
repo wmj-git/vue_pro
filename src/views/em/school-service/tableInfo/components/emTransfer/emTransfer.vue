@@ -6,12 +6,12 @@
       :visible.sync="dialogFormVisible"
     >
       <el-transfer
-        v-model="meta.value"
+        v-model="transfer_data"
         filterable
         :titles="['未分配班级', '已分配班级']"
         :filter-method="filterMethod"
         filter-placeholder="输入查询关键字"
-        :data="list_data"
+        :data="transfer_data"
       />
       <div slot="footer" class="dialog-footer">
         <template v-for="(btn, _index ) in children.formBtn">
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { fetchList } from '@/api/schoolService/tableInfo'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 export default {
@@ -39,20 +40,22 @@ export default {
   mixins: [emMixin],
   data() {
     return {
-      list_data: [],
+      transfer_data: [],
       dialogFormVisible: false,
       children: {
         formBtn: []
       },
+      set: {
+        queryUrl: '' // 未分配班级
+      },
+      pinyin: [],
       filter_placeholder: '',
-      value: [],
-      filterMethod(query, item) {
-        return item.pinyin.indexOf(query) > -1
-      }
+      value: []
     }
   },
   created() {
     this.init()
+    console.log('transfer_data', this.transfer_data)
   },
   methods: {
     init() {
@@ -67,19 +70,25 @@ export default {
           this.FN(_obj, _data)
       }
     },
+    filterMethod(query, item) {
+    },
     changeDialogHidden() {
       this.dialogFormVisible = false
     },
-    connectToClass() {
+    async connectToClass() {
       this.dialogFormVisible = true
-      const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都']
-      const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu']
-      cities.forEach((city, index) => {
-        this.list_data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
+      await fetchList({ // 未分配班级信息
+        url: this.set.queryUrl
+      }).then(response => {
+        response.data.list.forEach((val, _index) => {
+          this.pinyin.push(val.name)
+          this.transfer_data.push({
+            label: val.name,
+            key: val.id,
+            pinyin: this.pinyin[_index]
+          })
         })
+        return this.transfer_data
       })
     },
     connectData() {},
