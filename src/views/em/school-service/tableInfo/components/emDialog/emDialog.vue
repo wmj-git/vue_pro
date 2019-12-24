@@ -155,7 +155,6 @@ export default {
   },
   async created() {
     await this.init()
-    console.log('organizationCode:', this.organizationCode)
     this.temp['siOrgCode'] = this.organizationCode
     vueBus.$on('class', val => {
       this.currentClass = val

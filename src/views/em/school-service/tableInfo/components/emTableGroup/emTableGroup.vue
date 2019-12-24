@@ -36,6 +36,13 @@
           </el-col>
         </template>
       </div>
+      <div class="emTransfer">
+        <template v-for="(item, items) in children.transferItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-transfer :data="item"/>
+          </el-col>
+        </template>
+      </div>
     </el-card>
   </div>
 </template>
@@ -47,9 +54,10 @@ import EmDialog from '@/views/em/school-service/tableInfo/components/emDialog/em
 import EmForm from '@/views/em/school-service/tableInfo/components/emButtons/emButtons'
 import EmDrawer from '@/views/em/school-service/tableInfo/components/emDrawer/emDrawer'
 import EmTree from '@/views/em/school-service/tableInfo/components/emTree/emTree'
+import EmTransfer from '@/views/em/school-service/tableInfo/components/emTransfer/emTransfer'
 export default {
   name: 'EmTableGroup',
-  components: { EmTree, EmDrawer, EmForm, EmDialog, EmTable },
+  components: { EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
   mixins: [emMixin],
   data() {
     return {
@@ -63,7 +71,8 @@ export default {
         dataItem: [],
         importItem: [], // 导入
         drawerItem: [], // 抽屉
-        treeItem: [] // 树
+        treeItem: [], // 树
+        transferItem: [] // 穿梭框
       }
     }
   },

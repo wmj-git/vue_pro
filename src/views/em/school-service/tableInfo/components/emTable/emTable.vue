@@ -112,6 +112,12 @@ export default {
             data: Object.assign({}, _data.row)
           })
           break
+        case 'TableInfo_connectData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
         default:
           this.FN(_obj, _data)
       }
@@ -180,7 +186,6 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          console.log(response)
           if (response.statusCode === 200) {
             this.tableDataEnd = response.data
             this.children.columnBtn[1].meta.className = 'distribution_class'
