@@ -118,6 +118,11 @@ export default {
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    treeData(val) {
+      this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.currentKey)
+      })
     }
   },
   created() {
@@ -143,10 +148,7 @@ export default {
           this[_fn](_obj.meta)
           break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
+          this.FN(_obj, _data)
       }
     },
     init() {
@@ -223,12 +225,12 @@ export default {
         }
       })
     },
-    update(node) {
-      console.log('node', node)
+    update({ data, meta }) {
+      console.log('node', data, meta)
       const _this = this
       update({
         url: this.set.updateUrl,
-        params: node
+        params: data
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
@@ -283,8 +285,6 @@ export default {
         'params': _id
       }).then((response) => {
         if (response.statusCode === 200) {
-          // console.log('getRoutePermission', response.data)
-
           _this.$message({
             message: response.message,
             type: 'success'
@@ -357,6 +357,9 @@ export default {
     },
     setCheckedKeys(_val) {
       this.getRoutePermission(_val.data.id)
+    },
+    setCurrentKey({ data, meta }) {
+      this.currentKey = data.id
     }
   }
 }

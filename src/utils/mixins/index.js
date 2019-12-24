@@ -4,7 +4,7 @@ import vueBus from '@/utils/vueBus'
 import { FilterTree, TimeFn, promiseFn } from '@/utils/tool'
 import { DataProcessing } from './dataProcessing'
 
-// 定义一个混入对象
+// 定义一个公用混入对象
 export const emMixin = {
   props: {
     data: {
@@ -140,6 +140,7 @@ export const emMixin = {
           }, 500).run()
           break
         default:
+          console.log(_controlType, _obj)
           this.$message({
             message: '(control_type)参数无效',
             type: 'error'
@@ -428,7 +429,7 @@ export const emMixin = {
     }
   }
 }
-// 定义一个混入对象
+// 定义一个页面混入对象
 export const emPage = {
   data() {
     return {
