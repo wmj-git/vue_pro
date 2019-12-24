@@ -350,7 +350,11 @@
 /*el-tree高亮部分,背景色必须透明*/
 .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background: rgba(255, 255, 255, 0.4) !important;
-  color: #c42e1e !important; }
+  color: #ffffff !important; }
+
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+  background: rgba(255, 255, 255, 0.4) !important;
+  color: #66100d !important; }
 
 /* Element Chalk Variables */
 /* Transition
