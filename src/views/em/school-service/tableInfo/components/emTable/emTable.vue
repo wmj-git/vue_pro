@@ -24,14 +24,15 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="auto">
+      <el-table-column label="操作" fixed="right" width="180px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
               :key="_index"
               :ref="btn.meta.system_id"
-              class="em-btn-operation"
               size="mini"
+              :class="btn.meta.className"
+              :style="{ display: visibleSubmit }"
               :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
               @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
             >
@@ -41,14 +42,14 @@
         </template>
       </el-table-column>
     </el-table>
-   <!-- <Pagination
+    <Pagination
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       :hide-on-single-page="pageOne"
       @pagination="handlePaginationChange"
       @current-change="handleCurrentChange"
-    />-->
+    />
   </div>
 </template>
 <script>
@@ -67,8 +68,10 @@ export default {
       set: {
         queryUrl: '',
         removeUrl: '',
+        queryAllUrl: '',
         vueBusName: ''
       },
+      visibleSubmit: '',
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [],
       tableDataEnd: [],
@@ -88,6 +91,7 @@ export default {
   },
   created() {
     this.init()
+    this.getAllList()
     vueBus.$on('query', () => {
       this.getList()
     })
@@ -103,6 +107,12 @@ export default {
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
         case 'TableInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        case 'TableInfo_connectData_dialogVisible':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: Object.assign({}, _data.row)
@@ -129,9 +139,34 @@ export default {
         this.getList(_obj.temp)
       }
     },
+    // 默认显示所有未分配班级的教师信息
+    getAllList(params) {
+      const _params = {
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page
+      }
+      let _val = {}
+      if (params) {
+        _val = params
+      }
+      for (const k in _val) {
+        _params[k] = _val[k]
+      }
+      fetchList({
+        url: this.set.queryAllUrl,
+        params: _params
+      }).then(val => {
+        if (val.statusCode === 200) {
+          this.children.columnBtn[1].meta.className = ''
+          this.total = val.data.total
+          this.tableDataEnd = val.data.list
+        } else if (val.statusCode === 503) { // 数据为空时不渲染表格
+          this.tableDataEnd = null
+        }
+      })
+    },
     // 渲染数据
     getList(params) {
-      console.log('params', params)
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page
@@ -151,9 +186,9 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          console.log(response)
           if (response.statusCode === 200) {
             this.tableDataEnd = response.data
+            this.children.columnBtn[1].meta.className = 'distribution_class'
           } else if (response.statusCode === 503) { // 数据为空时不渲染表格
             this.tableDataEnd = null
           }

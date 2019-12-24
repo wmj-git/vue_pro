@@ -115,6 +115,10 @@ export default {
           }
         })
         vueBus.$emit('class', _data.data.nodeData.id) // 添加学生需要的班级id
+      } else if (_data.level === 1) {
+        vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 点击学校查询所有的老师
+          fn: 'getAllList'
+        })
       }
     },
     async loadNode(node, resolve) {

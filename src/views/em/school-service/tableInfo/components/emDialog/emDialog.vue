@@ -153,8 +153,8 @@ export default {
       currentClass: ''
     }
   },
-  created() {
-    this.init()
+  async created() {
+    await this.init()
     this.temp['siOrgCode'] = this.organizationCode
     vueBus.$on('class', val => {
       this.currentClass = val
@@ -180,17 +180,16 @@ export default {
           this.FN(_obj, _data)
       }
     },
-    init() { // 异步转换为同步进行
+    async init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
           case 'siOrgCode':
-            currentUser({
+            await currentUser({
               url: this.set.selectUrl
             }).then(response => {
-              console.log('response', response)
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
             })
             break
@@ -203,7 +202,7 @@ export default {
       if (!this.currentClass) {
         this.$message({
           showClose: true,
-          message: '请先选择左侧树状中对应的班级！',
+          message: '请先选择左侧树状列表中对应的班级！',
           type: 'warning'
         })
       } else {
