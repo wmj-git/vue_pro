@@ -37,9 +37,11 @@ import EmTable from '@/views/em/school-service/tableInfo/components/emTable/emTa
 import EmDialog from '@/views/em/school-service/tableInfo/components/emDialog/emDialog'
 import EmTree from '@/views/em/school-service/tableInfo/components/emTree/emTree'
 import EmTransfer from '@/views/em/school-service/tableInfo/components/emTransfer/emTransfer'
+import EmCarousel from '@/views/em/school-service/tableInfo/components/emCarousel/emCarousel'
+import EmCropper from '@/views/em/school-service/tableInfo/components/emCropper/emCropper'
 export default {
   name: 'TableInfo',
-  components: { EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
+  components: { EmCropper, EmCarousel, EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
   mixins: [emMixin, emPage],
   data() {
     return {

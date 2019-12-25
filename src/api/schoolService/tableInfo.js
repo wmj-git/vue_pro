@@ -52,3 +52,19 @@ export function currentUser(obj) {
     data: obj.params
   })
 }
+// 获取当前组织的banner
+export function currentBanner(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    data: obj.params
+  })
+}
+// 上传banner
+export function client(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}

@@ -6,7 +6,7 @@
       :visible.sync="dialogFormVisible"
     >
       <el-transfer
-        v-model="transfer_data"
+        v-model="value"
         filterable
         :titles="['未分配班级', '已分配班级']"
         :filter-method="filterMethod"
@@ -39,8 +39,32 @@ export default {
   name: 'EmTransfer',
   mixins: [emMixin],
   data() {
+    /* const generateData = async _ => {
+      await this.getList()
+      console.log('classData:', this.classData)
+      return this.classData
+    }
+    console.log('generateData', generateData())*/
+    const generateData = async _ => {
+      const data = []
+      await fetchList({ // 未分配班级信息
+        url: '/school/class/queryAllByPage'
+      }).then(response => {
+        console.log('结果：', response)
+        response.data.list.forEach((val) => {
+          data.push({
+            label: val.name,
+            key: val.id
+          })
+        })
+      })
+      console.log(11, data)
+      return data
+    }
+    console.log(222, generateData())
     return {
-      transfer_data: [],
+      transfer_data: generateData(),
+      value: [],
       dialogFormVisible: false,
       children: {
         formBtn: []
@@ -48,14 +72,11 @@ export default {
       set: {
         queryUrl: '' // 未分配班级
       },
-      pinyin: [],
-      filter_placeholder: '',
-      value: []
+      classData: []
     }
   },
   created() {
     this.init()
-    console.log('transfer_data', this.transfer_data)
   },
   methods: {
     init() {
@@ -70,26 +91,25 @@ export default {
           this.FN(_obj, _data)
       }
     },
+    async getList() {
+      await fetchList({ // 未分配班级信息
+        url: '/school/class/queryAllByPage'
+      }).then(response => {
+        response.data.list.forEach((val) => {
+          this.classData.push({
+            label: val.name,
+            key: val.id
+          })
+        })
+      })
+    },
     filterMethod(query, item) {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
     },
-    async connectToClass() {
+    connectToClass() {
       this.dialogFormVisible = true
-      await fetchList({ // 未分配班级信息
-        url: this.set.queryUrl
-      }).then(response => {
-        response.data.list.forEach((val, _index) => {
-          this.pinyin.push(val.name)
-          this.transfer_data.push({
-            label: val.name,
-            key: val.id,
-            pinyin: this.pinyin[_index]
-          })
-        })
-        return this.transfer_data
-      })
     },
     connectData() {},
     // 提交表单

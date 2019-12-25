@@ -43,6 +43,27 @@
           </el-col>
         </template>
       </div>
+      <div class="emCarousel">
+        <template v-for="(item, items) in children.carouselItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-carousel :data="item"/>
+          </el-col>
+        </template>
+      </div>
+      <div class="emSoleForm">
+        <template v-for="(item, items) in children.emSoleFormItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-sole-form :data="item"/>
+          </el-col>
+        </template>
+      </div>
+      <div class="emCropper">
+        <template v-for="(item, items) in children.cropperItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-cropper :data="item"/>
+          </el-col>
+        </template>
+      </div>
     </el-card>
   </div>
 </template>
@@ -55,9 +76,12 @@ import EmForm from '@/views/em/school-service/tableInfo/components/emButtons/emB
 import EmDrawer from '@/views/em/school-service/tableInfo/components/emDrawer/emDrawer'
 import EmTree from '@/views/em/school-service/tableInfo/components/emTree/emTree'
 import EmTransfer from '@/views/em/school-service/tableInfo/components/emTransfer/emTransfer'
+import EmCarousel from '@/views/em/school-service/tableInfo/components/emCarousel/emCarousel'
+import EmSoleForm from '@/views/em/school-service/tableInfo/components/emForm/emForm'
+import EmCropper from '@/views/em/school-service/tableInfo/components/emCropper/emCropper'
 export default {
   name: 'EmTableGroup',
-  components: { EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
+  components: { EmCropper, EmSoleForm, EmCarousel, EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
   mixins: [emMixin],
   data() {
     return {
@@ -72,7 +96,10 @@ export default {
         importItem: [], // 导入
         drawerItem: [], // 抽屉
         treeItem: [], // 树
-        transferItem: [] // 穿梭框
+        transferItem: [], // 穿梭框
+        carouselItem: [], // 走马灯
+        emSoleFormItem: [], // 单独表单
+        cropperItem: [] // 裁剪图片
       }
     }
   },
