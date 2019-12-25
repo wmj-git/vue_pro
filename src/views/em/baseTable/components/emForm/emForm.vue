@@ -402,7 +402,6 @@ export default {
     },
     setForm(_obj) { // 设置表单值
       const _this = this
-      console.log('setForm', _obj)
       let _set = {}
       let _data = {}
       if ('meta' in _obj && 'fn_set' in _obj.meta) {
