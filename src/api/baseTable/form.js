@@ -15,10 +15,17 @@ export function update(obj) {
 }
 
 export function optionData(obj) {
+  if (obj.method && obj.method !== 'get') {
+    return request({
+      url: obj.url,
+      method: obj.method,
+      data: obj.params || {}
+    })
+  }
   return request({
     url: obj.url,
     method: 'get',
-    params: obj.params ? obj.params : {}
+    params: obj.params || {}
   })
 }
 

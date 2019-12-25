@@ -180,7 +180,9 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    fn(_obj, _data) {
+    fn(obj, data) {
+      const _obj = JSON.parse(JSON.stringify(obj))
+      const _data = JSON.parse(JSON.stringify(data))
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
           return true
@@ -253,19 +255,21 @@ export default {
       const _Form = {}
       const _rules = {}
       const _rule_items = JSON.parse(JSON.stringify(rule_items))
-      _rule_items.forEach(function(_obj) {
+      _rule_items.forEach((_obj) => {
+        // 表单验证
         _obj.meta.validate_OBJ.data.forEach((_item) => {
           if ('validator' in _item) {
             _item.validator = validate[_item.validator]
           }
         })
+        // 表单绑定数据
         if (_obj.meta.itemType === 'selectInput') {
           _obj.meta.options_OBJ.data.forEach((_val) => {
-            _Form[_val.value] = _obj.meta.defaultValue
+            _Form[_val.value] = (_val.value in this.Form) ? this.Form[_val.value] : _obj.meta.defaultValue
             _rules[_val.value] = _obj.meta.validate_OBJ.data
           })
         } else {
-          _Form[_obj.meta.valueKey] = _obj.meta.defaultValue
+          _Form[_obj.meta.valueKey] = (_obj.meta.valueKey in this.Form) ? this.Form[_obj.meta.valueKey] : _obj.meta.defaultValue
           _rules[_obj.meta.valueKey] = _obj.meta.validate_OBJ.data
         }
       })
@@ -282,7 +286,6 @@ export default {
       })
     },
     updateOptionParamsFn(_obj) {
-      console.log('updateOptionParamsFn', _obj)
       const _meta = _obj.meta
       const _set = _meta.fn_set
       const _params = _obj.data
@@ -297,12 +300,20 @@ export default {
             let _options = []
             await optionData({
               url: _set.requestUrl,
+              method: _set.requestMethod || null,
               params: _params
             }).then((res) => {
+              console.log('updateOptionParamsFn', res, this.Form)
               if (res && res.statusCode === 200) {
+                let _resData = []
+                if ('list' in res.data) {
+                  _resData = _resData.concat(res.data.list)
+                } else {
+                  _resData = _resData.concat(res.data)
+                }
                 const _keys = _set.successKeys
                 const _data = []
-                res.data.forEach((_item) => {
+                _resData.forEach((_item) => {
                   const _value = {}
                   for (const _k in _keys) {
                     _value[_k] = _item[_keys[_k]]
@@ -351,7 +362,6 @@ export default {
           })
         }
       })
-      console.log('optionData', _options)
       return _options
     },
     async optionFn(_meta) {
@@ -388,7 +398,6 @@ export default {
       } else if (_meta && 'options_OBJ' in _meta) {
         _options = _options.concat(_meta.options_OBJ.data ? _meta.options_OBJ.data : [])
       }
-      console.log('optionData', _options)
       return _options
     },
     setForm(_obj) { // 设置表单值
@@ -484,7 +493,9 @@ export default {
     dropzoneR(file) {
       this.$message({ message: 'Delete success', type: 'success' })
     },
-    selectOnChangeFn(_obj, _data) {
+    selectOnChangeFn(obj, data) {
+      const _obj = JSON.parse(JSON.stringify(obj))
+      const _data = JSON.parse(JSON.stringify(data))
       console.log('selectOnChangeFn', _obj, _data)
       if ('onChange' in _obj.meta) {
         this.fn({

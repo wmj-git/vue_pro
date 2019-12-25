@@ -166,7 +166,8 @@ export const emMixin = {
       let _dataProcessing
       // 数据转换
       if ('fn_set' in _query.meta) {
-        _dataProcessing = dataProcessing.transducerFn(_query.meta.fn_set, _query.data, this.senderData)
+        _dataProcessing = dataProcessing.transducerFn(JSON.parse(JSON.stringify(_query.meta.fn_set)), _query.data, this.senderData)
+        _query.meta.fn_set = JSON.parse(JSON.stringify(dataProcessing.set))
       }
 
       let _refs
@@ -237,7 +238,7 @@ export const emMixin = {
       if ('controlGroup' in _obj.meta) {
         _obj.meta.controlGroup.forEach((_item) => {
           this.fn({
-            meta: _item
+            meta: JSON.parse(JSON.stringify(_item))
           }, _data)
         })
       }
@@ -247,7 +248,7 @@ export const emMixin = {
       if ('callback' in _obj.meta) {
         _obj.meta.callback.forEach((_item) => {
           this.fn({
-            meta: _item
+            meta: JSON.parse(JSON.stringify(_item))
           }, _data)
         })
       }
