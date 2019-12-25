@@ -8,6 +8,8 @@ import Element from 'element-ui'
 import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
+import VueCropper from 'vue-cropper'
+Vue.use(VueCropper) // 图片裁剪
 
 import App from './App'
 import store from './store'
