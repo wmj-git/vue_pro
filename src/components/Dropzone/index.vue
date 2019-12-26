@@ -183,7 +183,6 @@ export default {
         done()
       },
       sending: (file, xhr, formData) => {
-        console.log('accept', file)
         xhr.setRequestHeader('Authorization', getToken())
         // formData.append('token', file.token);
         // formData.append('key', file.key);
