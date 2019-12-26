@@ -2,9 +2,10 @@ import { dataInitFn } from '@/utils/tool'
 
 export class DataProcessing {
   constructor() {
-    this.set = ''
+    this.set = null
   }
   transducerFn(set, _data, _senderData) {
+    this.set = JSON.parse(JSON.stringify(set))
     const _set = {
       dataType: '',
       requestParams: ''
@@ -12,10 +13,24 @@ export class DataProcessing {
     Object.assign(_set, set)
     let _key
     let _value
+    let _val
     switch (_set.dataType) {
+      case 'objectData_someSet':
+        console.log('objectData_someSet', _set, _data, _senderData)
+        _key = _data[_set.fn_set_key]
+        _val = _set.fn_set_some
+        _val.forEach((_item) => {
+          if (_item.values.indexOf(_key) !== -1) {
+            this.transducerFn(_item, _data, _senderData)
+          }
+        })
+        return
       case 'stringData':
         _key = _set.requestParams
         _value = _data[_key]
+        break
+      case 'valueData':
+        _value = _set.requestParams
         break
       case 'objectData':
         _key = Object.assign({}, _set.requestParams)
@@ -37,12 +52,17 @@ export class DataProcessing {
         }
         _value = Object.assign({}, _key, _set.requestParams)
         break
-      case 'valueData':
-        _value = _set.requestParams
+      case 'arrayData':
+        _key = Object.assign({}, _set.requestParams)
+        for (const _k in _key) {
+          _data[_k] = _data[_key[_k].key][_key[_k].index]
+        }
+        _value = Object.assign({}, _data)
         break
       default:
         _value = _data
     }
+    console.log('objectData_someSet1', _value, _data, _senderData)
     return _value
   }
 }
