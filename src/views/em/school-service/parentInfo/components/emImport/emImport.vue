@@ -81,6 +81,7 @@ export default {
       if (this.files) {
         const formData = new FormData()
         this.files = params.file
+        console.log('params.file', params.file)
         formData.append('file', this.files)
         uploadFile({
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
