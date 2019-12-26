@@ -12,7 +12,7 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-if="item.meta.itemType==='input'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -20,7 +20,7 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -39,7 +39,7 @@
                 </el-select>
               </el-input>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -49,7 +49,7 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 6}"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='select'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -67,7 +67,7 @@
                 </template>
               </el-select>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='switch'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-switch
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -76,7 +76,7 @@
                 :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-row>
                 <el-col :span="32">
                   <el-image
@@ -98,16 +98,13 @@
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='json'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
                 <json-editor
                   :ref="item.meta.system_id"
                   v-model="Form[item.meta.valueKey]"
                 />
               </div>
-            </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='tree'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <em-tree :data="item" />
             </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
@@ -134,13 +131,11 @@ import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
 import Dropzone from '@/components/Dropzone'
-import emTree from '@/views/em/baseTable/components/emTree/emTree'
 export default {
   name: 'EmForm',
   components: {
     JsonEditor,
-    Dropzone,
-    emTree
+    Dropzone
   },
   mixins: [emMixin],
   data() {

@@ -104,7 +104,7 @@ export default {
         return false
       }
       this.fileinfo = files
-      console.log('files', this.fileinfo)
+      console.log('files', this.fileinfo, fileList)
       // 上传成功后将图片地址赋值给裁剪框显示图片
       this.$nextTick(() => {
         this.option.img = URL.createObjectURL(files.raw)

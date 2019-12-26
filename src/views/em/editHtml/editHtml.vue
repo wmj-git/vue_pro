@@ -36,12 +36,14 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import splitPane from 'vue-splitpane'
 
 import emForm from './components/emForm/emForm'
+import htmlPan from './components/htmlPan/htmlPan'
 
 export default {
   name: 'EditHtml',
   components: {
     splitPane,
-    emForm
+    emForm,
+    htmlPan
   },
   mixins: [emMixin, emPage],
   data() {

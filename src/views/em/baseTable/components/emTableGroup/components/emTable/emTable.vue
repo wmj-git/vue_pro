@@ -222,6 +222,7 @@ export default {
     },
     // 查询数据
     queryFn(_obj) {
+      this.pagination.currentPage = 1
       if (_obj.Form) {
         this.createDataFn(_obj.Form)
       } else {
