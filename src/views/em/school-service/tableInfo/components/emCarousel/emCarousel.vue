@@ -1,11 +1,13 @@
 <template>
-  <el-carousel :interval="4000" type="card" height="350px">
+  <div class="crousrl-container">
+  <el-carousel :interval="3000" type="card" height="400px">
     <el-carousel-item v-for="(item, index) in bannerList" :key="index">
       <h3 class="medium">
         <img :src="item.imagesUrl">
       </h3>
     </el-carousel-item>
   </el-carousel>
+  </div>
 </template>
 <script>
 import { emMixin } from '@/utils/mixins'
@@ -25,11 +27,15 @@ export default {
   created() {
     this.init()
     this.getBanner()
+    this.setActiveItem()
   },
   methods: {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+    },
+    setActiveItem(name) {
+      console.log('bannername', name)
     },
     getBanner() {
       currentBanner({

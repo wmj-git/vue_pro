@@ -2,7 +2,7 @@
   <div class="emCropper-container">
     <el-upload
       class="upload-demo"
-      action="action"
+      :action="action"
       drag
       :headers="headers"
       name="files"
@@ -85,7 +85,8 @@ export default {
       fileinfo: {},
       uploadFile: [], // 页面显示的数组
       // 防止重复提交
-      loading: false
+      loading: false,
+      previews: {}
     }
   },
   created() {
@@ -97,14 +98,12 @@ export default {
       this.children = childrenInitFn(this.children, this.componentData)
     },
     // 上传按钮   限制图片大小
-    changeUpload(files, fileList) {
+    changeUpload(files, fileList, num) {
       const isLt5M = files.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB!')
         return false
       }
-      this.fileinfo = files
-      console.log('files', this.fileinfo, fileList)
       // 上传成功后将图片地址赋值给裁剪框显示图片
       this.$nextTick(() => {
         this.option.img = URL.createObjectURL(files.raw)
@@ -114,18 +113,22 @@ export default {
     },
     // 点击裁剪，这一步是可以拿到处理后的地址
     onsubmit() {
-      this.$refs.cropper.getCropBlob(() => {
+      this.$refs.cropper.getCropBlob((data) => {
         this.loading = true
         const formData = new FormData()
-        console.log('raw', this.fileinfo.raw)
-        formData.append('file', this.fileinfo.raw)
+        formData.append('files', data)
         // 上传阿里云服务器
         client({
           url: process.env.VUE_APP_BASE_API + this.set.uploadUrl,
           params: formData
         }).then(result => {
-          console.log(256, result)
-          this.dialogVisible = false
+          if (result.statusCode === 200 && result.data !== '') {
+            this.$notify({
+              message: 'banner图片上传成功',
+              type: 'success'
+            })
+            this.dialogVisible = false
+          }
         }).catch(err => {
           console.log(err)
           this.loading = false
