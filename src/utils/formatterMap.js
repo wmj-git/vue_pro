@@ -39,6 +39,13 @@ export const staticFormatterMap = {
     ['grandFa', '外公'],
     ['grandMo', '外婆'],
     ['other', '其他']
+  ]),
+  messageType: new Map([ // 通知信息类型
+    [5, '校内SOS报警消息'],
+    [6, '火灾报警消息'],
+    [8, 'SOS学校两公里外'],
+    [10, '通知消息'],
+    [12, '电子围栏报警']
   ])
 }
 
