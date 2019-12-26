@@ -16,7 +16,6 @@ export class DataProcessing {
     let _val
     switch (_set.dataType) {
       case 'objectData_someSet':
-        console.log('objectData_someSet', _set, _data, _senderData)
         _key = _data[_set.fn_set_key]
         _val = _set.fn_set_some
         _val.forEach((_item) => {
@@ -62,7 +61,6 @@ export class DataProcessing {
       default:
         _value = _data
     }
-    console.log('objectData_someSet1', _value, _data, _senderData)
     return _value
   }
 }

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth'
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
 // import { getToken } from 'api/qiniu';
@@ -182,6 +183,7 @@ export default {
         done()
       },
       sending: (file, xhr, formData) => {
+        xhr.setRequestHeader('Authorization', getToken())
         // formData.append('token', file.token);
         // formData.append('key', file.key);
         vm.initOnce = false

@@ -12,7 +12,9 @@ const componentMap = {
   'TeacherInfo': () => import('@/views/em/school-service/teacherInfo/teacherInfo'),
   'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
   'BaseTable': () => import('@/views/em/baseTable/baseTable'),
-  'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo')
+  'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo'),
+  // 功能页面
+  'EditHtml': () => import('@/views/em/editHtml/editHtml')
 }
 
 export default componentMap
