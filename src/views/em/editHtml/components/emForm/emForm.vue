@@ -106,6 +106,18 @@
                 />
               </div>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='tinymce'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-row>
+                <el-col :span="48">
+                  <tinymce
+                    :ref="item.meta.system_id"
+                    v-model="Form[item.meta.valueKey]"
+                    :disabled="item.meta.disabled"
+                    :init="{height:item.meta.height || 400}"
+                  />
+                </el-col>
+              </el-row>
+            </el-form-item>
             <el-button
               v-else-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
@@ -131,11 +143,14 @@ import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
 import Dropzone from '@/components/Dropzone'
+import Editor from '@tinymce/tinymce-vue'
+
 export default {
   name: 'EmForm',
   components: {
     JsonEditor,
-    Dropzone
+    Dropzone,
+    tinymce: Editor
   },
   mixins: [emMixin],
   data() {
@@ -178,14 +193,22 @@ export default {
     fn(obj, data) {
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
+      const _validate = _obj.meta.fn_set.validate || false
+      let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
+          _valid = true
           return true
         } else {
           console.log('error submit!!')
           return false
         }
       })
+      if (_validate) {
+        if (!(_valid)) {
+          return
+        }
+      }
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
@@ -441,6 +464,7 @@ export default {
       return this.Form
     },
     onSubmit(_obj) { // 表单提交
+      const _this = this
       // 属性值
       const _meta = _obj.meta
       // 请求的数据
@@ -448,22 +472,16 @@ export default {
       const _set = _meta.fn_set
       const _url = _set.requestUrl
 
-      this.$refs[this.system_id].validate((valid) => {
-        if (valid) {
-          postApi({
-            url: _url,
-            params: _params
-          }).then((res) => {
-            if (res && res.statusCode === 200) {
-              this.$message({
-                message: res.message,
-                type: 'success'
-              })
-              this.callback(this.sendData, res)
-            }
+      postApi({
+        url: _url,
+        params: _params
+      }).then((res) => {
+        if (res && res.statusCode === 200) {
+          this.$message({
+            message: res.message,
+            type: 'success'
           })
-        } else {
-          return false
+          _this.callbackFn(_this.senderData, res)
         }
       })
     },
