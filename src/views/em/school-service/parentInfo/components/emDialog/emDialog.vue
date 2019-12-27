@@ -12,15 +12,15 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-              <el-form-item v-if="item.meta.itemType==='inputs'" :label="item.meta.title" :prop="item.meta.valueKey">
-                <el-input
-                  :ref="item.meta.system_id"
-                  v-model="temp[item.meta.valueKey][0]"
-                  clearable
-                  :disabled="item.meta.disabled"
-                  :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
-                />
-              </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputs'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey][0]"
+                clearable
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+              />
+            </el-form-item>
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -36,8 +36,8 @@
                 v-model="temp[item.meta.valueKey]"
                 clearable
                 :disabled="item.meta.disabled"
-                @blur="onBlur"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlur"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -142,7 +142,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, gradeCode } from '@/api/schoolService/parentInfo'
+import { addList, editList, currentUser, gradeCode, parentList } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
@@ -255,14 +255,24 @@ export default {
     dropzoneR(file) {
     },
     // 失去焦点时判断该家长是否存在
-    onBlur() {
+    async onBlur() {
       console.log('失去焦点了', this.temp['parentTel'])
-      vueBus.$emit(this.set.fn_set.control_id, {
+      const _params = {
+        tel: this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
+      }
+      await parentList({
+        url: '/school/parent/getParentByTel',
+        params: _params
+      }).then(res => {
+        console.log('结果', res)
+      })
+
+      /* vueBus.$emit(this.set.fn_set.control_id, {
         fn: 'handleFilter',
         params: {
           'parentTel': this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
         }
-      })
+      })*/
     },
     // 添加学生
     append() {

@@ -125,7 +125,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, fetchList } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, classList } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -207,7 +207,7 @@ export default {
             break
           case 'classIds':
             var classArr = []
-            fetchList({ // 未分配班级信息
+            classList({ // 未分配班级信息
               url: this.set.queryUrl
             }).then(response => {
               console.log(22, response)
@@ -235,7 +235,7 @@ export default {
         this.dialogFormVisible = true
       }
     },
-    // 修改数据弹框
+    // 修改数据弹框(分配班级)
     edit(_data) {
       /* this.temp = dataInitFn(this.temp, _data.data)*/ // 这里不(设置值不能使用this.temp,否则不会将entryTimeStr传递给后台，将会报参数错误)
       this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单

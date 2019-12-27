@@ -68,3 +68,20 @@ export function client(obj) {
     data: obj.params
   })
 }
+
+// 获取已分配-未分配班级
+export function classList(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    data: obj.params
+  })
+}
+// 通过电话查询家长
+export function parentList(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    data: obj.params
+  })
+}
