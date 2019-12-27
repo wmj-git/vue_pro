@@ -30,6 +30,16 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputBlur'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                :disabled="item.meta.disabled"
+                @blur="onBlur"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -153,7 +163,10 @@ export default {
         labelPosition: '',
         textMap: {},
         vueBusName: '',
-        clickRow: {
+        clickRow: { // 查询学生对应的家长
+          control_id: ''
+        },
+        fn_set: { // 判断家长是否已经存在
           control_id: ''
         }
       },
@@ -180,10 +193,6 @@ export default {
     vueBus.$on('class', val => {
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
-    })
-    vueBus.$on('stuId', val => {
-      this.currentStu = val
-      this.temp['studentIds'] = [val]
     })
   },
   beforeDestroy() {
@@ -245,8 +254,22 @@ export default {
     // 移除图片
     dropzoneR(file) {
     },
+    // 失去焦点时判断该家长是否存在
+    onBlur() {
+      console.log('失去焦点了', this.temp['parentTel'])
+      vueBus.$emit(this.set.fn_set.control_id, {
+        fn: 'handleFilter',
+        params: {
+          'parentTel': this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
+        }
+      })
+    },
     // 添加学生
     append() {
+      vueBus.$on('stuId', val => {
+        this.currentStu = val
+        this.temp['studentIds'] = [val]
+      })
       if (this.currentStu === null) {
         this.$message({
           showClose: true,
