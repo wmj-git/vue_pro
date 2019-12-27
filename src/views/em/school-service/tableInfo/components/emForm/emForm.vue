@@ -20,6 +20,11 @@
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
           />
         </el-form-item>
+        <el-form-item v-if="item.meta.itemType==='img'" :label="item.meta.title" :prop="item.meta.valueKey">
+         <img
+              :ref="item.meta.system_id"
+               :src="temp[item.meta.valueKey]">
+        </el-form-item>
         <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-input
             :ref="item.meta.system_id"
@@ -39,26 +44,6 @@
               </template>
             </el-select>
           </el-input>
-        </el-form-item>
-        <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-          <el-row>
-            <el-col :span="16">
-              <el-image
-                :src="temp[item.meta.valueKey]"
-                style="max-height: 120px;overflow: hidden"
-                fit="fit"
-              />
-            </el-col>
-            <el-col :span="28">
-              <dropzone
-                :id="item.meta.system_id"
-                :url="BASE_API+item.meta.url"
-                :item="item"
-                @dropzone-removedFile="dropzoneR"
-                @dropzone-success="dropzoneS"
-              />
-            </el-col>
-          </el-row>
         </el-form-item>
         <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-input
@@ -114,7 +99,7 @@
           :class="item.meta.class"
           :disabled="item.meta.disabled"
           :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-          @click="fn(item, Form)"
+          @click="fn(item, temp)"
         >
           {{ item.meta.title }}
         </el-button>
@@ -124,12 +109,12 @@
   </div>
 </template>
 <script>
-import Dropzone from '@/components/Dropzone'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import vueBus from '@/utils/vueBus'
+import { delList } from '@/api/schoolService/tableInfo'
 export default {
   name: 'EmSoleForm',
-  components: { Dropzone },
   mixins: [emMixin],
   data() {
     return {
@@ -137,27 +122,73 @@ export default {
       rules: {}, // 验证数据
       children: {
         emSoleFormItem: []
-      }
+      },
+      set: {
+        removeUrl: ''
+      },
+      ids: [] // 要删除的数组id
     }
   },
   created() {
     this.init()
+    vueBus.$on('getCarousel', val => {
+      this.temp = val
+    })
   },
   methods: {
+    fn(_obj, _data) {
+      console.log('methods', _obj, _data)
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      switch (_controlType) {
+        default:
+          this.FN(_obj, _data)
+      }
+    },
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
-    dropzoneS(file, el, item) {
-      if (!(file.xhr.status === 200)) {
-        return
+    // 删除banner图
+    removeImage() {
+      this.ids.push(this.temp.id)
+      console.log('ids', this.ids)
+      if (this.ids.length >= 1) {
+        this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delList({
+            url: this.set.removeUrl,
+            params: this.ids
+          }).then(res => {
+            this.ids = []
+            if (res.statusCode === 200) {
+              this.$notify({
+                message: '删除成功',
+                type: 'success'
+              })
+            }
+            vueBus.$emit('getBanner')
+            this.temp = {}
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请先单击复选框选择你要删除的数据行',
+          type: 'warning'
+        })
       }
-      const _response = JSON.parse(file.xhr.response)
-      const _imgUrl = _response.data[0].networkPath
-      this.temp[item.meta.valueKey] = _imgUrl // 后台获取到的url地址赋值给表单
-    },
-    // 移除图片
-    dropzoneR(file) {
     }
   }
 }

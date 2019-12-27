@@ -48,6 +48,7 @@
 import { client } from '@/api/schoolService/tableInfo.js'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import vueBus from '@/utils/vueBus'
 export default {
   name: 'EmCropper',
   mixins: [emMixin],
@@ -67,15 +68,15 @@ export default {
         outputType: 'jpeg', // 裁剪生成图片的格式
         canScale: false, // 图片是否允许滚轮缩放
         autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 300, // 默认生成截图框宽度
-        autoCropHeight: 200, // 默认生成截图框高度
-        fixedBox: true, // 固定截图框大小 不允许改变
+        autoCropWidth: '', // 默认生成截图框宽度
+        autoCropHeight: '', // 默认生成截图框高度
+        fixedBox: false, // 固定截图框大小 不允许改变
         fixed: true, // 是否开启截图框宽高固定比例
         fixedNumber: [16, 9], // 截图框的宽高比例
         full: true, // 是否输出原图比例的截图
         canMoveBox: true, // 截图框能否拖动
         original: false, // 上传图片按照原始比例渲染
-        centerBox: false, // 截图框是否被限制在图片里面
+        centerBox: true, // 截图框是否被限制在图片里面
         infoTrue: true // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
       },
       headers: {
@@ -107,7 +108,6 @@ export default {
       // 上传成功后将图片地址赋值给裁剪框显示图片
       this.$nextTick(() => {
         this.option.img = URL.createObjectURL(files.raw)
-        console.log(222, this.option.img)
         this.dialogVisible = true
       })
     },
@@ -127,6 +127,7 @@ export default {
               message: 'banner图片上传成功',
               type: 'success'
             })
+            vueBus.$emit('getBanner')
             this.dialogVisible = false
           }
         }).catch(err => {

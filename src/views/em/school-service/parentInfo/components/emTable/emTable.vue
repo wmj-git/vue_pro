@@ -132,8 +132,15 @@ export default {
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {
+        console.log('_obj.temp', _obj.temp)
         // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
+      } else {
+        this.$message({
+          showClose: true,
+          message: '没有对应查询条件的内容！',
+          type: 'warning'
+        })
       }
     },
     // 单击行获取指定学生的家长信息
