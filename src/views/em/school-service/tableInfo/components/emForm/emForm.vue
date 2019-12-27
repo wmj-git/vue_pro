@@ -156,6 +156,7 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
+    // 删除banner图
     removeImage() {
       this.ids.push(this.temp.id)
       console.log('ids', this.ids)

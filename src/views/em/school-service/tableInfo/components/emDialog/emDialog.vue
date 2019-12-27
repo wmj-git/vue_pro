@@ -45,6 +45,15 @@
                 </el-select>
               </el-input>
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-transfer
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :titles="item.meta.titles"
+                :right-default-checked="checkedArr"
+                :data="item.meta.options_OBJ.data"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -116,7 +125,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, fetchList } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -125,6 +134,7 @@ export default {
     return {
       id: '',
       set: {
+        queryUrl: '',
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
@@ -150,7 +160,9 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       typeArrList: {}, // 设备类型传递给表格
-      currentClass: ''
+      currentClass: '',
+      checkedArr: [], // 右边默认已选中数组
+      teacherIds: []
     }
   },
   async created() {
@@ -193,6 +205,18 @@ export default {
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
             })
             break
+          case 'classIds':
+            var classArr = []
+            fetchList({ // 未分配班级信息
+              url: this.set.queryUrl
+            }).then(response => {
+              console.log(22, response)
+              response.data.list.forEach(val => {
+                classArr.push({ 'label': val.name, 'key': val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = classArr
+            break
         }
       }
       this.defaultFn(this.children.formItem)
@@ -217,6 +241,8 @@ export default {
       this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      this.teacherIds = this.temp.id
+      console.log('teacherIds', this.teacherIds)
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
