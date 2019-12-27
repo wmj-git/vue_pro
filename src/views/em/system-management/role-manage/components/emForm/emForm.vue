@@ -200,20 +200,27 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
+      const _fn = _obj.meta.fn
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
+      const _Form = this.getForm()
+      let _val = null; let _value
+      const _validate = _obj.meta.fn_set.validate || false
+      let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
+          _valid = true
           return true
         } else {
           console.log('error submit!!')
           return false
         }
       })
-      const _fn = _obj.meta.fn
-      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id
-      const _Form = this.getForm()
-      let _val = null; let _value
-
+      if (_validate) {
+        if (!(_valid)) {
+          return
+        }
+      }
       switch (_controlType) {
         case 'RoleManage_EmForm_ControlType--RoleManage_EmTree_update':
           vueBus.$emit(_controlId, {

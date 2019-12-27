@@ -43,6 +43,7 @@ export const emMixin = {
         this.receiverFn(obj)
       })
     }
+    this.fetchData()
   },
   updated() {
     // console.log('$route', this.$route)
@@ -54,6 +55,7 @@ export const emMixin = {
   },
   methods: {
     FN(_obj, _data) {
+      const _this = this
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
@@ -101,8 +103,8 @@ export const emMixin = {
           })
           break
         case 'routerReplace':
-          if (this.$route.query.data) {
-            this.$router.replace({ path: _routePath, query: {
+          if (_this.$route.query.data) {
+            _this.$router.replace({ path: _routePath, query: {
               meta: null,
               data: null
             }})
@@ -116,13 +118,13 @@ export const emMixin = {
           promiseFn(100, () => {
             return true
           }, function() {
-            if (this.$route.query.data) {
+            if ('data' in _this.$route.query) {
               this.$router.replace({ path: _routePath, query: {
                 meta: null,
                 data: null
               }})
             }
-            this.$router.replace({ path: _routePath, query: {
+            _this.$router.replace({ path: _routePath, query: {
               meta: _obj.meta,
               data: _data
             }})
@@ -224,7 +226,7 @@ export const emMixin = {
               data: _dataProcessing
             })
           })
-          this.controlGroupFn(_query, _query.data)
+          _this.controlGroupFn(_query, _query.data)
           break
         default:
           Message({

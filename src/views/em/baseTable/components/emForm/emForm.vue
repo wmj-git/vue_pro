@@ -183,14 +183,22 @@ export default {
     fn(obj, data) {
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
+      const _validate = _obj.meta.fn_set.validate || false
+      let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
+          _valid = true
           return true
         } else {
           console.log('error submit!!')
           return false
         }
       })
+      if (_validate) {
+        if (!(_valid)) {
+          return
+        }
+      }
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
@@ -464,7 +472,7 @@ export default {
                 message: res.message,
                 type: 'success'
               })
-              this.callback(this.sendData, res)
+              this.callbackFn(this.senderData, res)
             }
           })
         } else {
