@@ -1,9 +1,9 @@
 <template>
   <div class="crousrl-container">
-  <el-carousel :interval="4000" type="card" height="400px" ref="carousel">
-    <el-carousel-item v-for="(item, index) in bannerList" :key="index" name="index">
+  <el-carousel :interval="4000" type="card" height="400px">
+    <el-carousel-item v-for="(item, index) in bannerList" :key="index">
       <h3 class="medium">
-        <img ref="imgList" :src="item.imagesUrl" @click="getElement(index)">
+        <img :src="item.imagesUrl" @click="getElement(index)">
       </h3>
     </el-carousel-item>
   </el-carousel>
