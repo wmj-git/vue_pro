@@ -69,3 +69,11 @@ export function gradeCode(obj) {
     params: obj.params
   })
 }
+// 通过电话查询家长
+export function parentList(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}
