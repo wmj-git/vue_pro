@@ -143,7 +143,7 @@ import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
 import Dropzone from '@/components/Dropzone'
-import Editor from '@tinymce/tinymce-vue'
+import Editor from '../Tinymce'
 
 export default {
   name: 'EmForm',
