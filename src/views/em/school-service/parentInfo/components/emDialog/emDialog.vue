@@ -156,6 +156,7 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        telUrl: '', // 查询家长
         searchUrl: '',
         status: true,
         labelWidth: '',
@@ -256,23 +257,31 @@ export default {
     },
     // 失去焦点时判断该家长是否存在
     async onBlur() {
-      console.log('失去焦点了', this.temp['parentTel'])
+      console.log('失去焦点了', String(this.temp['parentTel']))
+      const _this = this
       const _params = {
         tel: this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
       }
+      console.log('_params', _params)
       await parentList({
-        url: '/school/parent/getParentByTel',
+        url: _this.set.telUrl,
         params: _params
       }).then(res => {
-        console.log('结果', res)
-      })
-
-      /* vueBus.$emit(this.set.fn_set.control_id, {
-        fn: 'handleFilter',
-        params: {
-          'parentTel': this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
+        if (res.statusCode === 200) {
+          if (res.data === null) {
+            this.$message({
+              showClose: true,
+              message: '该家长信息为空，请继续填写！',
+              type: 'info'
+            })
+          } else if (res.data !== '') {
+            this.temp['parentName'] = res.data.parentName
+            this.temp['parentSex'] = res.data.parentSex
+            this.temp['kinshipName'] = res.data.kinshipName
+            this.temp['parentAge'] = res.data.parentAge
+          }
         }
-      })*/
+      })
     },
     // 添加学生
     append() {

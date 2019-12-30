@@ -77,11 +77,3 @@ export function classList(obj) {
     data: obj.params
   })
 }
-// 通过电话查询家长
-export function parentList(obj) {
-  return request({
-    url: obj.url,
-    method: 'get',
-    data: obj.params
-  })
-}
