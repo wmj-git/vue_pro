@@ -112,8 +112,6 @@
                   <tinymce
                     :ref="item.meta.system_id"
                     v-model="Form[item.meta.valueKey]"
-                    :disabled="item.meta.disabled"
-                    :init="{height:item.meta.height || 400}"
                   />
                 </el-col>
               </el-row>

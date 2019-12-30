@@ -20,7 +20,7 @@ import load from './dynamicLoadScript'
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 // const tinymceCDN = 'http://localhost:800/staticData/tinymce/tinymce.min.js'
 const tinymceCDN = process.env.VUE_APP_STATIC_API + '/sceneStatic/tinymce/tinymce.min.js'
-// alert(tinymceCDN)
+
 export default {
   name: 'Tinymce',
   components: { editorImage },
@@ -114,7 +114,6 @@ export default {
     },
     initTinymce() {
       const _this = this
-      console.log('tinymce', window.tinymce)
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
         language: this.languageTypeList['zh'],
