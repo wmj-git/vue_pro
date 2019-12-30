@@ -200,7 +200,7 @@ export default {
           _valid = true
           return true
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
