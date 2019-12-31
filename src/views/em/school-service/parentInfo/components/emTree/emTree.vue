@@ -1,5 +1,9 @@
 <template>
   <div class="emTree_container">
+    <el-input
+      v-model="filterText"
+      placeholder="输入关键字"
+    />
     <el-tree
       ref="tree"
       :data="treeData"
@@ -8,6 +12,7 @@
       accordion
       empty-text="暂无内容"
       node-key="id"
+      :highlight-current="highlight"
       :default-expand-all="expandAll"
       :filter-node-method="filterNode"
       lazy
@@ -64,6 +69,7 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
+      highlight: true, // 高亮显示当前节点
       children: {
         treeBtn: []
       },
@@ -76,7 +82,13 @@ export default {
         },
         fn_append: ''
       },
+      filterText: '',
       expandAll: false
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   created() {

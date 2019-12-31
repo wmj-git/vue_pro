@@ -191,10 +191,6 @@ export default {
   },
   created() {
     this.init()
-    vueBus.$on('class', val => {
-      this.currentClass = val
-      this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
-    })
   },
   beforeDestroy() {
   },
@@ -285,11 +281,16 @@ export default {
     },
     // 添加学生
     append() {
+      vueBus.$on('class', val => {
+        this.currentClass = val
+        this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+      })
       vueBus.$on('stuId', val => {
         this.currentStu = val
+        console.log('currentStu', this.currentStu)
         this.temp['studentIds'] = [val]
       })
-      if (this.currentStu === null) {
+      if (!this.currentStu) {
         this.$message({
           showClose: true,
           message: '请先选择学生！',
