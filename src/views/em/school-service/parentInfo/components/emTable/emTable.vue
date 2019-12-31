@@ -9,6 +9,7 @@
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
       @row-click="onClickRow"
+      :highlight-current-row="highlight"
       empty-text="暂无数据"
     >
       <el-table-column
@@ -82,6 +83,7 @@ export default {
         },
         rowClick: false
       },
+      highlight: true,
       tableHeader: [],
       tableDataEnd: [],
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
