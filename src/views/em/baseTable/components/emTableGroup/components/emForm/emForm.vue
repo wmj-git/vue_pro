@@ -160,7 +160,7 @@ export default {
               })
               this.controlGroupFn(_obj)
             } else {
-              console.log('error submit!!')
+              // console.log('error submit!!')
               return false
             }
           })
