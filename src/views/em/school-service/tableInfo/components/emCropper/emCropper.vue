@@ -45,7 +45,7 @@
   </div>
 </template>
 <script>
-import { client } from '@/api/schoolService/tableInfo.js'
+import { client } from '@/api/schoolService/tableInfo'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import vueBus from '@/utils/vueBus'
@@ -122,6 +122,7 @@ export default {
           url: process.env.VUE_APP_BASE_API + this.set.uploadUrl,
           params: formData
         }).then(result => {
+          console.log('result', result)
           if (result.statusCode === 200 && result.data !== '') {
             this.$notify({
               message: 'banner图片上传成功',
