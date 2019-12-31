@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <el-card :style="{'max-height': set.maxHeight,'overflow-y': 'auto'}">
+    <el-card :style="{'height': set.height,'max-height': set.maxHeight,'overflow-y': 'auto'}">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -12,7 +12,7 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-if="item.meta.itemType==='input'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -20,7 +20,7 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -39,7 +39,7 @@
                 </el-select>
               </el-input>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -49,7 +49,7 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 6}"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='select'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -67,7 +67,7 @@
                 </template>
               </el-select>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='switch'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-switch
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -76,7 +76,7 @@
                 :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-row>
                 <el-col :span="32">
                   <el-image
@@ -98,7 +98,7 @@
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='json'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
                 <json-editor
                   :ref="item.meta.system_id"
@@ -106,11 +106,18 @@
                 />
               </div>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='tree'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='tree'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <em-tree :data="item" />
             </el-form-item>
+          </el-col>
+        </template>
+      </el-form>
+    </el-card>
+    <el-row>
+      <template v-for="(item,index) in children.formItem">
+        <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
             <el-button
-              v-else-if="item.meta.itemType==='button'"
+              v-if="item.meta.itemType==='button'"
               :ref="item.meta.system_id"
               :icon="item.meta.icon"
               :class="item.meta.class"
@@ -121,9 +128,8 @@
               {{ item.meta.title }}
             </el-button>
           </el-col>
-        </template>
-      </el-form>
-    </el-card>
+      </template>
+    </el-row>
   </div>
 </template>
 <script>
@@ -148,6 +154,7 @@ export default {
       set: {
         labelPosition: '',
         labelWidth: '',
+        height: '280px',
         maxHeight: '580px', // 表单最大高
         statusIcon: false,
         class: ''
@@ -461,27 +468,36 @@ export default {
       const _set = _meta.fn_set
       const _url = _set.requestUrl
 
-      this.$refs[this.system_id].validate((valid) => {
-        if (valid) {
-          postApi({
-            url: _url,
-            params: _params
-          }).then((res) => {
-            if (res && res.statusCode === 200) {
-              this.$message({
-                message: res.message,
-                type: 'success'
-              })
-              this.callbackFn(this.senderData, res)
-            }
+      postApi({
+        url: _url,
+        method: _set.requestMethod || null,
+        params: _params
+      }).then((res) => {
+        if (res && res.statusCode === 200) {
+          this.$message({
+            message: res.message,
+            type: 'success'
           })
-        } else {
-          return false
+          this.callbackFn(this.senderData, res)
         }
       })
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
+    },
+    windowOpen(_obj) {
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+      let _str = ''
+      for (const k in _params) {
+        _str += k + '=' + _params[k] + '&'
+      }
+      _str += 'Authorization=' + this.$store.getters['token']
+      console.log('currentRole', _str)
+      window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     },
     dropzoneS(file, el, item) {
       if (!(file.xhr.status === 200)) {

@@ -37,6 +37,13 @@ export function paramsGetApi(obj) {
 }
 
 export function postApi(obj) {
+  if (obj.method && obj.method === 'get') {
+    return request({
+      url: obj.url,
+      method: 'get',
+      params: obj.params || {}
+    })
+  }
   return request({
     url: obj.url,
     method: obj.method ? obj.method : 'post',
