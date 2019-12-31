@@ -184,9 +184,7 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
-      organizationCode: '', // 当前用户的组织编码
-      currentClass: '', // 当前选中的班级id
-      currentStu: []
+      organizationCode: '' // 当前用户的组织编码
     }
   },
   created() {
@@ -279,24 +277,28 @@ export default {
         }
       })
     },
-    // 添加学生
-    append() {
-      vueBus.$on('class', val => {
-        this.currentClass = val
-        this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
-      })
+    // 添加家长
+    appendParent() {
       vueBus.$on('stuId', val => {
-        this.currentStu = val
-        console.log('currentStu', this.currentStu)
         this.temp['studentIds'] = [val]
       })
-      if (!this.currentStu) {
+      if (!this.temp['studentIds']) {
         this.$message({
           showClose: true,
           message: '请先选择学生！',
           type: 'warning'
         })
-      } else if (!this.currentClass) {
+      } else {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      }
+    },
+    // 添加学生
+    append() {
+      vueBus.$on('class', val => {
+        this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+      })
+      if (!this.temp['classId']) {
         this.$message({
           showClose: true,
           message: '请先选择左侧树状中对应的班级！',
