@@ -112,8 +112,6 @@
                   <tinymce
                     :ref="item.meta.system_id"
                     v-model="Form[item.meta.valueKey]"
-                    :disabled="item.meta.disabled"
-                    :init="{height:item.meta.height || 400}"
                   />
                 </el-col>
               </el-row>
@@ -143,7 +141,7 @@ import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
 import JsonEditor from '@/components/JsonEditor'
 import Dropzone from '@/components/Dropzone'
-import Editor from '@tinymce/tinymce-vue'
+import Editor from '../Tinymce'
 
 export default {
   name: 'EmForm',

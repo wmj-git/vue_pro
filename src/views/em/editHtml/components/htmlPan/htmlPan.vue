@@ -1,6 +1,6 @@
 <template>
   <div class="htmlPan-container">
-    <el-card :style="{'max-height': set.maxHeight,'overflow-y': 'auto'}">
+    <el-card :style="{'width':set.width,'max-height': set.maxHeight,'overflow-y': 'auto'}">
       <div v-html="contentData" />
     </el-card>
   </div>
@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       set: {
+        width: '750px',
         maxHeight: '100%' // 表单最大高
       },
       contentData: `<h1>html内容</h1>` // 表单组值对象
