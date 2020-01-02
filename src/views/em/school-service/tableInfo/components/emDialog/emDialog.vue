@@ -168,6 +168,7 @@ export default {
   async created() {
     await this.init()
     this.temp['siOrgCode'] = this.organizationCode
+    console.log('获取组织：', this.organizationCode)
     vueBus.$on('class', val => {
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取

@@ -98,6 +98,21 @@
                 </template>
               </el-select>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='selectBlur'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input style="display: block;" :name="name" :value="temp[item.meta.valueKey]"/>
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                clearable
+                @blur="SelectBlur"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-row>
                 <el-col :span="16">
@@ -171,6 +186,8 @@ export default {
           control_id: ''
         }
       },
+      name: '',
+      gradeKey: '',
       multiple: {
         type: Boolean
       },
@@ -213,16 +230,21 @@ export default {
             })
             this.children.formItem[i].meta.defaultValue = this.organizationCode
             break
-          case 'gradeKey':
+          case 'gradeName':
             var gradeArr = []
+            var gradeKey = []
             gradeCode({
               url: this.set.searchUrl
             }).then(res => {
+              console.log('所有年级：', res)
               res.data.forEach(val => {
-                gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey })
+                gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
+                gradeKey.push({ 'label': val.id, 'value': val.id })
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            break
+          case 'gradeKey':
             break
         }
       }
@@ -282,6 +304,12 @@ export default {
           }
         }
       })
+    },
+    // 先选择年级再获取年级对应的年级编码id
+    SelectBlur() {
+      this.currentSel()
+      console.log(this.temp)
+      console.log('失去焦点了', this.temp['gradeName'].value)
     },
     // 添加家长
     appendParent() {
