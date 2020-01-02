@@ -138,6 +138,7 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        classUrl: '', // 当前组织下的所有班级
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -207,16 +208,15 @@ export default {
             })
             break
           case 'classIds':
-          /*  var classArr = []
+            var classArr = []
             classList({ // 未分配班级信息
-              url: this.set.queryUrl
+              url: this.set.classUrl
             }).then(response => {
-              console.log(22, response)
-              response.data.list.forEach(val => {
+              response.data.forEach(val => {
                 classArr.push({ 'label': val.name, 'key': val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = classArr*/
+            this.children.formItem[i].meta.options_OBJ.data = classArr
             break
         }
       }
@@ -243,19 +243,16 @@ export default {
       this.dialogFormVisible = true
       this.teacherIds = this.temp.id
       console.log('teacherIds', this.teacherIds)
-      const _params = {
-        teacherIds: this.teacherIds,
-        classIds: 51
-      }
+      /* const classArr = []
       classList({ // 未分配班级信息
-        url: this.set.queryUrl,
-        params: _params
+        url: this.set.classUrl
       }).then(response => {
-        console.log(22, response)
-        response.data.list.forEach(val => {
-        /*  classArr.push({ 'label': val.name, 'key': val.id })*/
+        console.log('未分配', response)
+        response.data.forEach(val => {
+          classArr.push({ 'label': val.name, 'key': val.id })
         })
-      })
+        this.temp['classIds'] = classArr
+      })*/
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
