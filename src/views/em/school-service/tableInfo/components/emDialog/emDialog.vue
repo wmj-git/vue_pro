@@ -167,9 +167,8 @@ export default {
   },
   async created() {
     await this.init()
-    this.temp['siOrgCode'] = this.organizationCode
-    console.log('获取组织：', this.organizationCode)
     vueBus.$on('class', val => {
+      console.log('班级id', val)
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
     })
@@ -204,6 +203,7 @@ export default {
               url: this.set.selectUrl
             }).then(response => {
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
+              this.children.formItem[i].meta.defaultValue = String(response.data.orgCode)
             })
             break
           case 'classIds':
@@ -232,7 +232,6 @@ export default {
         })
       } else {
         this.dialogStatus = 'create'
-        this.temp = {}
         this.dialogFormVisible = true
       }
     },
@@ -246,7 +245,7 @@ export default {
       console.log('teacherIds', this.teacherIds)
       const _params = {
         teacherIds: this.teacherIds,
-        classIds: 4
+        classIds: 51
       }
       classList({ // 未分配班级信息
         url: this.set.queryUrl,
@@ -357,7 +356,6 @@ export default {
           _rules[_obj.meta.valueKey] = _obj.meta.validate_OBJ.data
         }
       })
-
       this.temp = _temp
       this.rules = _rules
     },

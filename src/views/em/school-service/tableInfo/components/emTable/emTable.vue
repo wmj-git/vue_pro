@@ -162,6 +162,12 @@ export default {
           this.tableDataEnd = val.data.list
         } else if (val.statusCode === 503) { // 数据为空时不渲染表格
           this.tableDataEnd = null
+          this.$message({
+            showClose: true,
+            message: '没有找到指定内容！',
+            type: 'info',
+            duration: 1000
+          })
         }
       })
     },
@@ -191,6 +197,12 @@ export default {
             this.children.columnBtn[1].meta.className = 'distribution_class'
           } else if (response.statusCode === 503) { // 数据为空时不渲染表格
             this.tableDataEnd = null
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
           }
         })
       }

@@ -6,7 +6,7 @@
     :label-position="set.labelPosition"
     :label-width="set.labelWidth"
     :status-icon="set.statusIcon"
-    :model="temp"
+    :model="form"
     :rules="rules"
   >
     <template v-for="(item,index) in children.emSoleFormItem">
@@ -14,7 +14,7 @@
         <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-input
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             clearable
             :disabled="item.meta.disabled"
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
@@ -23,12 +23,12 @@
         <el-form-item v-if="item.meta.itemType==='img'" :label="item.meta.title" :prop="item.meta.valueKey">
          <img
               :ref="item.meta.system_id"
-               :src="temp[item.meta.valueKey]">
+               :src="form[item.meta.valueKey]">
         </el-form-item>
         <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-input
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             :disabled="item.meta.disabled"
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
             clearable
@@ -48,7 +48,7 @@
         <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-input
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             clearable
             :disabled="item.meta.disabled"
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
@@ -59,7 +59,7 @@
         <el-form-item v-else-if="item.meta.itemType==='selects'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-select
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             :disabled="item.meta.disabled"
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
             multiple
@@ -73,7 +73,7 @@
         <el-form-item v-else-if="item.meta.itemType==='datetime'" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-date-picker
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             :disabled="item.meta.disabled"
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择时间'"
             format
@@ -82,7 +82,7 @@
         <el-form-item v-else-if="item.meta.itemType==='select'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
           <el-select
             :ref="item.meta.system_id"
-            v-model="temp[item.meta.valueKey]"
+            v-model="form[item.meta.valueKey]"
             :disabled="item.meta.disabled"
             clearable
             :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
@@ -99,7 +99,7 @@
           :class="item.meta.class"
           :disabled="item.meta.disabled"
           :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-          @click="fn(item, temp)"
+          @click="fn(item, form)"
         >
           {{ item.meta.title }}
         </el-button>
@@ -118,7 +118,7 @@ export default {
   mixins: [emMixin],
   data() {
     return {
-      temp: {},
+      form: {},
       rules: {}, // 验证数据
       children: {
         emSoleFormItem: []
@@ -132,7 +132,7 @@ export default {
   created() {
     this.init()
     vueBus.$on('getCarousel', val => {
-      this.temp = val
+      this.form = val
     })
   },
   methods: {
@@ -158,7 +158,7 @@ export default {
     },
     // 删除banner图
     removeImage() {
-      this.ids.push(this.temp.id)
+      this.ids.push(this.form.id)
       console.log('ids', this.ids)
       if (this.ids.length >= 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
@@ -178,7 +178,7 @@ export default {
               })
             }
             vueBus.$emit('getBanner')
-            this.temp = {}
+            this.form = {}
           })
         }).catch(() => {
         })
