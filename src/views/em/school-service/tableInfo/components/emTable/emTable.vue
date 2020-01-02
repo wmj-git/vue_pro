@@ -156,6 +156,7 @@ export default {
         url: this.set.queryAllUrl,
         params: _params
       }).then(val => {
+        console.log('val', val)
         if (val.statusCode === 200) {
           this.children.columnBtn[1].meta.className = ''
           this.total = val.data.total

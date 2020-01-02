@@ -73,7 +73,7 @@ export function client(obj) {
 export function classList(obj) {
   return request({
     url: obj.url,
-    method: 'get',
-    data: obj.params
+    method: 'post',
+    params: obj.params
   })
 }

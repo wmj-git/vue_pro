@@ -206,7 +206,7 @@ export default {
             })
             break
           case 'classIds':
-            var classArr = []
+          /*  var classArr = []
             classList({ // 未分配班级信息
               url: this.set.queryUrl
             }).then(response => {
@@ -215,7 +215,7 @@ export default {
                 classArr.push({ 'label': val.name, 'key': val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = classArr
+            this.children.formItem[i].meta.options_OBJ.data = classArr*/
             break
         }
       }
@@ -243,6 +243,19 @@ export default {
       this.dialogFormVisible = true
       this.teacherIds = this.temp.id
       console.log('teacherIds', this.teacherIds)
+      const _params = {
+        teacherIds: this.teacherIds,
+        classIds: 4
+      }
+      classList({ // 未分配班级信息
+        url: this.set.queryUrl,
+        params: _params
+      }).then(response => {
+        console.log(22, response)
+        response.data.list.forEach(val => {
+        /*  classArr.push({ 'label': val.name, 'key': val.id })*/
+        })
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
