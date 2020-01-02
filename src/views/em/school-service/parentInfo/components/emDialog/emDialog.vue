@@ -184,11 +184,17 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
-      organizationCode: '' // 当前用户的组织编码
+      organizationCode: '', // 当前用户的组织编码
+      currentClass: [],
+      currentStu: []
     }
   },
   created() {
     this.init()
+    vueBus.$on('stuId', val => {
+      this.temp['studentIds'] = [val]
+      this.currentStu = val
+    })
   },
   beforeDestroy() {
   },
@@ -279,9 +285,6 @@ export default {
     },
     // 添加家长
     appendParent() {
-      vueBus.$on('stuId', val => {
-        this.temp['studentIds'] = [val]
-      })
       if (!this.temp['studentIds']) {
         this.$message({
           showClose: true,
@@ -371,6 +374,9 @@ export default {
               }
             }
             this.changeDialogHidden()
+            vueBus.$emit('handleClick', () => {
+              this.handleClick()
+            })
             this.$notify({
               title: 'Success',
               message: '修改成功',

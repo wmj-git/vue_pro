@@ -185,6 +185,12 @@ export default {
         } else if (response.statusCode === 503) { // 数据为空时不渲染表格
           this.total = 0
           this.tableDataEnd = null
+          this.$message({
+            showClose: true,
+            message: '没有找到指定内容！',
+            type: 'info',
+            duration: 1000
+          })
         }
       })
     },
