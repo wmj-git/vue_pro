@@ -99,13 +99,12 @@
               </el-select>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectBlur'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
-              <el-input style="display: block;" :name="name" :value="temp[item.meta.valueKey]"/>
               <el-select
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 clearable
-                @blur="SelectBlur"
+                @change="changeGrade"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
@@ -236,7 +235,6 @@ export default {
             gradeCode({
               url: this.set.searchUrl
             }).then(res => {
-              console.log('所有年级：', res)
               res.data.forEach(val => {
                 gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
                 gradeKey.push({ 'label': val.id, 'value': val.id })
@@ -306,10 +304,8 @@ export default {
       })
     },
     // 先选择年级再获取年级对应的年级编码id
-    SelectBlur() {
-      this.currentSel()
-      console.log(this.temp)
-      console.log('失去焦点了', this.temp['gradeName'].value)
+    changeGrade(val) {
+      this.temp['gradeKey'] = val // 赋值给年级编码
     },
     // 添加家长
     appendParent() {
