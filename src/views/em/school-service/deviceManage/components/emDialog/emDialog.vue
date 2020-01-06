@@ -151,12 +151,13 @@ export default {
       typeArrList: {} // 设备类型传递给表格
     }
   },
-  async created() {
-    await this.init()
+  created() {
+    this.init()
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.edit()
     })
+    console.log('编码', this.temp['siOrgCode'], this.temp)
     vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
@@ -169,13 +170,12 @@ export default {
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
           case 'siOrgCode':
-            /* currentUser({
-              url: this.set.selectUrl
+            await currentUser({
+              url: '/school/organization/selectThis'
             }).then(response => {
-              console.log('组织', response)
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
-              this.children.formItem[i].meta.defaultValue = String(response.data.orgCode)
-            })*/
+            })
+            this.temp['siOrgCode'] = this.organizationCode
             break
           case 'type': // 设备管理-设备类型
             var typeArr = []

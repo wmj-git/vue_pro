@@ -245,7 +245,7 @@ export default {
       }).then(response => {
         this.temp['classIds'] = []
         response.data.list.forEach(val => {
-          this.temp['classIds'].push(val.id)
+          this.temp['classIds'].push(val.id) // 获取指定老师已分配的班级
         })
       })
     },
@@ -289,7 +289,6 @@ export default {
     updateData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          console.log(23, this.temp)
           for (const i in this.temp) { // 寻找时间字段后再转换
             if (i === 'entryTime') {
               this.temp[i] = new Date(this.temp[i]).getTime()
@@ -300,7 +299,6 @@ export default {
             params: Object.assign({}, this.temp)
           }
           editList(obj).then((response) => {
-            console.log('修改', response)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
