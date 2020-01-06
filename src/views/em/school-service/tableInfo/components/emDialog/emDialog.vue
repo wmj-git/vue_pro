@@ -50,7 +50,8 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :titles="item.meta.titles"
-                :right-default-checked="checkedArr"
+                @change="handleChange"
+                :right-default-checked="rightCheckedArr"
                 :data="item.meta.options_OBJ.data"
               />
             </el-form-item>
@@ -125,7 +126,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, classList } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, classList, associateClass, checkedList } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -134,11 +135,12 @@ export default {
     return {
       id: '',
       set: {
-        queryUrl: '',
+        associateUrl: '',
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
+        checkedUrl: '', // 已分配班级-指定老师
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -162,8 +164,8 @@ export default {
       dialogStatus: '',
       typeArrList: {}, // 设备类型传递给表格
       currentClass: '',
-      checkedArr: [], // 右边默认已选中数组
-      teacherIds: []
+      rightCheckedArr: [], // 右边默认已选中数组
+      teachersId: []
     }
   },
   async created() {
@@ -241,18 +243,18 @@ export default {
       this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.teacherIds = this.temp.id
-      console.log('teacherIds', this.teacherIds)
-      /* const classArr = []
-      classList({ // 未分配班级信息
-        url: this.set.classUrl
-      }).then(response => {
-        console.log('未分配', response)
-        response.data.forEach(val => {
-          classArr.push({ 'label': val.name, 'key': val.id })
-        })
-        this.temp['classIds'] = classArr
-      })*/
+      this.teachersId = this.temp.id
+      console.log('teacherIds', this.teachersId)
+      const _obj = {
+        teacherId: this.teachersId,
+        type: 1
+      }
+      checkedList({
+        url: this.set.checkedUrl,
+        params: _obj
+      }).then(val => {
+        console.log('未分配', val)
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -362,6 +364,23 @@ export default {
     // 提交表单
     submitFn({ meta, data }) {
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
+    },
+    handleChange(value, direction, movedKeys) {
+      this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
+      console.log('rightCheckedArr', this.rightCheckedArr)
+    },
+    // 为指定老师分配班级
+    associateFn() {
+      const _params = {
+        teacherIds: [this.teachersId],
+        classIds: this.rightCheckedArr
+      }
+      associateClass({
+        url: this.set.associateUrl,
+        params: _params
+      }).then(response => {
+        console.log('分配班级：', response)
+      })
     }
   }
 }

@@ -69,11 +69,27 @@ export function client(obj) {
   })
 }
 
-// 获取已分配-未分配班级
+// 获取未分配班级
 export function classList(obj) {
   return request({
     url: obj.url,
     method: 'post',
     params: obj.params
+  })
+}
+// 获取已分配班级
+export function checkedList(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}
+// 为指定老师分配班级
+export function associateClass(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
   })
 }
