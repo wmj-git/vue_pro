@@ -226,16 +226,8 @@ export default {
     },
     // 添加数据显示
     add() {
-      if (!this.currentClass) {
-        this.$message({
-          showClose: true,
-          message: '请先选择左侧树状列表中对应的班级！',
-          type: 'warning'
-        })
-      } else {
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      }
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
     },
     // 分配班级(dialog)
     associate(_data) {
@@ -297,6 +289,7 @@ export default {
     updateData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
+          console.log(23, this.temp)
           for (const i in this.temp) { // 寻找时间字段后再转换
             if (i === 'entryTime') {
               this.temp[i] = new Date(this.temp[i]).getTime()
@@ -306,7 +299,8 @@ export default {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
           }
-          editList(obj).then(() => {
+          editList(obj).then((response) => {
+            console.log('修改', response)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -316,13 +310,14 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
-            this.$notify({
-              title: 'Success',
-              message: '修改成功',
-              type: 'success',
-              duration: 2000
-            })
+            if (response.statusCode === 200) {
+              this.$notify({
+                title: 'Success',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           })
         }
       })
