@@ -169,6 +169,7 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
+    selectInputKey() {},
     getTemp() {
       return this.temp
     }

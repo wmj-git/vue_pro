@@ -25,42 +25,42 @@
       <div class="emDrawer">
         <template v-for="(item, items) in children.drawerItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-drawer :data="item"/>
+            <em-drawer :data="item" />
           </el-col>
         </template>
       </div>
       <div class="emTree">
         <template v-for="(item, items) in children.treeItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-tree :data="item"/>
+            <em-tree :data="item" />
           </el-col>
         </template>
       </div>
       <div class="emTransfer">
         <template v-for="(item, items) in children.transferItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-transfer :data="item"/>
+            <em-transfer :data="item" />
           </el-col>
         </template>
       </div>
       <div class="emCarousel">
         <template v-for="(item, items) in children.carouselItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-carousel :data="item"/>
+            <em-carousel :data="item" />
           </el-col>
         </template>
       </div>
       <div class="emSoleForm">
         <template v-for="(item, items) in children.emSoleFormItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-sole-form :data="item"/>
+            <em-sole-form :data="item" />
           </el-col>
         </template>
       </div>
       <div class="emCropper">
         <template v-for="(item, items) in children.cropperItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-cropper :data="item"/>
+            <em-cropper :data="item" />
           </el-col>
         </template>
       </div>

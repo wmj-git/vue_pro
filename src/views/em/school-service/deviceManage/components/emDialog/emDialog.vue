@@ -151,13 +151,13 @@ export default {
       typeArrList: {} // 设备类型传递给表格
     }
   },
-  created() {
-    this.init()
+  async created() {
+    await this.init()
+    console.log('zuzhi', this.organizationCode, 'siOrgCode', this.temp['siOrgCode'])
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.edit()
     })
-    console.log('编码', this.temp['siOrgCode'], this.temp)
     vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
@@ -175,7 +175,7 @@ export default {
             }).then(response => {
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
             })
-            this.temp['siOrgCode'] = this.organizationCode
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
             break
           case 'type': // 设备管理-设备类型
             var typeArr = []
@@ -219,18 +219,9 @@ export default {
     },
     // 添加数据显示
     add() {
+      console.log('add')
       this.dialogStatus = 'create'
-      this.temp = {}
       this.dialogFormVisible = true
-      if (this.$refs[this.system_id] !== undefined) {
-        try {
-          this.$nextTick(() => {
-            this.$refs[this.system_id].resetFields()
-          })
-        } catch (e) {
-          e
-        }
-      }
     },
     // 修改数据弹框
     edit(_data) {

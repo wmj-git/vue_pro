@@ -25,7 +25,7 @@
       <div class="emDrawer">
         <template v-for="(item, items) in children.drawerItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <em-drawer :data="item"/>
+            <em-drawer :data="item" />
           </el-col>
         </template>
       </div>
