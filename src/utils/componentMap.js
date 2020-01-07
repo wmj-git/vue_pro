@@ -18,7 +18,9 @@ const componentMap = {
   // 学生管理
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
   // 设备管理
-  'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage')
+  'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
+  // 消息接收
+  'MessageInfo': () => import('@/views/em/school-service/messageInfo/messageInfo')
 }
 
 export default componentMap

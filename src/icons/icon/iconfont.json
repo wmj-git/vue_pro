@@ -18,6 +18,13 @@
       "font_class": "excel_in",
       "unicode": "e9a5",
       "unicode_decimal": 59813
+    },
+    {
+      "icon_id": "12700059",
+      "name": "报警",
+      "font_class": "alarm",
+      "unicode": "e9a6",
+      "unicode_decimal": 59814
     }
   ]
 }
