@@ -55,6 +55,20 @@
                 @change="handleChange"
               />
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='selectBlur'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                clearable
+                @change="changeGrade"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -126,7 +140,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, classList, associateClass, checkedList } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, classList, associateClass, checkedList, gradeCode } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -136,6 +150,7 @@ export default {
       id: '',
       set: {
         associateUrl: '',
+        searchUrl: '',
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
@@ -220,6 +235,21 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = classArr
             break
+          case 'gradeName':
+            var gradeArr = []
+            var gradeKey = []
+            gradeCode({
+              url: this.set.searchUrl
+            }).then(res => {
+              res.data.forEach(val => {
+                gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
+                gradeKey.push({ 'label': val.id, 'value': val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            break
+          case 'gradeKey':
+            break
         }
       }
       this.defaultFn(this.children.formItem)
@@ -278,7 +308,6 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit('query')
             } else {
               this.$notify.error('添加失败')
             }
@@ -390,6 +419,10 @@ export default {
           })
         }
       })
+    },
+    // 先选择年级再获取年级对应的年级编码id
+    changeGrade(val) {
+      this.temp['gradeKey'] = val // 赋值给年级编码
     }
   }
 }
