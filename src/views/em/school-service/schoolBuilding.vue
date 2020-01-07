@@ -228,7 +228,6 @@ export default {
       val.forEach(val => {
         //  提取出需要传给后台的参数ids
         this.ids.push(val.id)
-        console.log('ids', val.id)
       })
       if (this.ids.length >= 1) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
