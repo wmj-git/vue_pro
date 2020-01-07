@@ -50,10 +50,24 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :titles="item.meta.titles"
-                @change="handleChange"
-                :right-default-checked="rightCheckedArr"
+                :right-default-checked="rightDefaultChecked"
                 :data="item.meta.options_OBJ.data"
+                @change="handleChange"
               />
+            </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='selectBlur'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                clearable
+                @change="changeGrade"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
@@ -126,7 +140,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, classList, associateClass, checkedList } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, classList, associateClass, checkedList, gradeCode } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -136,6 +150,7 @@ export default {
       id: '',
       set: {
         associateUrl: '',
+        searchUrl: '',
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
@@ -164,14 +179,14 @@ export default {
       dialogStatus: '',
       typeArrList: {}, // 设备类型传递给表格
       currentClass: '',
-      rightCheckedArr: [], // 右边默认已选中数组
+      rightCheckedArr: [],
+      rightDefaultChecked: [], // 右边默认已选中数组
       teachersId: []
     }
   },
   async created() {
     await this.init()
     vueBus.$on('class', val => {
-      console.log('班级id', val)
       this.currentClass = val
       this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
     })
@@ -220,31 +235,36 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = classArr
             break
+          case 'gradeName':
+            var gradeArr = []
+            var gradeKey = []
+            gradeCode({
+              url: this.set.searchUrl
+            }).then(res => {
+              res.data.forEach(val => {
+                gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
+                gradeKey.push({ 'label': val.id, 'value': val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            break
+          case 'gradeKey':
+            break
         }
       }
       this.defaultFn(this.children.formItem)
     },
     // 添加数据显示
     add() {
-      if (!this.currentClass) {
-        this.$message({
-          showClose: true,
-          message: '请先选择左侧树状列表中对应的班级！',
-          type: 'warning'
-        })
-      } else {
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      }
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
     },
-    // 修改数据弹框(分配班级)
-    edit(_data) {
-      /* this.temp = dataInitFn(this.temp, _data.data)*/ // 这里不(设置值不能使用this.temp,否则不会将entryTimeStr传递给后台，将会报参数错误)
-      this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
+    // 分配班级(dialog)
+    associate(_data) {
+      this.temp = Object.assign({}, this.temp, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.teachersId = this.temp.id
-      console.log('teacherIds', this.teachersId)
       const _obj = {
         teacherId: this.teachersId,
         type: 1
@@ -252,9 +272,19 @@ export default {
       checkedList({
         url: this.set.checkedUrl,
         params: _obj
-      }).then(val => {
-        console.log('未分配', val)
+      }).then(response => {
+        this.temp['classIds'] = []
+        response.data.list.forEach(val => {
+          this.temp['classIds'].push(val.id) // 获取指定老师已分配的班级
+        })
       })
+    },
+    // 修改数据弹框
+    edit(_data) {
+      /* this.temp = dataInitFn(this.temp, _data.data)*/ // 这里不(设置值不能使用this.temp,否则不会将entryTimeStr传递给后台，将会报参数错误)
+      this.temp = Object.assign({}, this.temp, _data.data) // 赋值给修改表单
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
@@ -278,7 +308,6 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit('query')
             } else {
               this.$notify.error('添加失败')
             }
@@ -298,7 +327,7 @@ export default {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
           }
-          editList(obj).then(() => {
+          editList(obj).then((response) => {
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -308,13 +337,14 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
-            this.$notify({
-              title: 'Success',
-              message: '修改成功',
-              type: 'success',
-              duration: 2000
-            })
+            if (response.statusCode === 200) {
+              this.$notify({
+                title: 'Success',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           })
         }
       })
@@ -369,7 +399,7 @@ export default {
       this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
       console.log('rightCheckedArr', this.rightCheckedArr)
     },
-    // 为指定老师分配班级
+    // 为指定老师分配班级(提交)
     associateFn() {
       const _params = {
         teacherIds: [this.teachersId],
@@ -379,8 +409,20 @@ export default {
         url: this.set.associateUrl,
         params: _params
       }).then(response => {
-        console.log('分配班级：', response)
+        if (response.statusCode === 200) {
+          this.changeDialogHidden()
+          this.$notify({
+            title: 'Success',
+            message: '班级分配成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
       })
+    },
+    // 先选择年级再获取年级对应的年级编码id
+    changeGrade(val) {
+      this.temp['gradeKey'] = val // 赋值给年级编码
     }
   }
 }

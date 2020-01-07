@@ -13,9 +13,11 @@ const componentMap = {
   // 功能页面
   'EditHtml': () => import('@/views/em/editHtml/editHtml'),
 
+  // 教师管理、banner管理
   'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo'),
+  // 学生管理
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
-  'TeacherInfo': () => import('@/views/em/school-service/teacherInfo/teacherInfo'),
+  // 设备管理
   'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage')
 }
 
