@@ -1,7 +1,7 @@
 <template>
  <!-- <div v-if="errorLogs.length>0">-->
-  <div class="em-alarm">
-    <el-badge :is-dot="true" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
+  <div v-if="messageCount>0" class="em-alarm">
+    <el-badge :value="messageCount" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
       <el-button style="padding: 8px 10px;" size="small" type="danger" class="em-alarm-btn">
         <svg-icon icon-class="alarm" class-name="alarm-icon" />
       </el-button>
@@ -54,34 +54,35 @@ export default {
   data() {
     return {
       dialogTableVisible: false,
-      BASE_API: process.env.VUE_APP_BASE_API
+      BASE_API: process.env.VUE_APP_BASE_API,
+      messageCount: ''
     }
   },
   created() {
+    this.init()
     const token = this.$store.getters.token
-    console.log('token', token)
+    // ws：neinx那边加的，要是没有ws则会自动加上一个info,通道没法连接上
+    // access_token: //后端的名字
+    // sockets: 接口基本地址必须带的
     const url = this.BASE_API + '/ws/sockets?access_token=' + token
-    console.log(url)
-
     this.socketApi.initWebSocket(url)
     this.socketApi.proxyFunction(5, (res) => {
-      console.log('proxyFunction', res)
       if (res) {
-        messageCount({
-          url: '/sockets/push/queryCountAllByPageParams'
-        }).then(response => {
-          console.log('消息数量', response)
-        })
+        this.init() // 校徽传递通知消息后继续获取数量
       }
     })
   },
   computed: {
     errorLogs() {
-      return this.$store.getters.errorLogs
     }
   },
   methods: {
     init() {
+      messageCount({
+        url: '/sockets/push/queryCountAllByPageParams'
+      }).then(response => {
+        this.messageCount = response.data // sos报警消息
+      })
     },
     clearAll() {
       this.dialogTableVisible = false

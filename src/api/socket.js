@@ -18,12 +18,12 @@ function initWebSocket(url = websocketurl) {
   stompClient = Stomp.over(socket)
   // 向服务器发起websocket连接并发送CONNECT帧
   stompClient.connect({}, function(frame) {
-    console.log('Connected: ' + frame)
+    console.log('Connected: ', frame)
     // 订阅频道
     stompClient.subscribe('/topic/getResponse', function(response) {
-      console.log('response_body', response)
       websocketonmessage(response)
     })
+    // 监听通道
     stompClient.subscribe('/user/topic/channelMessage', function(response) {
       console.log('channelMessage', response)
       websocketonmessage(response)
@@ -53,17 +53,16 @@ function sendSock(agentData, callback) {
 // 数据接收
 function websocketonmessage(e) {
   const data = e.body
-  console.log(e)
   if (data.indexOf('{') !== -1 && data.indexOf('}') !== -1) { // 是JSON字符串
     const obj = JSON.parse(data)
-    if (saveObj[obj.type]) {
-      saveObj[obj.type](obj)
+    if (saveObj[obj.messageType]) {
+      saveObj[obj.messageType](obj)
     }
   }
 }
 
-function proxyFunction(type, callback) {
-  saveObj[type] = callback
+function proxyFunction(messageType, callback) {
+  saveObj[messageType] = callback
 }
 
 // 数据发送
