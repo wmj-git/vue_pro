@@ -38,10 +38,9 @@ import EmDialog from '@/views/em/school-service/messageInfo/components/emDialog/
 import EmTree from '@/views/em/school-service/messageInfo/components/emTree/emTree'
 import EmTransfer from '@/views/em/school-service/messageInfo/components/emTransfer/emTransfer'
 import EmCarousel from '@/views/em/school-service/messageInfo/components/emCarousel/emCarousel'
-import EmCropper from '@/views/em/school-service/messageInfo/components/emCropper/emCropper'
 export default {
   name: 'MessageInfo',
-  components: { EmCropper, EmCarousel, EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
+  components: { EmCarousel, EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
   mixins: [emMixin, emPage],
   data() {
     return {

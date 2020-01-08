@@ -1,9 +1,9 @@
 <template>
  <!-- <div v-if="errorLogs.length>0">-->
-  <div>
+  <div class="em-alarm">
     <el-badge :is-dot="true" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
-      <el-button style="padding: 8px 10px;" size="small" type="danger">
-        <svg-icon icon-class="alarm"/>
+      <el-button style="padding: 8px 10px;" size="small" type="danger" class="em-alarm-btn">
+        <svg-icon icon-class="alarm" class-name="alarm-icon" />
       </el-button>
     </el-badge>
 
@@ -48,12 +48,32 @@
 </template>
 
 <script>
+import { messageCount } from '@/api/schoolService/tableInfo'
 export default {
   name: 'ErrorLog',
   data() {
     return {
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      BASE_API: process.env.VUE_APP_BASE_API
     }
+  },
+  created() {
+    const token = this.$store.getters.token
+    console.log('token', token)
+    const url = this.BASE_API + '/ws/sockets?access_token=' + token
+    console.log(url)
+
+    this.socketApi.initWebSocket(url)
+    this.socketApi.proxyFunction(5, (res) => {
+      console.log('proxyFunction', res)
+      if (res) {
+        messageCount({
+          url: '/sockets/push/queryCountAllByPageParams'
+        }).then(response => {
+          console.log('消息数量', response)
+        })
+      }
+    })
   },
   computed: {
     errorLogs() {
@@ -61,6 +81,8 @@ export default {
     }
   },
   methods: {
+    init() {
+    },
     clearAll() {
       this.dialogTableVisible = false
       this.$store.dispatch('errorLog/clearErrorLog')
@@ -69,11 +91,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .em-alarm /deep/{
+  }
 .message-title {
   font-size: 16px;
   color: #333;
   font-weight: bold;
   padding-right: 8px;
 }
+.alarm-icon{
+    cursor: pointer;
+    font-size: 20px;
+    vertical-align: middle;
+}
+  .el-button--danger.em-alarm-btn{
+    border-radius: 50%;
+  }
 </style>

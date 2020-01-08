@@ -73,15 +73,14 @@ import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import EmTable from '@/views/em/school-service/messageInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/messageInfo/components/emDialog/emDialog'
 import EmForm from '@/views/em/school-service/messageInfo/components/emButtons/emButtons'
-import EmDrawer from '@/views/em/school-service/messageInfo/components/emDrawer/emDrawer'
-import EmTree from '@/views/em/school-service/messageInfo/components/emTree/emTree'
-import EmTransfer from '@/views/em/school-service/messageInfo/components/emTransfer/emTransfer'
-import EmCarousel from '@/views/em/school-service/messageInfo/components/emCarousel/emCarousel'
-import EmSoleForm from '@/views/em/school-service/messageInfo/components/emForm/emForm'
-import EmCropper from '@/views/em/school-service/messageInfo/components/emCropper/emCropper'
+import EmDrawer from '@/views/em/school-service/tableInfo/components/emDrawer/emDrawer'
+import EmTree from '@/views/em/school-service/tableInfo/components/emTree/emTree'
+import EmTransfer from '@/views/em/school-service/tableInfo/components/emTransfer/emTransfer'
+import EmCarousel from '@/views/em/school-service/tableInfo/components/emCarousel/emCarousel'
+import EmSoleForm from '@/views/em/school-service/tableInfo/components/emForm/emForm'
 export default {
   name: 'EmTableGroup',
-  components: { EmCropper, EmSoleForm, EmCarousel, EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
+  components: { EmSoleForm, EmCarousel, EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
   mixins: [emMixin],
   data() {
     return {
