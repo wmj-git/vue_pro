@@ -72,8 +72,8 @@
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
-                :active-color="item.meta.activeColor"
-                :inactive-color="item.meta.inactiveColor"
+                :active-color="item.meta.activeColor || '#353bbd'"
+                :inactive-color="item.meta.inactiveColor || '#a6aebd'"
                 :active-value="item.meta.activeValue"
                 :inactive-value="item.meta.inactiveValue"
               />
