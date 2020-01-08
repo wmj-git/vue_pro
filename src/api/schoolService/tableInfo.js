@@ -101,3 +101,12 @@ export function gradeCode(obj) {
     params: obj.params
   })
 }
+
+// 获取消息数量
+export function messageCount(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}

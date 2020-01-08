@@ -21,6 +21,8 @@ import './utils/error-log' // error log
 import '@/components/Pagination/page.js'
 import * as filters from './filters' // global filters
 
+import * as socketApi from './api/socket'// socket
+Vue.prototype.socketApi = socketApi
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

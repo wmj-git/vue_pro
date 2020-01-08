@@ -68,7 +68,6 @@ export default {
       set: {
         queryUrl: '',
         removeUrl: '',
-        queryAllUrl: '',
         vueBusName: ''
       },
       visibleSubmit: '',
@@ -91,7 +90,6 @@ export default {
   },
   created() {
     this.init()
-    this.getAllList()
     vueBus.$on('query', () => {
       this.getList()
     })
@@ -138,38 +136,6 @@ export default {
         // 接受后需要传递给查询接口，不然还是查询不到
         this.getList(_obj.temp)
       }
-    },
-    // 默认显示所有未分配班级的教师信息
-    getAllList(params) {
-      const _params = {
-        pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
-      }
-      let _val = {}
-      if (params) {
-        _val = params
-      }
-      for (const k in _val) {
-        _params[k] = _val[k]
-      }
-      fetchList({
-        url: this.set.queryAllUrl,
-        params: _params
-      }).then(val => {
-        if (val.statusCode === 200) {
-          this.children.columnBtn[1].meta.className = '' // 学校才能给指定老师分配班级（去掉类名即可显示‘分配班级’）
-          this.total = val.data.total
-          this.tableDataEnd = val.data.list
-        } else if (val.statusCode === 503) { // 数据为空时不渲染表格
-          this.tableDataEnd = null
-          this.$message({
-            showClose: true,
-            message: '没有找到指定内容！',
-            type: 'info',
-            duration: 1000
-          })
-        }
-      })
     },
     // 渲染数据
     getList(params) {
