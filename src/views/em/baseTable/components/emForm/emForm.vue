@@ -118,18 +118,18 @@
     <el-row>
       <template v-for="(item,index) in children.formItem">
         <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <el-button
-              v-if="item.meta.itemType==='button'"
-              :ref="item.meta.system_id"
-              :icon="item.meta.icon"
-              :class="item.meta.class"
-              :disabled="item.meta.disabled"
-              :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-              @click="fn(item, Form)"
-            >
-              {{ item.meta.title }}
-            </el-button>
-          </el-col>
+          <el-button
+            v-if="item.meta.itemType==='button'"
+            :ref="item.meta.system_id"
+            :icon="item.meta.icon"
+            :class="item.meta.class"
+            :disabled="item.meta.disabled"
+            :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
+            @click="fn(item, Form)"
+          >
+            {{ item.meta.title }}
+          </el-button>
+        </el-col>
       </template>
     </el-row>
   </div>
