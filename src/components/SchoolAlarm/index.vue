@@ -21,7 +21,7 @@
       </el-badge>
     </el-tooltip>
     <el-dialog :visible.sync="dialogTableVisible" title="消息详情" width="40%" append-to-body>
-      <el-table :data="messageData" border empty-text="暂无数据">
+      <el-table :data="messageData" border empty-text="暂无数据" height="260">
         <el-table-column
           type="index"
           width="50"

@@ -22,7 +22,7 @@
       </el-badge>
     </el-tooltip>
     <el-dialog :visible.sync="dialogTableVisible" title="消息详情" width="40%" append-to-body>
-      <el-table :data="messageData" border empty-text="暂无数据">
+      <el-table :data="messageData" border empty-text="暂无数据" height="260">
         <el-table-column
           type="index"
           width="50"
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
+import { messageCount, messageDetails, checkedList } from '@/api/schoolService/tableInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'NoticeMessage',
@@ -162,8 +162,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .em-alarm /deep/{
-  }
 .message-title {
   font-size: 16px;
   color: #333;

@@ -85,6 +85,7 @@
         </el-form-item>
         <el-form-item  v-else-if="item.meta.itemType==='button'" :prop="item.meta.valueKey">
         <el-button
+          class="operate_btn"
           :ref="item.meta.system_id"
           :icon="item.meta.icon"
           :class="item.meta.class"
