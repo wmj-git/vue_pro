@@ -9,7 +9,6 @@ var stompClient = null
 function initWebSocket(url = websocketurl) {
   // ws地址 -->这里是你的请求路径
   websocketurl = url
-  console.log(websocketurl)
   // 建立连接对象（还未发起连接）
   var socket = new SockJS(websocketurl)
   /* var socket = new SockJS(process.env.VUE_APP_BASE_API + '/Authorization=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNSU5HIiwiZXhwIjoxNTc4NDUyNzY4LCJpYXQiOjE1Nzg0NTA5NjgsInVzZXIiOiJ7XCJwaG9uZVwiOjE4OTQ0NDQ0NDQ0LFwib3JnSWRcIjo1MDAxMDcwMDIsXCJvcmdUeXBlXCI6NSxcInJvbGVJZFwiOjQzNH0ifQ.XnStuxg3ZT8mkfORanCU_79SO4xfcG9DYrR9VdWQ7rM')
@@ -18,14 +17,12 @@ function initWebSocket(url = websocketurl) {
   stompClient = Stomp.over(socket)
   // 向服务器发起websocket连接并发送CONNECT帧
   stompClient.connect({}, function(frame) {
-    console.log('Connected: ', frame)
     // 订阅频道
     stompClient.subscribe('/topic/getResponse', function(response) {
       websocketonmessage(response)
     })
     // 监听通道
     stompClient.subscribe('/user/topic/channelMessage', function(response) {
-      console.log('channelMessage', response)
       websocketonmessage(response)
     })
   })
@@ -72,7 +69,6 @@ function websocketsend(agentData) {
 
 // 关闭
 function websocketclose(e) {
-  console.log('connection closed (' + e.code + ')')
   initWebSocket()
 }
 

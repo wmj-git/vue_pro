@@ -110,3 +110,11 @@ export function messageCount(obj) {
     params: obj.params
   })
 }
+// 获取消息详情
+export function messageDetails(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}

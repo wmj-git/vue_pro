@@ -1,17 +1,16 @@
 <template>
   <div v-if="messageCount>0" class="em-alarm">
     <el-tooltip
-      v-for="(item,_index) in messageList"
-      :key="_index"
       class="item"
       effect="dark"
-      :content="item.content"
+      :content="content"
       placement="top-start"
     >
       <el-badge
         :value="messageCount"
         style="line-height: 25px;margin-top: -5px;"
-        @click.native="dialogTableVisible=true">
+        @click.native="dialogTableVisible=true"
+      >
         <el-button
           style="padding: 8px 10px;"
           size="small"
@@ -21,93 +20,81 @@
         </el-button>
       </el-badge>
     </el-tooltip>
-    <!-- <el-tooltip class="item" effect="dark" :content="content" placement="top-start">
-      <el-badge :value="messageCount" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
-        <el-button style="padding: 8px 10px;" size="small" type="danger" class="em-alarm-btn">
-          <svg-icon icon-class="email" class-name="alarm-icon" />
-        </el-button>
-      </el-badge>
-    </el-tooltip>
-     <el-tooltip class="item" effect="dark" :content="content" placement="top-start">
-       <el-badge :value="NotificationCount" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
-         <el-button style="padding: 8px 10px;" size="small" type="danger" class="em-alarm-btn">
-           <svg-icon icon-class="guide" class-name="alarm-icon" />
-         </el-button>
-       </el-badge>
-     </el-tooltip>-->
-    <el-dialog :visible.sync="dialogTableVisible" width="80%" append-to-body>
-      <div slot="title">
-        <span style="padding-right: 10px;">Error Log</span>
-        <el-button size="mini" type="primary" icon="el-icon-delete" @click="clearAll">Clear All</el-button>
-      </div>
-      <el-table :data="messageData" border>
-        <el-table-column label="Message">
-          <template slot-scope="{row}">
-            <div>
-              <span class="message-title">Msg:</span>
-              <el-tag type="danger">
-                {{ row.err.message }}
-              </el-tag>
-            </div>
-            <br>
-            <div>
-              <span class="message-title" style="padding-right: 10px;">Info: </span>
-              <el-tag type="warning">
-                {{ row.vm.$vnode.tag }} error in {{ row.info }}
-              </el-tag>
-            </div>
-            <br>
-            <div>
-              <span class="message-title" style="padding-right: 16px;">Url: </span>
-              <el-tag type="success">
-                {{ row.url }}
-              </el-tag>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="Stack">
-          <template slot-scope="scope">
-            {{ scope.row.err.stack }}
-          </template>
+    <el-dialog :visible.sync="dialogTableVisible" title="消息详情" width="40%" append-to-body>
+      <el-table :data="messageData" border empty-text="暂无数据">
+        <el-table-column
+          type="index"
+          width="50"
+          :index="tableIndex"
+        />
+        <el-table-column
+          v-for="info in tableHeader"
+          :key="info.key"
+          :label="info.label"
+          :prop="info.key"
+          :formatter="formatterFn"
+        >
         </el-table-column>
       </el-table>
+      <Pagination
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        :hide-on-single-page="pageOne"
+        @pagination="handlePaginationChange"
+        @current-change="handleCurrentChange"
+      />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { messageCount } from '@/api/schoolService/tableInfo'
+import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
+import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
-  name: 'ErrorLog',
+  name: 'SchoolAlarm',
   data() {
     return {
-      messageList: [
-        {
-          content: 'SOS校内报警'
-        },
-        {
-          content: '两公里外的sos报警'
-        }
-      ],
       dialogTableVisible: false,
       BASE_API: process.env.VUE_APP_BASE_API,
       messageCount: '', // sos校内报警
       kilometersCount: '', // 两公里外的sos报警
       NotificationCount: '', // 通知消息
-      messageData: [],
-      content: '' // 提示消息
+      messageData: [], // 详情列表
+      content: '', // 提示消息
+      formatterMap: {},
+      tableHeader: [
+        {
+          label: '消息标题',
+          key: 'msgTitle'
+        },
+        {
+          label: '消息类型',
+          key: 'messageType'
+        },
+        {
+          label: '消息详情',
+          key: 'describeStr'
+        }
+      ],
+      pageOne: false,
+      total: 0,
+      listQuery: {
+        limit: 10,
+        page: 1
+      }
     }
   },
   created() {
     this.init()
+    this.getList()
     const token = this.$store.getters.token
     // ws：neinx那边加的，要是没有ws则会自动加上一个info,通道没法连接上
     // access_token: //后端的名字
     // sockets: 接口基本地址必须带的
     const url = this.BASE_API + '/ws/sockets?access_token=' + token
     this.socketApi.initWebSocket(url)
-    const messageType = 0
-    this.socketApi.proxyFunction(10, (res) => {
+    this.socketApi.proxyFunction(5, (res) => {
       if (res) {
         this.init() // 校徽传递通知消息后继续获取数量
       }
@@ -115,18 +102,61 @@ export default {
   },
   methods: {
     init() {
+      const _param = {
+        messageType: 5
+      }
       messageCount({
-        url: '/sockets/push/queryCountAllByPageParams'
+        url: '/sockets/push/queryCountAllByPageParams',
+        params: _param
       }).then(response => {
-        console.log(response)
-        this.messageCount = response.data // sos报警消息
-        /* this.kilometersCount = response.data // 两公里外的报警消息
-        this.NotificationCount = response.data // 通知消息*/
+        this.content = '校内SOS报警'
+        this.messageCount = response.data // 校内sos报警消息
       })
     },
-    clearAll() {
-      this.dialogTableVisible = false
-      this.$store.dispatch('errorLog/clearErrorLog')
+    tableIndex(index) { // 第二页开始表格数据行号不从1开始
+      return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
+    },
+    // 分页改变:改变条数和分页
+    handlePaginationChange(res) {
+      this.listQuery = res
+      this.getList()
+    },
+    // 获取详情列表数据
+    getList() {
+      const _params = {
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page,
+        messageType: 5
+      }
+      messageDetails({
+        url: '/sockets/push/queryNoContentAllByPageParams',
+        params: _params
+      }).then(res => {
+        if (res.statusCode === 200) {
+          this.messageData = res.data.list
+          this.total = res.data.total
+        } else if (res.statusCode === 503) {
+          this.$message({
+            showClose: true,
+            message: '没有指定消息内容哦！',
+            type: 'info',
+            duration: 1000
+          })
+        }
+      })
+    },
+    handleCurrentChange(val) {
+    },
+    // 过滤字段
+    formatterFn(row, column) {
+      let _val = ''
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
+      }
+      return _val
     }
   }
 }
