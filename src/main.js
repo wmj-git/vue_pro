@@ -45,12 +45,20 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.config.productionTip = true
+// 公共混入
 import './utils/mixins' // mixins
 
+Vue.config.productionTip = true
 new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App)
 })
+
+/*
+// 函数式编程工具库
+import * as _ from 'lodash'
+import * as R from 'ramda'
+// 获取顶层对象
+import _G from '@/utils/global'*/
