@@ -72,8 +72,10 @@
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
-                :active-color="item.meta.activeColor ? item.meta.activeColor : '#111c95'"
-                :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
+                :active-color="item.meta.activeColor || '#353bbd'"
+                :inactive-color="item.meta.inactiveColor || '#a6aebd'"
+                :active-value="item.meta.activeValue"
+                :inactive-value="item.meta.inactiveValue"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
