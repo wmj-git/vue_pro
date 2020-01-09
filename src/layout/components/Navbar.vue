@@ -6,6 +6,7 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
+        <notice-message class="errLog-container right-menu-item hover-effect"/>
        <school-alarm class="errLog-container right-menu-item hover-effect" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -47,9 +48,11 @@ import Search from '@/components/HeaderSearch'
 
 import { TimeFn } from '@/utils/tool'
 import { getExpires } from '@/utils/auth'
+import NoticeMessage from '@/components/NoticeMessage'
 
 export default {
   components: {
+    NoticeMessage,
     Breadcrumb,
     Hamburger,
     SchoolAlarm,

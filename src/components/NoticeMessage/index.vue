@@ -1,5 +1,5 @@
 <template>
-  <div v-if="messageCount>0" class="em-alarm">
+  <div v-if="NotificationCount>0" class="em-alarm">
     <el-tooltip
       class="item"
       effect="dark"
@@ -7,16 +7,17 @@
       placement="top-start"
     >
       <el-badge
-        :value="messageCount"
+        :value="NotificationCount"
+        type="success"
         style="line-height: 25px;margin-top: -5px;"
         @click.native="dialogTableVisible=true"
       >
         <el-button
           style="padding: 8px 10px;"
           size="small"
-          type="danger"
-          class="em-alarm-btn">
-          <svg-icon icon-class="alarm" class-name="alarm-icon" />
+          type="success"
+          class="em-message-btn">
+          <svg-icon icon-class="message_notice" class-name="alarm-icon" />
         </el-button>
       </el-badge>
     </el-tooltip>
@@ -52,12 +53,12 @@
 import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
-  name: 'SchoolAlarm',
+  name: 'NoticeMessage',
   data() {
     return {
       dialogTableVisible: false,
       BASE_API: process.env.VUE_APP_BASE_API,
-      messageCount: '', // sos校内报警
+      NotificationCount: '', // 通知消息
       messageData: [], // 详情列表
       content: '', // 提示消息
       formatterMap: {},
@@ -92,23 +93,23 @@ export default {
     // sockets: 接口基本地址必须带的
     const url = this.BASE_API + '/ws/sockets?access_token=' + token
     this.socketApi.initWebSocket(url)
-    this.socketApi.proxyFunction(5, (res) => {
+    this.socketApi.proxyFunction(10, (res) => {
       if (res) {
-        this.init() // 校徽传递通知消息后继续获取数量
+        this.init() // 发送通知消息后继续获取数量
       }
     })
   },
   methods: {
     init() {
       const _param = {
-        messageType: 5
+        messageType: 10
       }
       messageCount({
         url: '/sockets/push/queryCountAllByPageParams',
         params: _param
       }).then(response => {
-        this.content = '校内SOS报警'
-        this.messageCount = response.data // 校内sos报警消息
+        this.content = '通知消息'
+        this.NotificationCount = response.data // 通知消息
       })
     },
     tableIndex(index) { // 第二页开始表格数据行号不从1开始
@@ -124,7 +125,7 @@ export default {
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page,
-        messageType: 5
+        messageType: 10
       }
       messageDetails({
         url: '/sockets/push/queryNoContentAllByPageParams',
@@ -174,7 +175,7 @@ export default {
     font-size: 20px;
     vertical-align: middle;
 }
-  .el-button--danger.em-alarm-btn{
+  .el-button--success.em-message-btn{
     border-radius: 50%;
   }
 </style>
