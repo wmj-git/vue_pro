@@ -2,5 +2,16 @@
   overflow: auto;
 }
 .el-form-item__label{
-  color: #fff;
+  color: $em-text-color-base;
+}
+// 已禁用输入框
+.el-input.is-disabled .el-input__inner{
+  background-color: #130f0f54;
+  border-color: #3f3d3d;
+  color: #aaa7a7;
+}
+// 下拉框
+.el-input-group__append, .el-input-group__prepend{
+  background-color: $em-form-item-checkMenu;
+  border-color: $em-form-item-checkMenu-border;
 }

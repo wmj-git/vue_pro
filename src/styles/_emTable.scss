@@ -31,8 +31,18 @@
 .#{table-container}{
  /* background: darken($em-bg-color-base,10%);*/
 }
-.el-table__body tr:hover>td,.el-table--enable-row-hover .el-table__body tr:hover > td{
+/*hover状态*/
+.el-table__body tr.hover-row>td,.el-table__body tr.hover-row.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped>td,.el-table__body tr.hover-row.el-table__row--striped .current-row>td{
   background-color:$em-background-hover-tbody;
+  color: $em-text-color-base;
+}
+.el-table th.is-leaf, .el-table td{
+  border-color: darken($em-border-color-base,50%);
+}
+/*选中行*/
+.el-table__body tr.current-row>td,.el-table__row--striped.current-row td{
+  background-color: darken($em-background-hover-tbody,20%);
   color: $em-text-color-base;
 }
 .el-table--border{
