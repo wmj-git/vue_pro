@@ -1,0 +1,17 @@
+@import "variables";
+.el-tooltip__popper.is-dark{
+  background: $toolTip-background;
+  font-weight: bolder;
+}
+.el-tooltip__popper {
+  font-size: 14px;
+  max-width: 30%;
+  color: lighten($em-text-highlight-base,20%)!important;
+}
+
+.el-tooltip__popper[x-placement^=top] .popper__arrow:after {
+  border-top-color: $toolTip-background;
+}
+.el-tooltip__popper[x-placement^=top] .popper__arrow {
+  border-top-color: $toolTip-background;
+}

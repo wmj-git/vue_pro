@@ -23,3 +23,6 @@ color: $em-text-highlight-base !important;
 .el-badge__content--danger{
   color: red;
 }
+.el-card__body{ // tree最小高度
+  min-height: 750px;
+}

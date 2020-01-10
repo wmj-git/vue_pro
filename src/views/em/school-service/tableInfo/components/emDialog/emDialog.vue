@@ -48,6 +48,7 @@
             </el-form-item>
             <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-transfer
+                filterable
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :titles="item.meta.titles"

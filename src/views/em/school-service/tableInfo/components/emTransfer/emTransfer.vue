@@ -6,8 +6,8 @@
       :visible.sync="dialogFormVisible"
     >
       <el-transfer
-        v-model="value"
         filterable
+        v-model="value"
         :titles="['未分配班级', '已分配班级']"
         :filter-method="filterMethod"
         filter-placeholder="输入查询关键字"
