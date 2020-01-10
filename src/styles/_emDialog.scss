@@ -1,6 +1,8 @@
 .el-dialog{
   background: $background-linear-base;
   color: darken($em-text-color-base, 20%);
+  box-shadow: 0 0 10px #bdc0c3;
+  border-radius: 6px;
 }
 .el-dialog__title{
   color: $em-text-color-base;
@@ -17,8 +19,20 @@
   border-color: #3f3d3d;
   color: #aaa7a7;
 }
-// 下拉框
+// 下拉框-input
 .el-input-group__append, .el-input-group__prepend{
   background-color: $em-form-item-checkMenu;
   border-color: $em-form-item-checkMenu-border;
+}
+// select
+.el-select-dropdown{
+  background-color: $em-form-item-checkMenu;
+  border-color: $em-form-item-checkMenu-border;
+}
+.el-select-dropdown__item{
+  color: darken($em-text-color-base, 20%);
+  &:hover{
+    background-color: lighten($em-form-item-checkMenu, 10%);
+    color: $em-text-color-base;
+  }
 }
