@@ -36,7 +36,11 @@ li.number.active{
 .el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li{
 background-color: darken($background-pagination--inner, 20%);
 }
-// 当前页按钮
-.el-pagination.is-background .el-pager li:not(.disabled).active{
-  background-color:darken($em-highlight-border-color-base, 50%) ;
+
+.el-pagination.is-background .el-pager li{
+  color: darken($em-text-color-base, 30%);
+  &:not(.disabled).active{ // 当前页按钮
+    background-color:darken($em-highlight-border-color-base, 50%) ;
+  }
 }
+

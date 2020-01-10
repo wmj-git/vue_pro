@@ -104,7 +104,7 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: #0d1430;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
@@ -143,7 +143,7 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: darken(#fff, 30%);
       vertical-align: text-bottom;
 
       &.hover-effect {

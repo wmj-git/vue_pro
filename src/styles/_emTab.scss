@@ -1,3 +1,28 @@
 .el-tabs__item{
-  color: #fff;
+  color:$em-text-color-base;
+}
+/*navbar-span-color*/
+.el-breadcrumb__inner a{
+  color: darken($em-text-color-base, 10%);
+}
+.app-breadcrumb.el-breadcrumb .no-redirect{
+color: $em-text-highlight-base !important;
+}
+
+/*badge*/
+.el-badge__content{
+  border: none;
+  background-color: transparent;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 30px;
+}
+.el-badge__content--success{
+  color: #00ff00;
+}
+.el-badge__content--danger{
+  color: red;
+}
+.el-card__body{ // tree最小高度
+  min-height: 750px;
 }

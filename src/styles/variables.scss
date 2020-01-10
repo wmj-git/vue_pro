@@ -37,9 +37,11 @@ $sideBarWidth: 210px;
 
 /* 滚动条*/
 $em-scrollbar-background-color: #cdcdcd;
+
 /*font-color*/
 $em-text-color-base: #ffffff; //常规表格文本颜色
-$em-text-highlight-base: #002847;//高亮文本颜色
+$em-text-highlight-base: #409eff;//高亮文本颜色
+
 /*border-color*/
 $em-border-color-base: rgba(255, 255, 255, 0.5);//基本边框颜色
 $em-highlight-border-color-base: #005695;//高亮边框颜色
@@ -48,20 +50,31 @@ $em-highlight-border-color-base: #005695;//高亮边框颜色
 $em-bg-color-base: rgba(43, 47, 58, 0.77);//基本背景颜色
 $em-highlight-bg-color-base:#6f9fd4;//高亮背景颜色
 $em-highlight-bg2-color-base: rgba(41, 60, 83,0.8),rgba(31, 45, 61, 0.9);//深色背景
+
 /*table*/
 $em-background-table-thead:linear-gradient(rgba(48, 65, 86, 0.8), rgba(43, 47, 58, 1));
 $background-linear-base:linear-gradient(to bottom right,nth($em-highlight-bg2-color-base,1),nth($em-highlight-bg2-color-base,2));
 $em-background-table-tbody: rgba(30, 49, 83, 0.8);//tbody
 $em-background-hover-tbody:rgba(25, 137, 250,0.2);//tbody-hover背景
+
 /*button*/
 $em-operate-button-baseBackground:#2b2f3a;
 $em-table-inLine-linear-btn:rgba(48, 65, 86, 0.8);
+
 /*split*/
 $em-split-bg: rgba(189, 189, 189, 0.7);
 $em-card-bg:rgba(48, 65, 86, 0.8);
+
 /*pagination*/
 $background-pagination--inner:rgba(20, 31, 55, 0.5);//页码选择输入框背景；
 
 /*表单*/
 $em-form-item-checkMenu: #1e2c43; //下拉框
 $em-form-item-checkMenu-border:#4f5662; //边框
+
+/*drawer_details*/
+$em-background-details:linear-gradient(to top left,rgba(25, 137, 250, 0.6), rgba(20, 31, 55, 1)) ;//pic-details背景
+
+/*toolTip*/
+$toolTip-background:darken(rgba(20, 31, 55, 0.5),5%);
+

@@ -1,0 +1,7 @@
+.el-message--warning,.el-message--success,.el-message--error,.el-message--info{
+  background: $background-linear-base;
+  border-color: darken($em-text-highlight-base,50%);
+}
+.el-message--info .el-message__content{
+  color: darken($em-text-color-base,20%) !important;
+}

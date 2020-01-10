@@ -7,6 +7,8 @@
       placement="top-start"
     >
       <el-badge
+        class="alarm-badge"
+        type="danger"
         :value="messageCount"
         style="line-height: 25px;margin-top: -5px;"
         @click.native="dialogTableVisible=true"
@@ -173,8 +175,11 @@ export default {
     cursor: pointer;
     font-size: 20px;
     vertical-align: middle;
+    color: darken(#fff ,20%);
 }
   .el-button--danger.em-alarm-btn{
-    border-radius: 50%;
+    border-radius: 0px 60% 0 60%;
+    background: linear-gradient(rgba(255, 0, 0, 0.4),#0d1430);
+    border-color: rgba(255, 0, 0, 0.35);
   }
 </style>

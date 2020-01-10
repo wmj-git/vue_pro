@@ -1,6 +1,7 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
+      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -47,6 +48,7 @@
             </el-form-item>
             <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-transfer
+                filterable
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :titles="item.meta.titles"

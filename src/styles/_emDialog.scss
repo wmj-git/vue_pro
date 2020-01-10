@@ -1,7 +1,7 @@
 .el-dialog{
   background: $background-linear-base;
   color: darken($em-text-color-base, 20%);
-  box-shadow: 0 0 10px #bdc0c3;
+  box-shadow: 0 0 10px #aeb1b4;
   border-radius: 6px;
 }
 .el-dialog__title{
@@ -9,9 +9,15 @@
 }
 .el-dialog__body{
   overflow: auto;
+  background: darken($em-form-item-checkMenu,5%);
+  margin: 10px 20px;
+  box-shadow: 0 0 5px #8f9295;
 }
 .el-form-item__label{
-  color: $em-text-color-base;
+  color: darken($em-text-color-base, 15%);
+}
+.el-form--label-left .el-form-item__label{
+  text-align: right;
 }
 // 已禁用输入框
 .el-input.is-disabled .el-input__inner{

@@ -1,0 +1,38 @@
+@import "variables";
+
+.el-transfer-panel {
+  background-color: darken(nth($em-highlight-bg2-color-base, 2), 2%);
+  border-color: darken($em-border-color-base,30%);
+
+  & .el-transfer-panel__item {
+    color: darken($em-text-color-base,20%);
+  }
+
+  & .el-transfer-panel__header {
+    background-color: darken(nth($em-highlight-bg2-color-base,2),4%) !important;
+    border-bottom-color: darken($em-border-color-base,50%);
+    & .el-checkbox .el-checkbox__label {
+      color: darken($em-text-color-base,20%);
+
+      & span {
+        color: darken($em-text-color-base,20%);
+      }
+    }
+  }
+}
+
+.el-transfer__button {
+  border-color: $em-highlight-border-color-base;
+  background-color: transparent;
+  color: $em-text-highlight-base;
+  &:hover{
+    background-color:nth($em-highlight-bg2-color-base,1)
+  }
+
+  &.is-disabled,&.is-disabled:hover,&.is-disabled:active,&.is-disabled:focus {
+    border: 1px solid darken($em-border-color-base,40%);
+    background-color: darken($em-bg-color-base,20%);
+    color: darken($em-text-color-base,30%);
+  }
+}
+
