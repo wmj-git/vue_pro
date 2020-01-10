@@ -29,3 +29,6 @@
 .em-tree-text{
   color: $em-text-color-base;
 }
+.el-card__body{ // tree最小高度
+  min-height: 450px;
+}

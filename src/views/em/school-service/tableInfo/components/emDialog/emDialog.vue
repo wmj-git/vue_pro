@@ -1,6 +1,7 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
+      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"

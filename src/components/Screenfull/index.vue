@@ -48,13 +48,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .screenfull-svg {
   display: inline-block;
   cursor: pointer;
-  fill: #5a5e66;;
+  fill: #c99745;;
   width: 20px;
   height: 20px;
   vertical-align: 10px;
 }
+
 </style>

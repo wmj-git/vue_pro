@@ -37,6 +37,11 @@
   background-color:$em-background-hover-tbody;
   color: $em-text-color-base;
 }
+/*dialog-table*/
+.el-table--enable-row-hover .el-table__body tr:hover>td{
+  background-color:$em-background-hover-tbody;
+  color: $em-text-color-base;
+}
 .el-table th.is-leaf, .el-table td{
   border-color: darken($em-border-color-base,50%);
 }
