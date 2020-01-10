@@ -1,5 +1,5 @@
 <template>
-  <div class="school-container">
+  <div class="school-container table-container">
     <el-table
       :data="tableDataEnd "
       border
@@ -31,6 +31,7 @@
               :key="_index"
               :ref="btn.meta.system_id"
               size="mini"
+              class="table_inLine_btn"
               :class="btn.meta.className"
               :style="{ display: visibleSubmit }"
               :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"

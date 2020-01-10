@@ -1,0 +1,32 @@
+.el-button--primary.#{operate_btn}{
+  background-image: linear-gradient(to top, #39495d 0%, #39495dba 80%, #39495d70 100%);;
+  border-radius: 30px;
+  border: 1px solid #39495dba;
+ /* box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 3px 0 #CECFD1;*/
+  transition: all 0.2s ease;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 14px;
+  color: #d9d9d9;
+  text-shadow: 0 1px #39495dba;
+  &:hover{
+    color: #fff;
+    background: linear-gradient(to top, #39495d 0%, #39495d70 80%, #39495dba 100%) ;
+    box-shadow: 0 4px 3px 1px #39495dba, 0 6px 8px #39495d, 0 -4px 4px #39495d70, 0 -6px 4px rgba(71, 90, 113, 0.44), inset 0 0 3px 3px #63788E;
+  }
+  &:active{
+
+  }
+}
+
+.#{table_inLine_btn}{
+  color: #dcdcdc;
+  border-radius: 6px;
+  line-height: 15px;
+  border: solid 1px $em-text-highlight-base;
+  background: -webkit-gradient(linear, left top, left bottom, from(lighten($em-text-highlight-base,25%)), to($em-text-highlight-base));
+  &:hover{
+    color: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(lighten($em-text-highlight-base,20%)), to(darken($em-text-highlight-base,5%)));
+    border-color: lighten($em-text-highlight-base,25%);
+  }
+}

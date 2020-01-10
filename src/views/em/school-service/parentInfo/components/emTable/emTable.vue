@@ -1,5 +1,5 @@
 <template>
-  <div class="school-container">
+  <div class="school-container table-container">
     <el-table
       :data="tableDataEnd "
       border
@@ -39,7 +39,7 @@
             <el-button
               :key="_index"
               :ref="btn.meta.system_id"
-              class="em-btn-operation"
+              class="em-btn-operation table_inLine_btn"
               size="mini"
               :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
               @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"

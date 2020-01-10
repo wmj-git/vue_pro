@@ -96,6 +96,7 @@
           v-else-if="item.meta.itemType==='button'"
           :ref="item.meta.system_id"
           :icon="item.meta.icon"
+          class="table_inLine_btn"
           :class="item.meta.class"
           :disabled="item.meta.disabled"
           :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
