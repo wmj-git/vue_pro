@@ -1,3 +1,10 @@
+.el-dialog{
+  background: $background-linear-base;
+  color: darken($em-text-color-base, 20%);
+}
+.el-dialog__title{
+  color: $em-text-color-base;
+}
 .el-dialog__body{
   overflow: auto;
 }
