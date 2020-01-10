@@ -98,7 +98,7 @@
           <el-button
             :key="_index"
             :ref="btn.meta.system_id"
-            class="em-btn-operation"
+            class="em-btn-operation table_inLine_btn"
             size="mini"
             :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             @click="fn(btn,temp)"
