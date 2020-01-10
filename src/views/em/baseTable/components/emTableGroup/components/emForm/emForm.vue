@@ -135,6 +135,22 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
+      const _validate = _obj.meta.fn_set.validate || false
+      let _valid = false
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          _valid = true
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+      if (_validate) {
+        if (!(_valid)) {
+          return
+        }
+      }
       const _Form = this.getForm()
       switch (_controlType) {
         case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':

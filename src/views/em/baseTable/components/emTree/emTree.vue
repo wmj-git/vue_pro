@@ -52,7 +52,6 @@
 import { emMixin } from '@/utils/mixins'
 import { mapGetters } from 'vuex'
 import { getResources } from '@/utils/auth'
-import vueBus from '@/utils/vueBus'
 
 import { toTree, dataInitFn, FilterChildrenFn } from '@/utils/tool'
 import { updateCheckedKeys, getRoutePermission, query, add, del, update } from '@/api/system-management/role-manage'
