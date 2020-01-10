@@ -498,7 +498,6 @@ export default {
         _str += k + '=' + _params[k] + '&'
       }
       _str += 'Authorization=' + this.$store.getters['token']
-      console.log('currentRole', _str)
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     },
     dropzoneS(file, el, item) {
