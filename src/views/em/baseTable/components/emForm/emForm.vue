@@ -109,7 +109,19 @@
               </div>
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='tree'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <em-tree :data="item" />
+              <em-tree :ref="item.meta.system_id" :data="item" />
+            </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='timePicker'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-time-picker
+                :ref="item.meta.system_id"
+                v-model="Form[item.meta.valueKey]"
+                is-range
+                :disabled="item.meta.disabled"
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                placeholder="选择时间范围">
+              </el-time-picker>
             </el-form-item>
           </el-col>
         </template>

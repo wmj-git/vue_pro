@@ -32,6 +32,33 @@
           />
           <template v-for="(column,index) in set.tableHeader">
             <el-table-column
+              v-if="column.columnType && column.columnType === 'unusualTimes'"
+              :key="index"
+              :prop="column.prop"
+              :label="column.label"
+              :width="column.width"
+              :show-overflow-tooltip="true"
+              :formatter="formatterFn"
+            >
+              <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top">
+                  <el-timeline :reverse="false">
+                    <el-timeline-item
+                      v-for="(activity, _index) in unusualTimesFn(scope.row)"
+                      :key="_index"
+                      :color="'#0bbd87'"
+                      :timestamp="activity.end">
+                      {{activity.start}}
+                    </el-timeline-item>
+                  </el-timeline>
+                  <div slot="reference" class="name-wrapper">
+                    <el-tag size="medium">时段</el-tag>
+                  </div>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-else
               :key="index"
               :prop="column.prop"
               :label="column.label"
@@ -316,6 +343,18 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    unusualTimesFn(str) {
+      if (str.unusualTimes) {
+        str = JSON.parse(str.unusualTimes)
+      } else {
+        str = [{
+          start: '00:00:00',
+          end: '00:00:00'
+        }]
+      }
+      // console.log(str)
+      return str
     }
   }
 }
