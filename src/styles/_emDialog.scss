@@ -25,10 +25,18 @@
   border-color: #3f3d3d;
   color: #aaa7a7;
 }
+/*输入框-hover*/
+.el-input__inner:hover{
+  border-color: $em-text-highlight-base;
+}
 // 下拉框-input
 .el-input-group__append, .el-input-group__prepend{
   background-color: $em-form-item-checkMenu;
   border-color: $em-form-item-checkMenu-border;
+}
+/*下拉框-Hover*/
+.el-select:hover .el-input__inner{
+  border-color: $em-text-highlight-base;
 }
 // select
 .el-select-dropdown{
@@ -37,8 +45,18 @@
 }
 .el-select-dropdown__item{
   color: darken($em-text-color-base, 20%);
-  &:hover{
+  &:hover,&.hover{
     background-color: lighten($em-form-item-checkMenu, 10%);
-    color: $em-text-color-base;
+    color: $em-text-highlight-base;
   }
+  &.selected{
+    background-color: lighten($em-form-item-checkMenu, 5%);
+    color: $em-text-highlight-base !important;
+  }
+}
+
+/*拖拽上传图片*/
+.el-upload-dragger {
+  background-color: $em-upload-bg;
+  border-color: $em-upload-border;
 }

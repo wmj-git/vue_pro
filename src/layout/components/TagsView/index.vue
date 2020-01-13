@@ -195,6 +195,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "../../../styles/variables";
 .tags-view-container {
   height: 34px;
   width: 100%;
@@ -217,8 +218,8 @@ export default {
       -webkit-transition: .5s;
       -moz-transition: .5s;
       -ms-transition: .5s;
-      color: #b1d7fa;
-      border-color: rgba(22, 79, 154, 0.8);
+      color: $targs-view-text;
+      border-color: $targs-view-border-Color;
       background:rgba(8, 13, 33, 0.81);
       transition: .5s;
       border-radius: 30px 0px 30px 0px;
@@ -230,8 +231,8 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        border-color: #1890ff;
-        background:linear-gradient(#1890ff,#080d21);
+        border-color: $em-text-highlight-base;
+        background:$targs-view-wrapper-bg;
         -webkit-transition: .5s;
         -moz-transition: .5s;
         -ms-transition: .5s;
@@ -262,7 +263,7 @@ export default {
   }
   .contextmenu {
     margin: 0;
-    background: #fff;
+    background: darken(rgba(20, 31, 55, 0.5),5%);
     z-index: 3000;
     position: absolute;
     list-style-type: none;
@@ -270,14 +271,14 @@ export default {
     border-radius: 4px;
     font-size: 12px;
     font-weight: 400;
-    color: #333;
+    color: $em-text-color-base;
     box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
       &:hover {
-        background: #eee;
+        color: $em-text-highlight-base;
       }
     }
   }

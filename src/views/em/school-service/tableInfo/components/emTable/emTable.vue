@@ -44,6 +44,7 @@
       </el-table-column>
     </el-table>
     <Pagination
+      v-if=" this.children.columnBtn[1].meta.className === ''"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
@@ -87,8 +88,14 @@ export default {
       children: {
         columnBtn: [] // 行内按钮
       },
-      rowClick: 'none'
+      rowClick: 'none',
+      classes: ''
     }
+  },
+  mounted() {
+    vueBus.$on('class', val => {
+      this.classes = val
+    })
   },
   created() {
     this.init()
@@ -129,7 +136,7 @@ export default {
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
-      this.getList()
+      this.getAllList()
     },
     // 单击行()
     handleRowClick(row, column, event) {},
@@ -172,11 +179,10 @@ export default {
         }
       })
     },
-    // 渲染数据
+    // 渲染数据(班级对应的老师没有分页)
     getList(params) {
       const _params = {
-        pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        classId: this.classes
       }
       try {
         let _val = {}

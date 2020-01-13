@@ -254,15 +254,15 @@ export default {
 
 <style scoped>
     .dropzone {
-        border: 2px solid #E5E5E5;
+        border: 2px solid #4a505a;
         font-family: 'Roboto', sans-serif;
         color: #777;
         transition: background-color .2s linear;
         padding: 5px;
+        background: #152034;
     }
-
     .dropzone:hover {
-        background-color: #F6F6F6;
+        border-color: #005695;
     }
 
     i {

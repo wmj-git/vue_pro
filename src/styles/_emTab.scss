@@ -23,6 +23,25 @@ color: $em-text-highlight-base !important;
 .el-badge__content--danger{
   color: red;
 }
-.el-card__body{ // tree最小高度
-  min-height: 750px;
+
+/*el-image-error图片上传*/
+.el-image__error{
+  background: $toolTip-background;
+}
+
+/*左右分割栏分隔线样式*/
+.splitter-pane-resizer.vertical{
+border-color: rgba(255,255,255,0.5) !important;
+}
+// pane最小高度
+.pane_minHeight{
+  .el-card__body{
+    min-height: 1030px;
+  }
+}
+/*两个表格上下排列的高度*/
+.pane_minHeightDouble{
+  .el-card__body{
+    min-height: 515px;
+  }
 }
