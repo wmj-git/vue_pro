@@ -38,14 +38,16 @@
         >
         </el-table-column>
       </el-table>
-      <Pagination
-        :total="total"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
-        :hide-on-single-page="pageOne"
-        @pagination="handlePaginationChange"
-        @current-change="handleCurrentChange"
-      />
+      <div slot="footer" class="dialog-footer">
+        <Pagination
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.limit"
+          :hide-on-single-page="pageOne"
+          @pagination="handlePaginationChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </el-dialog>
     <el-drawer
       v-if="drawer"

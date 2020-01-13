@@ -10,7 +10,8 @@
 .el-dialog__body{
   overflow: auto;
   background: darken($em-form-item-checkMenu,5%);
-  margin: 10px 20px;
+  margin: 8px;
+  padding: 10px 15px;
   box-shadow: 0 0 5px #8f9295;
 }
 .el-form-item__label{
