@@ -22,7 +22,7 @@
       </el-badge>
     </el-tooltip>
     <el-dialog :visible.sync="dialogTableVisible" title="消息详情" width="40%" append-to-body>
-      <el-table :data="messageData" border empty-text="暂无数据" height="260">
+      <el-table :data="messageData" border empty-text="暂无数据" height="260" @row-dblclick="showDrawer">
         <el-table-column
           type="index"
           width="50"
@@ -46,22 +46,47 @@
         @current-change="handleCurrentChange"
       />
     </el-dialog>
+    <el-drawer
+      v-if="drawer"
+      :visible.sync="set.drawerVisible"
+      direction="rtl"
+      :modal="set.modal"
+      :append-to-body="set.appendToBody"
+      :show-close="true"
+      :destroy-on-close="true"
+      :size="set.size"
+    >
+      <el-form label-position="left" class="demo-table-expand">
+        <el-form-item :label="item.name" v-for="(item,index) in drawerItem" :key="index">
+          <span>{{item.value}}</span>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { messageCount, messageDetails, checkedList } from '@/api/schoolService/tableInfo'
+import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'NoticeMessage',
   data() {
     return {
+      drawer: true,
       dialogTableVisible: false,
       BASE_API: process.env.VUE_APP_BASE_API,
       NotificationCount: '', // 通知消息
       messageData: [], // 详情列表
       content: '', // 提示消息
       formatterMap: {},
+      drawerItem: [], // 抽屉显示项
+      set: {
+        drawerVisible: false,
+        modal: true, // 是否添加遮罩
+        appendToBody: true,
+        visible: false,
+        size: '20%'
+      },
       tableHeader: [
         {
           label: '消息标题',
@@ -156,6 +181,18 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    showDrawer(row) {
+      this.set.drawerVisible = true
+      this.drawerItem = []
+      const tableItem = { row: row, label: this.tableHeader }
+      tableItem.label.forEach(val => {
+        for (const i in tableItem.row) {
+          if (i === val.key) {
+            this.drawerItem.push({ name: val.label, value: tableItem.row[i] })
+          }
+        }
+      })
     }
   }
 }

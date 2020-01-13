@@ -4,7 +4,7 @@
   box-shadow: 0 0 10px #aeb1b4;
   border-radius: 6px;
 }
-.el-dialog__title{
+.el-dialog__title,.el-dialog__headerbtn .el-dialog__close{
   color: $em-text-color-base;
 }
 .el-dialog__body{
