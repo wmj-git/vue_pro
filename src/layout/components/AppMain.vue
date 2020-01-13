@@ -29,12 +29,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "../../styles/variables";
 .app-main {
   /* 50= navbar  50  */
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: hidden;
+  background-color: $em-base-background;
 }
 
 .fixed-header+.app-main {

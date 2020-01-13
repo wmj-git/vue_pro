@@ -1,0 +1,23 @@
+/*el-message*/
+.el-message-box{
+  background: $background-linear-base;
+  border-color:$em-upload-border;
+  box-shadow: 0 0 4px #647787;
+  .el-message-box__title,.el-message-box__message p{
+    color: darken($em-text-color-base, 20%);
+  }
+  & .el-button {
+    color: darken($em-text-color-base,10%);
+    border-color: darken($em-border-color-base,40%);
+    background-color: transparent;
+    &:hover {
+      color: $em-text-highlight-base;
+      border-color: $em-highlight-border-color-base;
+      transition: all 0.2s;
+    }
+  }
+  .el-button--primary{
+    border-color: lighten($em-highlight-border-color-base,10%);
+    color: $em-text-color-base;
+  }
+}

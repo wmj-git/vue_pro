@@ -50,7 +50,7 @@ $em-highlight-border-color-base: #005695;//高亮边框颜色
 $em-bg-color-base: rgba(43, 47, 58, 0.77);//基本背景颜色
 $em-highlight-bg-color-base:#6f9fd4;//高亮背景颜色
 $em-highlight-bg2-color-base: rgba(41, 60, 83,0.8),rgba(31, 45, 61, 0.9);//深色背景
-
+$em-base-background: #0d1430;
 /*table*/
 $em-background-table-thead:linear-gradient(rgba(48, 65, 86, 0.8), rgba(43, 47, 58, 1));
 $background-linear-base:linear-gradient(to bottom right,nth($em-highlight-bg2-color-base,1),nth($em-highlight-bg2-color-base,2));
