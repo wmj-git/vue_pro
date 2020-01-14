@@ -34,13 +34,7 @@
             </el-button>
           </template>
         </span>
-        <span>
-          <!-- <el-button
-            type="text"
-            size="mini"
-            @click="() => update(node, data)">
-            修改
-          </el-button>-->
+        <span v-if="node.level === 3">
           <el-button
             type="text"
             size="mini"

@@ -218,14 +218,6 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'siOrgCode':
-            await currentUser({
-              url: this.set.selectUrl
-            }).then(response => {
-              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
-              this.children.formItem[i].meta.defaultValue = String(response.data.orgCode)
-            })
-            break
           case 'classIds':
             var classArr = []
             classList({ // 未分配班级信息
@@ -258,6 +250,11 @@ export default {
     },
     // 添加数据显示
     add() {
+      currentUser({
+        url: this.set.selectUrl
+      }).then(response => {
+        this.temp['siOrgCode'] = String(response.data.orgCode) // 获取当前用户（学校）组织
+      })
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
