@@ -293,8 +293,8 @@ export default {
     },
     // 添加学生
     append() {
-      vueBus.$on('class', val => {
-        this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+      vueBus.$on('currentClass', val => {
+        this.temp['classId'] = val.id // 异步获取班级传过来的数据，不是初始化获取
       })
       if (!this.temp['classId']) {
         this.$message({
@@ -307,7 +307,7 @@ export default {
         this.dialogFormVisible = true
       }
     },
-    // 添加数据显示
+    // 添加班级
     add() {
       currentUser({
         url: this.set.selectUrl
@@ -339,6 +339,16 @@ export default {
         this.$nextTick(() => {
           this.$refs[this.system_id].resetFields()
         })
+      }
+    },
+    // 修改班级
+    updateClass(_data) {
+      vueBus.$on('currentClass', val => {
+        this.temp = Object.assign(val, _data.data) // 获取班级传过来的数据，不是初始化获取
+      })
+      if (this.temp) {
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
       }
     },
     // 修改数据弹框

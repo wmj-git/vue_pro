@@ -18,9 +18,9 @@
       lazy
       @node-click="handleNodeClick"
     >
-      <span slot-scope="{ node, data }" class="custom-tree-node">
+      <span slot-scope="{ node }" class="custom-tree-node">
         <span>{{ node.label }}</span>
-        <span>
+        <span v-if="node.level === 3">
           <template v-for="(btn, _index ) in children.treeBtn">
             <el-button
               :key="_index"
@@ -34,13 +34,7 @@
             </el-button>
           </template>
         </span>
-        <span>
-          <!-- <el-button
-            type="text"
-            size="mini"
-            @click="() => update(node, data)">
-            修改
-          </el-button>-->
+        <span v-if="node.level === 3">
           <el-button
             type="text"
             size="mini"
@@ -126,7 +120,7 @@ export default {
             'classId': _data.data.nodeData.id
           }
         })
-        vueBus.$emit('class', _data.data.nodeData.id) // 添加学生需要的班级id
+        vueBus.$emit('currentClass', _data.data.nodeData) // 添加学生需要的班级id
       }
     },
     async loadNode(node, resolve) {
