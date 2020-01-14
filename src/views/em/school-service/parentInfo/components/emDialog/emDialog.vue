@@ -201,11 +201,12 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
-      currentClass: []
+      currentClass: [],
+      gradeArr: []
     }
   },
-  created() {
-    this.init()
+  async created() {
+    await this.init()
   },
   beforeDestroy() {
   },
@@ -213,32 +214,6 @@ export default {
     async init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      // 查找 formTtem: 'studentIds'
-      for (const i in this.children.formItem) {
-        switch (this.children.formItem[i].meta.valueKey) {
-          case 'siOrgCode':
-            await currentUser({
-              url: this.set.selectUrl
-            }).then(response => {
-              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
-            })
-            this.children.formItem[i].meta.defaultValue = this.organizationCode
-            break
-          case 'gradeName':
-            var gradeArr = []
-            var gradeKey = []
-            await gradeCode({
-              url: this.set.allGradeUrl
-            }).then(res => {
-              res.data.forEach(val => {
-                gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
-                gradeKey.push({ 'label': val.id, 'value': val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
-            break
-        }
-      }
       this.defaultFn(this.children.formItem)
     },
     fn(_obj, _data) {
@@ -334,6 +309,30 @@ export default {
     },
     // 添加数据显示
     add() {
+      currentUser({
+        url: this.set.selectUrl
+      }).then(response => {
+        this.temp['siOrgCode'] = String(response.data.orgCode) // 获取当前用户（学校）组织
+      })
+      for (const i in this.children.formItem) {
+        switch (this.children.formItem[i].meta.valueKey) {
+          case 'gradeName':
+            var gradeArr = []
+            var gradeKey = []
+            gradeCode({
+              url: this.set.allGradeUrl
+            }).then(res => {
+              if (res.statusCode === 200) {
+                res.data.forEach(val => {
+                  gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
+                  gradeKey.push({ 'label': val.id, 'value': val.id })
+                })
+              }
+              this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            })
+            break
+        }
+      }
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
