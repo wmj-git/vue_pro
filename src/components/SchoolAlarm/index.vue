@@ -69,7 +69,6 @@
 <script>
 import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
-import vueBus from '@/utils/vueBus'
 export default {
   name: 'SchoolAlarm',
   data() {
