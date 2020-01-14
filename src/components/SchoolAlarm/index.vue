@@ -38,7 +38,6 @@
         >
         </el-table-column>
       </el-table>
-      <div slot="footer" class="dialog-footer">
         <Pagination
           :total="total"
           :page.sync="listQuery.page"
@@ -47,7 +46,6 @@
           @pagination="handlePaginationChange"
           @current-change="handleCurrentChange"
         />
-      </div>
     </el-dialog>
     <el-drawer
       v-if="drawer"
