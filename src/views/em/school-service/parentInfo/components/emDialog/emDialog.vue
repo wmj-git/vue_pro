@@ -171,7 +171,7 @@ export default {
         updateUrl: '',
         selectUrl: '',
         telUrl: '', // 查询家长
-        searchUrl: '',
+        allGradeUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -201,16 +201,11 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
-      currentClass: [],
-      currentStu: []
+      currentClass: []
     }
   },
   created() {
     this.init()
-    vueBus.$on('stuId', val => {
-      this.temp['studentIds'] = [val]
-      this.currentStu = val
-    })
   },
   beforeDestroy() {
   },
@@ -232,8 +227,8 @@ export default {
           case 'gradeName':
             var gradeArr = []
             var gradeKey = []
-            gradeCode({
-              url: this.set.searchUrl
+            await gradeCode({
+              url: this.set.allGradeUrl
             }).then(res => {
               res.data.forEach(val => {
                 gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
@@ -241,8 +236,6 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
-            break
-          case 'gradeKey':
             break
         }
       }
@@ -309,6 +302,9 @@ export default {
     },
     // 添加家长
     appendParent() {
+      vueBus.$on('stuId', val => {
+        this.temp['studentIds'] = [val]
+      })
       if (!this.temp['studentIds']) {
         this.$message({
           showClose: true,
