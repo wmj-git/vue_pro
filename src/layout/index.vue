@@ -99,4 +99,7 @@ export default {
   .mobile .fixed-header {
     width: 100%;
   }
+  .app-main{
+    height: calc(100vh - 87px);
+  }
 </style>

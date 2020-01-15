@@ -61,3 +61,23 @@
   background-color: $em-upload-bg;
   border-color: $em-upload-border;
 }
+
+
+/*下拉多选*/
+.el-select .el-tag{
+  background: rgba(255,255,255,0.2);
+  color: darken($em-text-color-base,20%);
+}
+.el-select .el-tag__close.el-icon-close{
+  background: rgba(192, 196, 204, 0.5);
+}
+.el-tag.el-tag--info{
+  border-color:darken($em-border-color-base,70%);
+}
+.el-tag.el-tag--info .el-tag__close{
+  color:darken($em-text-color-base,20%) !important;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
+  color: lighten($em-text-highlight-base,15%) !important;
+  background: transparent !important;
+}

@@ -33,15 +33,20 @@ color: $em-text-highlight-base !important;
 .splitter-pane-resizer.vertical{
 border-color: rgba(255,255,255,0.5) !important;
 }
-// pane最小高度
+.el-card{
+  color: $em-text-color-base
+}
+/*// pane最小高度
 .pane_minHeight{
   .el-card__body{
     min-height: 1030px;
+    overflow-y: hidden;
   }
 }
-/*两个表格上下排列的高度*/
+!*两个表格上下排列的高度*!
 .pane_minHeightDouble{
   .el-card__body{
     min-height: 515px;
+    overflow-y: hidden;
   }
-}
+}*/
