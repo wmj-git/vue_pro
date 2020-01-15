@@ -24,6 +24,9 @@
     background-color: $em-background-table-tbody;
     color: darken($em-text-color-base,22%);
   }
+  &.row-bg tr{
+    background: #f00;
+  }
 }
 .el-table__fixed::before, .el-table__fixed-right::before{
   height:0;//表格之外行号列下方的边框线

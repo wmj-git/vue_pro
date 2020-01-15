@@ -80,7 +80,7 @@ function setUserData(commit, data) {
     })
     commit('SET_ROLES', _roles)
     commit('SET_NAME', data.user.username)
-    commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+    commit('SET_AVATAR', data.user.userDetail.avatar)
     commit('SET_INTRODUCTION', data.user.createDate)
     if ('resources' in data) {
       setResources(data.resources)
@@ -150,7 +150,7 @@ const actions = {
       if (!data) {
         reject('Verification failed, please Login again.')
       }
-      const { roleList, username, createDate } = data
+      const { roleList, username, createDate, userDetail } = data
 
       const roles = []
       roleList.forEach(function(_item) {
@@ -165,7 +165,7 @@ const actions = {
       commit('SET_ROLES', roles)
       commit('SET_CURRENTROLE', _currentRole)
       commit('SET_NAME', username)
-      commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+      commit('SET_AVATAR', userDetail.avatar)
       commit('SET_INTRODUCTION', createDate)
 
       resolve()

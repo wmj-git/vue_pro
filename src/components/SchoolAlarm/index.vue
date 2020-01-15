@@ -1,5 +1,5 @@
 <template>
-  <div v-if="messageCount>0" class="em-alarm">
+  <div class="em-alarm">
     <el-tooltip
       class="item"
       effect="dark"
@@ -7,6 +7,7 @@
       placement="top-start"
     >
       <el-badge
+        :hidden="badgeHidden"
         class="alarm-badge"
         type="danger"
         :value="messageCount"
@@ -17,13 +18,21 @@
           style="padding: 8px 10px;"
           size="small"
           type="danger"
-          class="em-alarm-btn">
+          class="em-alarm-btn"
+        >
           <svg-icon icon-class="alarm" class-name="alarm-icon" />
         </el-button>
       </el-badge>
     </el-tooltip>
     <el-dialog :visible.sync="dialogTableVisible" title="消息详情" width="40%" append-to-body>
-      <el-table :data="messageData" border empty-text="暂无数据" height="260" @row-dblclick="showDrawer">
+      <el-table
+        :data="messageData"
+        border
+        empty-text="暂无数据"
+        height="260"
+        :row-class-name="tableRowClass"
+        @row-dblclick="showDrawer"
+      >
         <el-table-column
           type="index"
           width="50"
@@ -35,17 +44,16 @@
           :label="info.label"
           :prop="info.key"
           :formatter="formatterFn"
-        >
-        </el-table-column>
-      </el-table>
-        <Pagination
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          :hide-on-single-page="pageOne"
-          @pagination="handlePaginationChange"
-          @current-change="handleCurrentChange"
         />
+      </el-table>
+      <Pagination
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        :hide-on-single-page="pageOne"
+        @pagination="handlePaginationChange"
+        @current-change="handleCurrentChange"
+      />
     </el-dialog>
     <el-drawer
       v-if="drawer"
@@ -58,8 +66,8 @@
       :size="set.size"
     >
       <el-form label-position="left" class="demo-table-expand">
-        <el-form-item :label="item.name" v-for="(item,index) in drawerItem" :key="index">
-          <span>{{item.value}}</span>
+        <el-form-item v-for="(item,index) in drawerItem" :key="index" :label="item.name">
+          <span>{{ item.value }}</span>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -73,6 +81,7 @@ export default {
   name: 'SchoolAlarm',
   data() {
     return {
+      badgeHidden: false,
       drawer: true,
       dialogTableVisible: false,
       BASE_API: process.env.VUE_APP_BASE_API,
@@ -90,6 +99,10 @@ export default {
       },
       tableHeader: [
         {
+          label: '消息状态',
+          key: 'isRead'
+        },
+        {
           label: '消息Id',
           key: 'messageId'
         },
@@ -100,10 +113,6 @@ export default {
         {
           label: '消息类型',
           key: 'messageType'
-        },
-        {
-          label: '消息状态',
-          key: 'isRead'
         }
       ],
       pageOne: false,
@@ -135,17 +144,17 @@ export default {
   created() {
     this.init()
     this.getList()
-    const token = this.$store.getters.token
+    /* const token = this.$store.getters.token*/
     // ws：neinx那边加的，要是没有ws则会自动加上一个info,通道没法连接上
     // access_token: //后端的名字
     // sockets: 接口基本地址必须带的
-    const url = this.BASE_API + '/ws/sockets?access_token=' + token
+    /* const url = this.BASE_API + '/ws/sockets?access_token=' + token
     this.socketApi.initWebSocket(url)
     this.socketApi.proxyFunction(5, (res) => {
       if (res) {
         this.init() // 校徽传递通知消息后继续获取数量
       }
-    })
+    })*/
   },
   methods: {
     init() {
@@ -158,7 +167,11 @@ export default {
         params: _param
       }).then(response => {
         this.content = '校内SOS报警'
-        this.messageCount = response.data // 校内sos报警消息
+        if (response.data) {
+          this.messageCount = response.data // 校内sos报警消息
+        } else {
+          this.badgeHidden = true
+        }
       })
     /*
       const _param = {
@@ -179,6 +192,13 @@ export default {
     handlePaginationChange(res) {
       this.listQuery = res
       this.getList()
+    },
+    'tableRowClass': function(row) {
+      if (row.row.isRead === '0' || row.row.isRead === '未读') {
+        return 'row-bg'
+      } else {
+        return ''
+      }
     },
     // 获取详情列表数据
     getList() {
@@ -258,5 +278,8 @@ export default {
     border-radius: 0px 60% 0 60%;
     background: linear-gradient(rgba(255, 0, 0, 0.4),#0d1430);
     border-color: rgba(255, 0, 0, 0.35);
+  }
+  .el-table .row-bg{
+    background: #5CB85C;
   }
 </style>
