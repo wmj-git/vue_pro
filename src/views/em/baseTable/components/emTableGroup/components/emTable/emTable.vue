@@ -372,6 +372,20 @@ export default {
       }
       // console.log(str)
       return str
+    },
+    windowOpen(_obj) {
+      console.log('windowOpen', _obj)
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+      let _str = ''
+      for (const k in _params) {
+        _str += k + '=' + _params[k] + '&'
+      }
+      _str += 'Authorization=' + this.$store.getters['token']
+      window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     }
   }
 }
