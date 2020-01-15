@@ -111,7 +111,25 @@ export default {
       listQuery: {
         limit: 10,
         page: 1
-      }
+      },
+      detailList: [
+        {
+          label: '消息标题',
+          key: 'msgTitle'
+        },
+        {
+          label: '报警时间',
+          key: 'createDateStr'
+        },
+        {
+          label: '消息类型',
+          key: 'messageType'
+        },
+        {
+          label: '消息描述',
+          key: 'describeStr'
+        }
+      ]
     }
   },
   created() {
@@ -176,7 +194,9 @@ export default {
         const messageList = []
         if (res.statusCode === 200) {
           res.data.list.forEach(val => {
-            messageList.push(val.info)
+            let _val = val.detail
+            _val = Object.assign(_val, val.info)
+            messageList.push(_val)
           })
           this.messageData = messageList
           this.total = res.data.total
@@ -204,10 +224,9 @@ export default {
       return _val
     },
     showDrawer(row) {
-      console.log(row)
       this.set.drawerVisible = true
       this.drawerItem = []
-      const tableItem = { row: row, label: this.tableHeader }
+      const tableItem = { row: row, label: this.detailList }
       tableItem.label.forEach(val => {
         for (const i in tableItem.row) {
           if (i === val.key) {
