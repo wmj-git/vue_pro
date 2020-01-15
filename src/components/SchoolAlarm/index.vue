@@ -204,6 +204,7 @@ export default {
       return _val
     },
     showDrawer(row) {
+      console.log(row)
       this.set.drawerVisible = true
       this.drawerItem = []
       const tableItem = { row: row, label: this.tableHeader }
