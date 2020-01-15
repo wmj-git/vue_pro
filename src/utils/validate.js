@@ -10,6 +10,9 @@ export function isPhone(rule, value, callback) {
   if (!value) {
     return callback(new Error('不能为空'))
   }
+  if (value.length > 11) {
+    return callback(new Error('有效的手机号码，需是11位！'))
+  }
   setTimeout(() => {
     if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
       callback()

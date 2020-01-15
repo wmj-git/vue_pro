@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { messageCount, messageDetails } from '@/api/schoolService/tableInfo'
+import { messageRedDetails, unreadMessageCount } from '@/api/schoolService/tableInfo'
 import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'SchoolAlarm',
@@ -90,16 +90,20 @@ export default {
       },
       tableHeader: [
         {
-          label: '消息标题',
-          key: 'msgTitle'
+          label: '消息Id',
+          key: 'messageId'
+        },
+        {
+          label: '报警时间',
+          key: 'createDateStr'
         },
         {
           label: '消息类型',
           key: 'messageType'
         },
         {
-          label: '消息详情',
-          key: 'describeStr'
+          label: '消息状态',
+          key: 'isRead'
         }
       ],
       pageOne: false,
@@ -128,15 +132,27 @@ export default {
   methods: {
     init() {
       const _param = {
-        messageType: 5
+        isRead: 0,
+        messageTypes: [5, 8]
       }
-      messageCount({
-        url: '/sockets/push/queryCountAllByPageParams',
+      unreadMessageCount({
+        url: '/user/message/selectUserMessageCount',
         params: _param
       }).then(response => {
         this.content = '校内SOS报警'
         this.messageCount = response.data // 校内sos报警消息
       })
+    /*
+      const _param = {
+        messageType: 5
+      }
+     messageCount({
+        url: '/sockets/push/queryCountAllByPageParams',
+        params: _param
+      }).then(response => {
+        this.content = '校内SOS报警'
+        this.messageCount = response.data // 校内sos报警消息
+      })*/
     },
     tableIndex(index) { // 第二页开始表格数据行号不从1开始
       return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
@@ -151,14 +167,18 @@ export default {
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page,
-        messageType: 5
+        messageTypes: [5, 8]
       }
-      messageDetails({
-        url: '/sockets/push/queryNoContentAllByPageParams',
+      messageRedDetails({
+        url: '/user/message/selectUserMessage',
         params: _params
       }).then(res => {
+        const messageList = []
         if (res.statusCode === 200) {
-          this.messageData = res.data.list
+          res.data.list.forEach(val => {
+            messageList.push(val.info)
+          })
+          this.messageData = messageList
           this.total = res.data.total
         } else if (res.statusCode === 503) {
           this.$message({

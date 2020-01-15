@@ -102,7 +102,7 @@ export function gradeCode(obj) {
   })
 }
 
-// 获取消息数量
+// 获取socket消息数量
 export function messageCount(obj) {
   return request({
     url: obj.url,
@@ -110,7 +110,23 @@ export function messageCount(obj) {
     params: obj.params
   })
 }
+// 获取未读消息数量
+export function unreadMessageCount(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}
 // 获取消息详情
+export function messageRedDetails(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}
+// 获取socket消息详情
 export function messageDetails(obj) {
   return request({
     url: obj.url,

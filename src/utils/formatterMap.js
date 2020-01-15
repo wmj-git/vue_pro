@@ -56,6 +56,10 @@ export const staticFormatterMap = {
     [5, '周五'],
     [6, '周六'],
     [7, '周日']
+  ]),
+  isRead: new Map([ // 消息状态
+    [0, '未读'],
+    [1, '已读']
   ])
 }
 
