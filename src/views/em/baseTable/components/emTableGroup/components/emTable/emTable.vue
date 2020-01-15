@@ -52,7 +52,7 @@
                     </el-timeline-item>
                   </el-timeline>
                   <div slot="reference" class="name-wrapper">
-                    <el-tag size="medium">时段</el-tag>
+                    <el-tag size="medium">监控时段</el-tag>
                   </div>
                 </el-popover>
               </template>
