@@ -41,7 +41,6 @@ export default {
     init() {
       const name = this.$store.getters.currentRole.description
       const orgId = this.$store.getters.currentRole.orgId
-      console.log(orgId)
       this.title = name.split('-')[0] // 学校名称
       const _params = {
         orgCode: orgId
