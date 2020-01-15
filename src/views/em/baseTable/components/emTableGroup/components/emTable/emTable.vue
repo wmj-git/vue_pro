@@ -47,8 +47,9 @@
                       v-for="(activity, _index) in unusualTimesFn(scope.row)"
                       :key="_index"
                       :color="'#0bbd87'"
-                      :timestamp="activity.end">
-                      {{activity.start}}
+                      :timestamp="activity.end"
+                    >
+                      {{ activity.start }}
                     </el-timeline-item>
                   </el-timeline>
                   <div slot="reference" class="name-wrapper">
@@ -115,7 +116,7 @@ export default {
     return {
       set: {
         queryUrl: '',
-        queryMethod: 'post',
+        queryMethod: 'post', // 查询接口请求类型
         appendUrl: '',
         appendMethod: 'post',
         removeUrl: '',
@@ -123,7 +124,8 @@ export default {
         updateUrl: '',
         updateMethod: 'post',
         rowClick: 'none',
-        treeShow: false,
+        paginationSever: true, // 是否后台分页
+        treeShow: false, // 是否显示树形结构
         treeShow_set: {
           id: 'id',
           pid: 'pid'
@@ -206,15 +208,30 @@ export default {
           method: this.set.queryMethod,
           params: _params
         }).then(res => {
+          let _list = []
+
+          if (res.data && 'list' in res.data) {
+            _list = res.data.list
+          } else if (res.data) {
+            _list = res.data
+          } else {
+            return
+          }
+
           if (this.set.treeShow) {
-            this.tableData = toTree(res.data.list, {
+            this.tableData = toTree(_list, {
               id: this.set.treeShow_set.id,
               pid: this.set.treeShow_set.pid
             })
           } else {
-            this.tableData = res.data.list
+            this.tableData = _list
           }
-          this.pagination.totalSize = res.data.total
+
+          if (this.set.paginationSever) {
+            this.pagination.totalSize = res.data.total
+          } else {
+            this.pagination.totalSize = _list.length
+          }
           this.listLoading = false
         })
       }
@@ -355,6 +372,20 @@ export default {
       }
       // console.log(str)
       return str
+    },
+    windowOpen(_obj) {
+      // console.log('windowOpen', _obj)
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+      let _str = ''
+      for (const k in _params) {
+        _str += k + '=' + _params[k] + '&'
+      }
+      _str += 'Authorization=' + this.$store.getters['token']
+      window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     }
   }
 }

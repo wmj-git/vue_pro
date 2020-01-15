@@ -500,6 +500,7 @@ export default {
       this.$refs[this.system_id].resetFields()
     },
     windowOpen(_obj) {
+      console.log('windowOpen', _obj)
       const _meta = _obj.meta
       // 请求的数据
       const _params = _obj.data
