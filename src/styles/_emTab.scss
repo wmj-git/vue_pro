@@ -1,6 +1,9 @@
 .el-tabs__item{
   color:$em-text-color-base;
 }
+.el-tabs__nav-wrap::after{
+  background-color: rgba(255, 255, 255, 0.31) ;
+}
 /*navbar-span-color*/
 .el-breadcrumb__inner a{
   color: darken($em-text-color-base, 10%);
@@ -36,6 +39,13 @@ border-color: rgba(255,255,255,0.5) !important;
 .el-card{
   color: $em-text-color-base;
   padding: 10px 10px 20px 10px;
+}
+.el-card__header{
+  border-color: rgba(255,255,255,0.3);
+}
+/*用户信息进度条数据*/
+.el-progress__text{
+  color: $em-text-color-base;
 }
 /*// pane最小高度
 .pane_minHeight{

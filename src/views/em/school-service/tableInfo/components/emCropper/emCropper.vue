@@ -114,7 +114,7 @@ export default {
     // 点击裁剪，这一步是可以拿到处理后的地址
     onsubmit() {
       this.$refs.cropper.getCropBlob((data) => {
-        this.loading = true
+        /* this.loading = true*/ // 点击上传按钮时不加载了
         const formData = new FormData()
         formData.append('files', data)
         // 上传阿里云服务器

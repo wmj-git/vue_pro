@@ -182,9 +182,6 @@ export default {
 .text-muted {
   color: #777;
 }
-.el-tabs__nav-wrap::after{
-  background-color:#61656d;
-}
 .user-bio{
   color: #fff;
 }

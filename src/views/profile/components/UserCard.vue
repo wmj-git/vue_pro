@@ -179,12 +179,14 @@ export default {
    .user-bio-section {
      font-size: 14px;
      padding: 15px 0;
+     color: #fff;
 
      .user-bio-section-header {
-       border-bottom: 1px solid #dfe6ec;
+       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
        padding-bottom: 10px;
        margin-bottom: 10px;
        font-weight: bold;
+       color: #fff;
      }
    }
  }
