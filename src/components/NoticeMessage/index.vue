@@ -109,6 +109,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getList()
+  },
   created() {
     this.init()
     this.getList()

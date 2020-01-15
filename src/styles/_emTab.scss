@@ -34,7 +34,8 @@ color: $em-text-highlight-base !important;
 border-color: rgba(255,255,255,0.5) !important;
 }
 .el-card{
-  color: $em-text-color-base
+  color: $em-text-color-base;
+  padding: 10px 10px 20px 10px;
 }
 /*// pane最小高度
 .pane_minHeight{

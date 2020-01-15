@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { fetchList } from '@/api/schoolService/tableInfo'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -28,7 +29,7 @@ export default {
         queryUrl: ''
       },
       title: '',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      logo: ''
     }
   },
   mounted() {
@@ -39,7 +40,17 @@ export default {
   methods: {
     init() {
       const name = this.$store.getters.currentRole.description
+      const orgId = this.$store.getters.currentRole.orgId
       this.title = name.split('-')[0] // 学校名称
+      const _params = {
+        orgCode: orgId
+      }
+      fetchList({
+        url: '/school/organization/queryAllByPage',
+        params: _params
+      }).then(res => {
+        this.logo = res.data.list[0].logoImage // 学校logo
+      })
     }
   }
 }
