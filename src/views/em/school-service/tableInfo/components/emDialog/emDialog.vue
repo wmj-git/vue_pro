@@ -311,7 +311,6 @@ export default {
       this.dialogFormVisible = false
     },
     createData() {
-      this.temp['tel'] = this.temp['tel'].replace(/\s/g, '')
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           for (const i in this.temp) { // 寻找时间字段后再转换
@@ -415,6 +414,7 @@ export default {
     },
     // 提交表单
     submitFn({ meta, data }) {
+      this.temp['tel'] = this.temp['tel'].replace(/\s/g, '')
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
     },
     handleChange(value, direction, movedKeys) {

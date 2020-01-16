@@ -7,14 +7,13 @@
  判断为手机号码13位
  */
 export function isPhone(rule, value, callback) {
-  const _value = value.replace(/\s/g, '')
   setTimeout(() => {
-    if (/^1[3456789]\d{9}$/.test(_value)) {
+    if (/^1[3456789]\d{9}$/.test(value.replace(/\s/g, ''))) {
       callback()
     } else {
       callback(new Error('请输入有效的手机号'))
     }
-  }, 100)
+  }, 200)
 }
 /**
  正整数

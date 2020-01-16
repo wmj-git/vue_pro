@@ -21,6 +21,17 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputPhone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>13)value=value.slice(0,13)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @input="handlerPhone"
+              />
+            </el-form-item>
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -35,9 +46,11 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 clearable
+                oninput="if(value.length>13)value=value.slice(0,13)"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
                 @blur="onBlur"
+                @input="handlerPhone"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -215,6 +228,18 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       this.defaultFn(this.children.formItem)
+    },
+    // 电话输入时就开始判断加上短横线
+    handlerPhone(val) {
+      if (val.length <= 13) {
+        if (val.length > 3 && val.length < 7) {
+          val = val.replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+        } else if (val.length >= 7) {
+          val = val.replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+        }
+        this.$set(this.temp, 'parentTel', val) // 家长电话
+        this.$set(this.temp, 'studentTel', val)// 学生电话
+      }
     },
     fn(_obj, _data) {
       console.log('methods', _obj, _data)
@@ -462,6 +487,8 @@ export default {
     },
     // 提交表单
     submitFn({ meta, data }) {
+      this.temp['parentTel'] = this.temp['parentTel'].replace(/\s/g, '')
+      this.temp['studentTel'] = this.temp['studentTel'].replace(/\s/g, '')
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
