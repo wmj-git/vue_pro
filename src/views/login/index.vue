@@ -166,7 +166,6 @@ export default {
                 this.dialogVisible = true
                 this.options = []
                 this.options = this.options.concat(res.user.roleList)
-                console.log(res.user.roleList)
                 this.uuid = res.uuid
               }
             })
