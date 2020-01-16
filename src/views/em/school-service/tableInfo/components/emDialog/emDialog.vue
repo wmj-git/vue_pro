@@ -26,6 +26,17 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputPhone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>13)value=value.slice(0,13)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @input="handlerPhone"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -48,9 +59,9 @@
             </el-form-item>
             <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-transfer
-                filterable
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
+                filterable
                 :titles="item.meta.titles"
                 :right-default-checked="rightDefaultChecked"
                 :data="item.meta.options_OBJ.data"
@@ -63,8 +74,8 @@
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 clearable
-                @change="changeGrade"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                @change="changeGrade"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -196,6 +207,17 @@ export default {
   beforeDestroy() {
   },
   methods: {
+    // 电话输入时就开始判断加上短横线
+    handlerPhone(val) {
+      if (val.length <= 13) {
+        if (val.length > 3 && val.length < 7) {
+          val = val.replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+        } else if (val.length >= 7) {
+          val = val.replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+        }
+        this.$set(this.temp, 'tel', val)
+      }
+    },
     fn(_obj, _data) {
       console.log('methods', _obj, _data)
       this.$refs[this.system_id].validate((valid) => { // 表单验证
@@ -289,6 +311,7 @@ export default {
       this.dialogFormVisible = false
     },
     createData() {
+      this.temp['tel'] = this.temp['tel'].replace(/\s/g, '')
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           for (const i in this.temp) { // 寻找时间字段后再转换

@@ -86,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'change', validator: isPhone }
+          { required: true, trigger: 'change', validator: 'isPhone' }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
@@ -166,6 +166,7 @@ export default {
                 this.dialogVisible = true
                 this.options = []
                 this.options = this.options.concat(res.user.roleList)
+                console.log(res.user.roleList)
                 this.uuid = res.uuid
               }
             })

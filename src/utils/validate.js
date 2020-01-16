@@ -4,14 +4,12 @@
  */
 
 /**
- 判断为手机号码
+ 判断为手机号码13位
  */
 export function isPhone(rule, value, callback) {
-  if (!value) {
-    return callback(new Error('不能为空'))
-  }
+  const _value = value.replace(/\s/g, '')
   setTimeout(() => {
-    if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
+    if (/^1[3456789]\d{9}$/.test(_value)) {
       callback()
     } else {
       callback(new Error('请输入有效的手机号'))
