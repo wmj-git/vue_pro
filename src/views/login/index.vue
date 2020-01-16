@@ -11,6 +11,8 @@
         </span>
         <el-input
           ref="username"
+          onkeyup="this.value=this.value.replace(/\D/g,'')"
+          oninput="if(value.length>11)value=value.slice(0,11)"
           v-model="loginForm.username"
           placeholder="输入手机账号"
           name="username"
@@ -84,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: isPhone }
+          { required: true, trigger: 'change', validator: isPhone }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },

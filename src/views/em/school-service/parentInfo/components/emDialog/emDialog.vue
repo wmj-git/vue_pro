@@ -295,6 +295,7 @@ export default {
     append() {
       vueBus.$on('currentClass', val => {
         this.temp['classId'] = val.id // 异步获取班级传过来的数据，不是初始化获取
+        console.log('classId:', this.temp['classId'])
       })
       if (!this.temp['classId']) {
         this.$message({

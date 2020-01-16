@@ -43,6 +43,9 @@ border-color: rgba(255,255,255,0.5) !important;
 .el-card__header{
   border-color: rgba(255,255,255,0.3);
 }
+.el-card__body{
+  padding: 8px;
+}
 /*用户信息进度条数据*/
 .el-progress__text{
   color: $em-text-color-base;

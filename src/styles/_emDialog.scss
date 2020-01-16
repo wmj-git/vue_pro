@@ -57,7 +57,7 @@
 }
 /* dropdown-menu*/
 .el-dropdown-menu__item{
-  &:not(.is-disabled):hover,&:focus{
+  &:not(.is-disabled):hover,&:focus,&.hover{
     background-color: lighten($em-form-item-checkMenu, 10%);
     color: $em-text-highlight-base;
   }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="NotificationCount>0" class="em-alarm">
+  <div class="em-alarm">
     <el-tooltip
       class="item"
       effect="dark"
@@ -10,12 +10,12 @@
         :value="NotificationCount"
         type="success"
         style="line-height: 25px;margin-top: -5px;"
-        @click.native="dialogTableVisible=true"
       >
         <el-button
           style="padding: 8px 10px;"
           size="small"
           type="success"
+          @click="handleClick"
           class="em-message-btn">
           <svg-icon icon-class="message_notice" class-name="alarm-icon" />
         </el-button>
@@ -109,9 +109,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getList()
-  },
   created() {
     this.init()
     this.getList()
@@ -122,8 +119,10 @@ export default {
     const url = this.BASE_API + '/ws/sockets?access_token=' + token
     this.socketApi.initWebSocket(url)
     this.socketApi.proxyFunction(10, (res) => {
+      console.log('发送socket:', res)
       if (res) {
         this.init() // 发送通知消息后继续获取数量
+        this.getList()
       }
     })
   },
@@ -136,6 +135,7 @@ export default {
         url: '/sockets/push/queryCountAllByPageParams',
         params: _param
       }).then(response => {
+        console.log('获取数量', response)
         this.content = '通知消息'
         this.NotificationCount = response.data // 通知消息
       })
@@ -148,6 +148,10 @@ export default {
       this.listQuery = res
       this.getList()
     },
+    handleClick() {
+      this.dialogTableVisible = true
+      this.getList()
+    },
     // 获取详情列表数据
     getList() {
       const _params = {
@@ -156,9 +160,10 @@ export default {
         messageType: 10
       }
       messageDetails({
-        url: '/sockets/push/queryNoContentAllByPageParams',
+        url: '/sockets/push/queryTopOrNoTopAllByPageParams',
         params: _params
       }).then(res => {
+        console.log('获取列表', res)
         if (res.statusCode === 200) {
           this.messageData = res.data.list
           this.total = res.data.total
