@@ -11,10 +11,10 @@
         </span>
         <el-input
           ref="username"
-          onkeyup="this.value=this.value.replace(/\D/g,'')"
-          oninput="if(value.length>11)value=value.slice(0,11)"
+          oninput="if(value.length>13)value=value.slice(0,13)"
           v-model="loginForm.username"
           placeholder="输入手机账号"
+          @input="handlerPhone"
           name="username"
           type="text"
           tabindex="1"
@@ -86,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'change', validator: 'isPhone' }
+          { required: true, trigger: 'change', validator: isPhone }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
@@ -127,6 +127,17 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    // 电话输入时就开始判断加上短横线
+    handlerPhone(val) {
+      if (val.length <= 13) {
+        if (val.length > 3 && val.length < 7) {
+          val = val.replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+        } else if (val.length >= 7) {
+          val = val.replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+        }
+        this.$set(this.loginForm, 'username', val)
+      }
+    },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
@@ -150,6 +161,8 @@ export default {
       })
     },
     handleLogin() {
+      this.loginForm['username'] = this.loginForm['username'].replace(/\s/g, '')
+      console.log('user', this.loginForm['username'])
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
