@@ -3,9 +3,11 @@
     <el-table
       :data="tableDataEnd "
       border
+      :ref="system_id"
       style="width: 100%;"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
+      :row-style="rowClass"
       @row-click="handleRowClick"
     >
       <el-table-column
@@ -74,6 +76,7 @@ export default {
         vueBusName: ''
       },
       visibleSubmit: '',
+      selectRow: [], // 选中行
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [],
       tableDataEnd: [],
@@ -96,6 +99,16 @@ export default {
     vueBus.$on('class', val => {
       this.classes = val
     })
+  },
+  watch: {
+    multipleSelection(data) { // 存储选中的row
+      this.selectRow = []
+      if (data.length > 0) {
+        data.forEach((item, index) => {
+          this.selectRow.push(item.id)
+        })
+      }
+    }
   },
   created() {
     this.init()
@@ -130,6 +143,17 @@ export default {
           this.FN(_obj, _data)
       }
     },
+    /* 点击行选中复选框*/
+    handleRowClick(row) {
+      console.log('ddd')
+      this.$refs[this.system_id].toggleRowSelection(row)
+    },
+    /* 选中复选框高亮显示*/
+    rowClass({ row, rowIndex }) {
+      if (this.selectRow.includes(row.id)) {
+        return { 'backgroundColor': 'rgba(4, 86, 169, 0.2)' }
+      }
+    },
     tableIndex(index) { // 第二页开始表格数据行号不从1开始
       return (this.listQuery.page - 1) * this.listQuery.limit + index + 1
     },
@@ -138,8 +162,6 @@ export default {
       this.listQuery = res
       this.getAllList()
     },
-    // 单击行()
-    handleRowClick(row, column, event) {},
     // 查询
     handleFilter(_obj) {
       if (_obj.temp) {

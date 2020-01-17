@@ -86,6 +86,7 @@ export default {
       highlight: true,
       tableHeader: [],
       tableDataEnd: [],
+      selectRow: [], // 选中行
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
@@ -99,6 +100,16 @@ export default {
       },
       formatterMap: {}
     }
+  },
+  watch: {
+  /*  multipleSelection(data) { // 存储选中的row
+      this.selectRow = []
+      if (data.length > 0) {
+        data.forEach((item, index) => {
+          this.selectRow.push(item.id)
+        })
+      }
+    }*/
   },
   created() {
     this.init()
@@ -148,8 +159,16 @@ export default {
     // 单击行获取指定学生的家长信息
     onClickRow(row) {
       if (!this.set.rowClick) {
-        return
-      } else if (row.id) {
+        this.$refs[this.system_id].toggleRowSelection(row) // 家长表单击行即可选中当前行
+      } else if (row.id) { // 学生表需要实现只选中当前行，其他行取消选中
+        const refsElTable = this.$refs[this.system_id] // 获取表格对象
+        const findRow = this.multipleSelection.find(col => col.id === row.id) // 对比id不是rowIndex
+        if (findRow) {
+          refsElTable.toggleRowSelection(row, false)
+          return
+        }
+        refsElTable.clearSelection()
+        refsElTable.toggleRowSelection(row, true)
         vueBus.$emit(this.set.clickRow.control_id, {
           fn: 'getList',
           params: {
@@ -157,7 +176,6 @@ export default {
           }
         })
         vueBus.$emit('stuId', row.id)
-        /* this.$refs[this.system_id].toggleRowSelection(row)*/
       } else {
         row.id = null
       }
@@ -194,7 +212,8 @@ export default {
         }
       })
     },
-    handleCurrentChange(val) {},
+    handleCurrentChange(val) {
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
@@ -248,7 +267,7 @@ export default {
     },
     // 双击行显示抽屉
     showDrawer(row) {
-      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
+      vueBus.$emit(this.set.vueBusName, {row: row, label: this.meta.tableHeader})
     }
   }
 }
