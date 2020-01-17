@@ -74,6 +74,9 @@ export default {
         fn_set: {
           control_id: null // 区别哪个table的getList()
         },
+        fn_add: {
+          control_id: null
+        }, // classId给学生
         fn_append: ''
       },
       filterText: '',
@@ -114,13 +117,19 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 点击班级查询相应学生
+        vueBus.$emit(this.set.fn_set.control_id, { // 点击班级查询相应学生
           fn: 'getList',
           params: {
             'classId': _data.data.nodeData.id
           }
         })
-        vueBus.$emit('currentClass', _data.data.nodeData) // 添加学生需要的班级id
+        vueBus.$emit(this.set.fn_add.control_id, { // 添加学生需要的班级id
+          fn: 'getClassId',
+          params: {
+            'classId': _data.data.nodeData
+          }
+        })
+        vueBus.$emit('currentClass', _data.data.nodeData) // 修改班级
       }
     },
     async loadNode(node, resolve) {

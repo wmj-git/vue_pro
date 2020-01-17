@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible"  width="40%">
+    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="40%">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -117,8 +117,8 @@
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 clearable
-                @change="changeGrade"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                @change="changeGrade"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -214,8 +214,10 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
-      currentClass: [],
-      gradeArr: []
+      currentClass: [], // 当前点击班级数组---修改班级
+      currentClassId: null, // 当前班级id----添加学生
+      gradeArr: [],
+      checkedId: null // 选中行的学生id
     }
   },
   async created() {
@@ -300,11 +302,13 @@ export default {
     changeGrade(val) {
       this.temp['gradeKey'] = val // 赋值给年级编码
     },
+    // 获取学生选中行的id----添加家长
+    getCheckedStu(val) {
+      this.checkedId = val.studentId
+    },
     // 添加家长
     appendParent() {
-      vueBus.$on('stuId', val => {
-        this.temp['studentIds'] = [val]
-      })
+      this.temp['studentIds'] = [this.checkedId]
       if (!this.temp['studentIds']) {
         this.$message({
           showClose: true,
@@ -316,12 +320,13 @@ export default {
         this.dialogFormVisible = true
       }
     },
+    // 从左侧树状获取班级id
+    getClassId(val) {
+      this.currentClassId = val.classId.id
+    },
     // 添加学生
     append() {
-      vueBus.$on('currentClass', val => {
-        this.temp['classId'] = val.id // 异步获取班级传过来的数据，不是初始化获取
-        console.log('classId:', this.temp['classId'])
-      })
+      this.temp['classId'] = this.currentClassId
       if (!this.temp['classId']) {
         this.$message({
           showClose: true,
@@ -370,8 +375,9 @@ export default {
     // 修改班级
     updateClass(_data) {
       vueBus.$on('currentClass', val => {
-        this.temp = Object.assign(val, _data.data) // 获取班级传过来的数据，不是初始化获取
+        this.temp = Object.assign(val, _data.data) // 获取班级传过来的数据
       })
+      console.log('temp:', this.temp)
       if (this.temp) {
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
