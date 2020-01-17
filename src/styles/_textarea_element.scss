@@ -1,0 +1,24 @@
+@import "variables";
+.el-textarea, .el-textarea__inner {
+  background: $background-linear-base;
+  border-color: darken($em-border-color-base,10%);
+  color: $em-text-color-base;
+  scrollbar-width: thin; //滚动条宽度
+  &:focus{
+    border-color: $em-highlight-border-color-base;
+  }
+}
+textarea::-webkit-input-placeholder {
+  color: darken($em-text-color-base,40%);
+}
+textarea:-ms-input-placeholder {
+  color: darken($em-text-color-base,40%);
+}
+textarea:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: darken($em-text-color-base,40%);
+}
+textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: darken($em-text-color-base,40%);
+}
