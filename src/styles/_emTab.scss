@@ -50,17 +50,15 @@ border-color: rgba(255,255,255,0.5) !important;
 .el-progress__text{
   color: $em-text-color-base;
 }
-/*// pane最小高度
-.pane_minHeight{
-  .el-card__body{
-    min-height: 1030px;
-    overflow-y: hidden;
-  }
+
+/* 通知消息el-notification*/
+.el-notification{
+  background: $background-linear-base;
+  border-color: $em-upload-border;
 }
-!*两个表格上下排列的高度*!
-.pane_minHeightDouble{
-  .el-card__body{
-    min-height: 515px;
-    overflow-y: hidden;
-  }
-}*/
+.el-notification__title{
+  color: $em-text-color-base;
+}
+.el-notification__content,.el-notification__closeBtn{
+  color: darken($em-text-color-base, 20%);
+}

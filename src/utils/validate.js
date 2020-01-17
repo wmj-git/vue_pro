@@ -8,7 +8,7 @@
  */
 export function isPhone(rule, value, callback) {
   setTimeout(() => {
-    if (/^1[3456789]\d{9}$/.test(value.replace(/\s/g, ''))) {
+    if (/^1[3456789]\d{9}$/.test(value)) {
       callback()
     } else {
       callback(new Error('请输入有效的手机号'))

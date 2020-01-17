@@ -267,7 +267,7 @@ export default {
     },
     // 双击行显示抽屉
     showDrawer(row) {
-      vueBus.$emit(this.set.vueBusName, {row: row, label: this.meta.tableHeader})
+      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
     }
   }
 }

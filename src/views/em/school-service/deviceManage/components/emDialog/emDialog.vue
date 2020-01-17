@@ -286,7 +286,7 @@ export default {
               title: 'Success',
               message: '修改成功',
               type: 'success',
-              duration: 2000
+              duration: 20000
             })
           })
         }
@@ -335,7 +335,7 @@ export default {
     // 提交表单
     submitFn({ meta, data }) {
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
-    },
+    }
   }
 }
 </script>

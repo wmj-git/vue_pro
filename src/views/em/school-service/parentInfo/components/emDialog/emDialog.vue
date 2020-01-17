@@ -487,8 +487,11 @@ export default {
     },
     // 提交表单
     submitFn({ meta, data }) {
-      this.temp['parentTel'] = this.temp['parentTel'].replace(/\s/g, '')
-      this.temp['studentTel'] = this.temp['studentTel'].replace(/\s/g, '')
+      /* 提交表单之前需要判断电话号码是否有空格，修改了电话就有，没修改电话直接提交就没有空格*/
+      if (!(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/).test(this.temp['parentTel']) || !(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/).test(this.temp['studentTel'])) {
+        this.temp['parentTel'] = this.temp['parentTel'].replace(/\s/g, '')
+        this.temp['studentTel'] = this.temp['studentTel'].replace(/\s/g, '')
+      }
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
