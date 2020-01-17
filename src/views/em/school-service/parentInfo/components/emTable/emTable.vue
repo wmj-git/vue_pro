@@ -184,7 +184,6 @@ export default {
             studentId: row.id
           }
         })
-        /* vueBus.$emit('stuId', row.id)*/
       } else {
         row.id = null
       }

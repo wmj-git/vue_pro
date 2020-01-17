@@ -309,7 +309,7 @@ export default {
     // 添加家长
     appendParent() {
       this.temp['studentIds'] = [this.checkedId]
-      if (!this.temp['studentIds']) {
+      if (this.checkedId === null) {
         this.$message({
           showClose: true,
           message: '请先选择学生！',
