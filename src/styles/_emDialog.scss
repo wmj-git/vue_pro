@@ -44,9 +44,12 @@
   background-color: $em-form-item-checkMenu;
   border-color: $em-form-item-checkMenu-border;
 }
-.el-select-dropdown__item,.el-dropdown-menu__item{
-  color: darken($em-text-color-base, 20%);
-  &:hover{
+.el-select-dropdown__item{
+  color: darken($em-text-color-base, 1%);
+  &.el-dropdown-menu__item{
+    color: darken($em-text-color-base, 1%);
+  }
+  &:hover,&.hover{
     background-color: lighten($em-form-item-checkMenu, 10%);
     color: $em-text-highlight-base;
   }

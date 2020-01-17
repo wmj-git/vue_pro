@@ -112,6 +112,7 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                :picker-options="pickerOptions"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择时间'"
                 format
               />
@@ -176,6 +177,11 @@ export default {
         textMap: {},
         vueBusName: ''
       },
+      pickerOptions: {
+        disabledDate: (time) => {
+          return this.dealDisabledDate(time)
+        }
+      },
       multiple: {
         type: Boolean
       },
@@ -217,6 +223,11 @@ export default {
         }
         this.$set(this.temp, 'tel', val)
       }
+    },
+    /* 今天之后的日期禁用*/
+    dealDisabledDate(time) {
+      var times = Date.now()
+      return time.getTime() > times
     },
     fn(_obj, _data) {
       console.log('methods', _obj, _data)

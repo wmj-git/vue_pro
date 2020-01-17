@@ -154,7 +154,6 @@ export default {
   },
   async created() {
     await this.init()
-    console.log('zuzhi', this.organizationCode, 'siOrgCode', this.temp['siOrgCode'])
     vueBus.$on(this.set.vueBusName, val => {
       this.temp = val // 接收修改时的表单值
       this.edit()
