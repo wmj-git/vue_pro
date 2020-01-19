@@ -53,6 +53,17 @@
                 @input="handlerPhone"
               />
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputIdCard'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>18)value=value.slice(0,18)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlurCard"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -270,14 +281,38 @@ export default {
     // 移除图片
     dropzoneR(file) {
     },
+    // 失去焦点时根据身份识别号计算出性别和年龄
+    onBlurCard() {
+      console.log('失去焦点了', this.temp['idCardNo'].length, this.temp['idCardNo'])
+      const val = this.temp['idCardNo'].length
+      const iden = this.temp['idCardNo']
+      let sex = null
+      const myDate = new Date()
+      const month = myDate.getMonth() + 1
+      const day = myDate.getDate()
+      let age = 0
+
+      if (val === 18) {
+        age = myDate.getFullYear() - iden.substring(6, 10) - 1
+        sex = iden.substring(16, 17)
+        if (iden.substring(10, 12) < month || iden.substring(10, 12) === month && iden.substring(12, 14) <= day) age++
+      }
+      if (val === 15) {
+        age = myDate.getFullYear() - iden.substring(6, 8) - 1901
+        sex = iden.substring(13, 14)
+        if (iden.substring(8, 10) < month || iden.substring(8, 10) === month && iden.substring(10, 12) <= day) age++
+      }
+
+      if (sex % 2 === 0) { sex = 2 } else { sex = 1 }
+      this.temp['studentSex'] = sex
+      this.temp['studentAge'] = age
+    },
     // 失去焦点时判断该家长是否存在
     async onBlur() {
-      console.log('失去焦点了', String(this.temp['parentTel']))
       const _this = this
       const _params = {
         tel: this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
       }
-      console.log('_params', _params)
       await parentList({
         url: _this.set.telUrl,
         params: _params

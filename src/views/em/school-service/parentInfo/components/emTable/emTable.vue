@@ -104,16 +104,6 @@ export default {
       formatterMap: {}
     }
   },
-  watch: {
-  /*  multipleSelection(data) { // 存储选中的row
-      this.selectRow = []
-      if (data.length > 0) {
-        data.forEach((item, index) => {
-          this.selectRow.push(item.id)
-        })
-      }
-    }*/
-  },
   created() {
     this.init()
   },
