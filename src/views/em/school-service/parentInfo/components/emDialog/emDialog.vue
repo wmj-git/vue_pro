@@ -232,7 +232,8 @@ export default {
       dialogStatus: '',
       organizationCode: '', // 当前用户的组织编码
       currentClass: [], // 当前点击班级数组---修改班级
-      currentClassId: null, // 当前班级id----添加学生
+      currentClassId: null, // 当前班级id----添加学生、刷新表格数据
+      editClassId: null, // 当前班级id --- 修改学生刷新表格数据
       gradeArr: [],
       checkedId: null // 选中行的学生id
     }
@@ -342,9 +343,13 @@ export default {
     changeGrade(val) {
       this.temp['gradeKey'] = val // 赋值给年级编码
     },
-    // 获取学生选中行的id----添加家长
+    // 获取学生选中行的id----添加、刷新家长
     getCheckedStu(val) {
       this.checkedId = val.studentId
+    },
+    // 获取学生选中行的id----修改、刷新家长
+    editCheckedStu(val) {
+      this.editClassId = val.studentId
     },
     // 添加家长
     appendParent() {
@@ -360,9 +365,13 @@ export default {
         this.dialogFormVisible = true
       }
     },
-    // 从左侧树状获取班级id
+    // 从左侧树状获取班级id----添加学生信息、刷新表格数据
     getClassId(val) {
       this.currentClassId = val.classId.id
+    },
+    // 从左侧树状获取班级id----修改学生信息、刷新表格数据
+    queryClassId(val) {
+      this.editClassId = val.classId.id
     },
     // 添加学生
     append() {
@@ -497,18 +506,17 @@ export default {
                 vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
                   fn: 'getList',
                   params: {
-                    classId: this.currentClassId
+                    classId: this.editClassId
                   }
                 })
                 break
-              case 'system_id_523': // 添加班级
+              case 'system_id_523': // 编辑班级
                 break
               case 'system_id_443': // 编辑家长
-                console.log('编辑家长', this.checkedId)
                 vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
                   fn: 'getList',
                   params: {
-                    studentId: this.checkedId
+                    studentId: this.editClassId
                   }
                 })
                 break

@@ -78,11 +78,14 @@ export default {
         removeUrl: '',
         updateUrl: '',
         vueBusName: '', // 区分抽屉
-        clickRow: {
-          control_id: '' // 区别哪个table的getList()
+        fn_set: {
+          control_id: '' // 获取家长信息
         },
-        clickRowId: {
-          control_id: '' // 获取选中行的id---添加家长信息
+        fn_add: {
+          control_id: '' // 获取选中行的id---添加、刷新家长信息
+        },
+        fn_edit: {
+          control_id: '' // 获取选中行的id---修改刷新家长信息
         },
         rowClick: false
       },
@@ -162,14 +165,20 @@ export default {
         }
         refsElTable.clearSelection()
         refsElTable.toggleRowSelection(row, true)
-        vueBus.$emit(this.set.clickRow.control_id, { // 点击学生数据行获取相应家长信息
+        vueBus.$emit(this.set.fn_set.control_id, { // 点击学生数据行获取相应家长信息
           fn: 'getList',
           params: {
             studentId: row.id
           }
         })
-        vueBus.$emit(this.set.clickRowId.control_id, { // 获取选中行的学生id用于添加相应家长信息
+        vueBus.$emit(this.set.fn_add.control_id, { // 获取选中行的学生id用于添加相应家长信息、刷新家长信息
           fn: 'getCheckedStu',
+          params: {
+            studentId: row.id
+          }
+        })
+        vueBus.$emit(this.set.fn_edit.control_id, { // 获取选中行的学生id用于修改家长信息、刷新家长信息
+          fn: 'editCheckedStu',
           params: {
             studentId: row.id
           }
@@ -193,7 +202,6 @@ export default {
         url: this.set.queryUrl,
         params: _params
       }).then(response => {
-        console.log('参数', _params)
         if (response.statusCode === 200) {
           this.total = response.data.total
           this.tableDataEnd = response.data.list
