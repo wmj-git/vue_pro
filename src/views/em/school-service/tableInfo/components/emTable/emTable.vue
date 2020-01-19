@@ -145,7 +145,6 @@ export default {
     },
     /* 点击行选中复选框*/
     handleRowClick(row) {
-      console.log('ddd')
       this.$refs[this.system_id].toggleRowSelection(row)
     },
     /* 选中复选框高亮显示*/

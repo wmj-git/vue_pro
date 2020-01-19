@@ -426,7 +426,7 @@ export default {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
-      this.onReset()
+      this.$refs[this.system_id].resetFields()
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
@@ -522,9 +522,6 @@ export default {
 
       this.temp = _temp
       this.rules = _rules
-    },
-    onReset() { // 重置
-      this.$refs[this.system_id].resetFields()
     },
     // 提交表单
     submitFn({ meta, data }) {
