@@ -213,7 +213,7 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    // 电话输入时就开始判断加上短横线
+    // 电话输入时就开始判断加上空格 344
     handlerPhone(val) {
       if (val.length <= 13) {
         if (val.length > 3 && val.length < 7) {

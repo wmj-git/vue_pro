@@ -62,3 +62,8 @@ border-color: rgba(255,255,255,0.5) !important;
 .el-notification__content,.el-notification__closeBtn{
   color: darken($em-text-color-base, 20%);
 }
+
+/*图片列表*/
+.el-upload-list__item-name,.el-upload-dragger .el-upload__text,.el-upload__tip{
+  color: darken($em-text-color-base, 20%);
+}
