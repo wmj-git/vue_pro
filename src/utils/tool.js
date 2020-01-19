@@ -307,3 +307,62 @@ export function promiseFn(_time, _judgeFn, _fn) {
     }
   })
 }
+
+// 动态加载js文件
+export function loadJs(id, url, callback) {
+  var script = document.createElement('script')
+  script.id = id
+  script.type = 'text/javascript'
+  if (typeof (callback) !== 'undefined') {
+    if (script.readyState) {
+      script.onreadystatechange = function() {
+        if (script.readyState === 'loaded' || script.readyState === 'complete') {
+          script.onreadystatechange = null
+          callback()
+        }
+      }
+    } else {
+      script.onload = function() {
+        callback()
+      }
+    }
+  }
+  script.src = url
+  // document.head.appendChild(script);
+  const _element = document.getElementById('em')
+  _element.parentNode.insertBefore(script, _element.nextSibling)// 将script插入到_element外部后面
+}
+
+/* loadJs("test.js",function(){
+  alert('done');
+});*/
+
+// 动态加载css文件
+export function loadCss(id, url, callback) {
+  const link = document.createElement('link')
+  link.id = id
+  link.type = 'text/css'
+  link.rel = 'stylesheet'
+  if (typeof (callback) !== 'undefined') {
+    if (link.readyState) {
+      link.onreadystatechange = function() {
+        if (link.readyState === 'loaded' || link.readyState === 'complete') {
+          link.onreadystatechange = null
+          callback()
+        }
+      }
+    } else {
+      link.onload = function() {
+        callback()
+      }
+    }
+  }
+  link.href = url
+  // document.head.appendChild(link);
+  const _element = document.getElementById('em')
+  _element.parentNode.insertBefore(link, _element.nextSibling)// 将link插入到_element外部后面
+}
+
+/* loadCss("test.css",function(){
+  alert('done');
+});*/

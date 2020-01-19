@@ -188,17 +188,13 @@ export default {
     },
     createDataFn(params) { // 更新表数据
       this.listLoading = true
-      const _params = {
+      let _params = {
         pageNum: this.pagination.currentPage,
         pageSize: this.pagination.pageSize
       }
       try {
-        let _val = {}
         if (params) {
-          _val = params
-        }
-        for (const k in _val) {
-          _params[k] = _val[k]
+          _params = Object.assign(_params, params)
         }
       } catch (error) {
         console.log(error.message)
@@ -294,7 +290,6 @@ export default {
     },
     // 更新行数据
     updateFn(_obj) {
-      console.log('updateFn', _obj)
       const _this = this
       update({
         url: _this.set.updateUrl,
@@ -312,9 +307,40 @@ export default {
         }
       })
     },
-    // 选择删除行
+    // 删除单行数据
+    delOneFn(_obj) {
+      const _this = this
+      let _val = this
+      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if ('data' in _obj && _obj.data) {
+          _val = _obj.data
+        } else {
+          return
+        }
+        del({
+          url: _this.set.removeUrl,
+          params: _val
+        }).then(res => {
+          if (res) {
+            if (res.statusCode === 200) {
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              })
+              this.callbackFn(this.senderData, res)
+            }
+          }
+        })
+      }).catch(() => {
+
+      })
+    },
+    // 选择删除多行数据
     delFn(_obj) {
-      console.log('del', _obj)
       const _this = this
       const _items = []
 
@@ -351,6 +377,7 @@ export default {
         })
       }
     },
+    // 表单字段格式化
     formatterFn(row, column) {
       let _val = ''
       const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)

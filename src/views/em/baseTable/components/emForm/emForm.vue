@@ -87,11 +87,11 @@
                     fit="fit"
                   />
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="14" :offset="2">
                   <dropzone
                     :id="item.meta.system_id"
                     :ref="item.meta.system_id"
-                    :style="{'max-height': '184px','overflow':'hidden'}"
+                    :style="{'max-height': '106px','min-height': '80px','max-width': '106px','min-width': '80px','overflow':'hidden'}"
                     :url="BASE_API+item.meta.url"
                     :item="item"
                     @dropzone-removedFile="dropzoneR"
@@ -120,8 +120,8 @@
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
-                placeholder="选择时间范围">
-              </el-time-picker>
+                placeholder="选择时间范围"
+              />
             </el-form-item>
           </el-col>
         </template>
