@@ -67,7 +67,7 @@ export default {
       }
     },
     mapInit: function() { // 创建地图对象
-      console.log('mapInit', this.$data, _G)
+      // console.log('mapInit', this.$data, _G)
       _G[this.system_id] = new mp.MinMap({
         set: {
           target: this.system_id,
