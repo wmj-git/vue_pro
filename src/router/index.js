@@ -7,7 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* 公用页面模板 */
-import demo from '@/router/modules/demo/index'
+// import demo from '@/router/modules/demo/index'
 
 /* 菜单数据 */
 // import schoolService from './modules/em/schoolService' // 学校服务
@@ -80,12 +80,16 @@ export const constantRoutes = [
     redirect: '/dashboard',
     hidden: true,
     children: [
-      {
+      /* {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '地图', icon: 'dashboard', affix: true }
-      }
+        meta: {
+          title: '初始页',
+          icon: 'dashboard',
+          affix: true
+        }
+      }*/
     ]
   },
   {
@@ -101,9 +105,9 @@ export const constantRoutes = [
         meta: { title: '用户信息', icon: 'user', noCache: true }
       }
     ]
-  },
+  }
   // schoolService,
-  demo
+  // demo
 ]
 
 /**

@@ -28,7 +28,7 @@ export class DataProcessing {
         _key = _set.requestParams
         _value = _data[_key]
         break
-      case 'valueData':
+      case 'valueData': // 设置自定义数据
         _value = _set.requestParams
         break
       case 'objectData':

@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
@@ -14,6 +15,11 @@ Vue.use(VueCropper) // 图片裁剪
 import App from './App'
 import store from './store'
 import router from './router'
+
+import './assets/jquery-easyui-1.6.7/themes/black/easyui.css'
+import './assets/jquery-easyui-1.6.7/themes/icon.css'
+import './assets/jquery-easyui-1.6.7/jquery.easyui.min.js'
+import './assets/jquery-easyui-1.6.7/windowAdapter'
 
 import './icons' // icon
 import './permission' // permission control
