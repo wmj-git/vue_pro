@@ -129,7 +129,6 @@ export default {
             'classId': _data.data.nodeData
           }
         })
-        vueBus.$emit('currentClass', _data.data.nodeData) // 修改班级
       }
     },
     async loadNode(node, resolve) {

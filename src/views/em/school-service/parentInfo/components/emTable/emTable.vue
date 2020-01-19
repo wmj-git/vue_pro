@@ -184,8 +184,6 @@ export default {
             studentId: row.id
           }
         })
-      } else {
-        row.id = null
       }
     },
     // 渲染数据
