@@ -207,6 +207,12 @@ export default {
         },
         fn_set: { // 判断家长是否已经存在
           control_id: ''
+        },
+        fn_addQuery: { // 刷新表格数据（添加）
+          control_id: ''
+        },
+        fn_editQuery: {
+          control_id: '' // 刷新表格（修改）
         }
       },
       name: '',
@@ -283,7 +289,6 @@ export default {
     },
     // 失去焦点时根据身份识别号计算出性别和年龄
     onBlurCard() {
-      console.log('失去焦点了', this.temp['idCardNo'].length, this.temp['idCardNo'])
       const val = this.temp['idCardNo'].length
       const iden = this.temp['idCardNo']
       let sex = null
@@ -442,10 +447,26 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
-              /* vueBus.$emit(this.set.fn_set.control_id, { // 刷新表格数据
-                fn: 'getList',
-                data: {}
-              })*/
+              switch (this.system_id) {
+                case 'system_id_56': // 添加学生
+                  vueBus.$emit(this.set.fn_addQuery.control_id, { // 添加学生需要的班级id
+                    fn: 'getList',
+                    params: {
+                      'classId': this.currentClassId
+                    }
+                  })
+                  break
+                case 'system_id_523': // 添加班级
+                  break
+                case 'system_id_152': // 添加家长
+                  vueBus.$emit(this.set.fn_addQuery.control_id, { // 添加学生需要的班级id
+                    fn: 'getList',
+                    params: {
+                      'studentId': this.checkedId
+                    }
+                  })
+                  break
+              }
             } else {
               this.$notify.error('添加失败')
             }
@@ -470,9 +491,28 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('handleClick', () => {
-              this.handleClick()
-            })
+            switch (this.system_id) {
+              case 'system_id_490': // 编辑学生
+                console.log('编辑学生', this.currentClassId)
+                vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
+                  fn: 'getList',
+                  params: {
+                    classId: this.currentClassId
+                  }
+                })
+                break
+              case 'system_id_523': // 添加班级
+                break
+              case 'system_id_443': // 编辑家长
+                console.log('编辑家长', this.checkedId)
+                vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
+                  fn: 'getList',
+                  params: {
+                    studentId: this.checkedId
+                  }
+                })
+                break
+            }
             this.$notify({
               title: 'Success',
               message: '修改成功',

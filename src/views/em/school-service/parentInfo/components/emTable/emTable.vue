@@ -193,6 +193,7 @@ export default {
         url: this.set.queryUrl,
         params: _params
       }).then(response => {
+        console.log('参数', _params)
         if (response.statusCode === 200) {
           this.total = response.data.total
           this.tableDataEnd = response.data.list
