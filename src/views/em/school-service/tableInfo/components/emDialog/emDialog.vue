@@ -33,6 +33,7 @@
                 clearable
                 oninput="if(value.length>13)value=value.slice(0,13)"
                 :disabled="item.meta.disabled"
+                @blur="onBlur"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
                 @input="handlerPhone"
               />
@@ -154,7 +155,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, classList, associateClass, checkedList, gradeCode } from '@/api/schoolService/tableInfo'
+import { addList, editList, currentUser, classList, associateClass, checkedList, gradeCode, fetchList } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -170,6 +171,7 @@ export default {
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
         checkedUrl: '', // 已分配班级-指定老师
+        telUrl: '', // 已存在教师
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -281,6 +283,33 @@ export default {
       }
       this.defaultFn(this.children.formItem)
     },
+    // 失去焦点时判断该教师是否存在
+    onBlur() {
+      const _this = this
+      const _params = {
+        tel: this.temp['tel'].replace(/\s/g, '') // 获取当前输入框的值传递给后台查询是否有该教师已存在
+      }
+      fetchList({
+        url: _this.set.telUrl,
+        params: _params
+      }).then(res => {
+        if (res.statusCode === 200) {
+          if (res.data.list.length !== 0) {
+            this.temp['name'] = res.data.list[0].name
+            this.temp['sex'] = res.data.list[0].sex
+            this.temp['age'] = res.data.list[0].age
+            this.temp['tncumbency'] = res.data.list[0].tncumbency
+            this.temp['seniority'] = res.data.list[0].seniority
+          } else if (res.data.list.length === 0) {
+            this.$message({
+              showClose: true,
+              message: '该教师信息为空，请继续填写！',
+              type: 'info'
+            })
+          }
+        }
+      })
+    },
     // 添加数据显示
     add() {
       currentUser({
@@ -320,6 +349,7 @@ export default {
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
+      this.$refs[this.system_id].resetFields()
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
