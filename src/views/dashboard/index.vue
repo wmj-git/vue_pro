@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     init() {
-      console.log('$data', this.$data)
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     }
@@ -71,3 +70,7 @@ export default {
 
 }
 </script>
+
+<style scoped lang="scss">
+  @import "dashboard";
+</style>
