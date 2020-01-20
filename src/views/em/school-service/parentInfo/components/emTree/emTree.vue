@@ -74,8 +74,11 @@ export default {
         fn_set: {
           control_id: null // 区别哪个table的getList()
         },
+        fn_edit: {
+          control_id: null // 编辑学生
+        },
         fn_add: {
-          control_id: null
+          control_id: null // 添加学生
         }, // classId给学生
         fn_append: ''
       },
@@ -125,6 +128,12 @@ export default {
         })
         vueBus.$emit(this.set.fn_add.control_id, { // 添加学生需要的班级id
           fn: 'getClassId',
+          params: {
+            'classId': _data.data.nodeData
+          }
+        })
+        vueBus.$emit(this.set.fn_edit.control_id, { // 修改学生刷新表格数据需要的班级id
+          fn: 'queryClassId',
           params: {
             'classId': _data.data.nodeData
           }
