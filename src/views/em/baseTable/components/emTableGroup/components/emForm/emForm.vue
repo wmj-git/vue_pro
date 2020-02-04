@@ -104,8 +104,10 @@ export default {
         statusIcon: false,
         class: ''
       },
-      Form: {}, // 表单组值对象
-      rules: {}, // 验证数据
+      Form: {
+      }, // 表单组值对象
+      rules: {
+      }, // 验证数据
       children: {
         formItem: []
       }
