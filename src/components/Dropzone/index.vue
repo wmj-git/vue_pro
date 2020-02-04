@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth'
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
 // import { getToken } from 'api/qiniu';
@@ -138,7 +139,7 @@ export default {
       uploadMultiple: false,
       acceptedFiles: this.acceptedFiles,
       autoProcessQueue: this.autoProcessQueue,
-      dictDefaultMessage: '<i style="margin-top: 3em;display: inline-block" class="material-icons">' + this.defaultMsg + '</i><br>Drop files here to upload',
+      dictDefaultMessage: '<i style="display: inline-block">' + this.defaultMsg + '</i>',
       dictMaxFilesExceeded: '只能一个图',
       previewTemplate: '<div class="dz-preview dz-file-preview">  <div class="dz-image" style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" ><img style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" data-dz-thumbnail /></div>  <div class="dz-details"><div class="dz-size"><span data-dz-size></span></div> <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>  <div class="dz-error-message"><span data-dz-errormessage></span></div>  <div class="dz-success-mark"> <i class="material-icons">done</i> </div>  <div class="dz-error-mark"><i class="material-icons">error</i></div></div>',
       init() {
@@ -182,6 +183,7 @@ export default {
         done()
       },
       sending: (file, xhr, formData) => {
+        xhr.setRequestHeader('Authorization', getToken())
         // formData.append('token', file.token);
         // formData.append('key', file.key);
         vm.initOnce = false
@@ -252,15 +254,15 @@ export default {
 
 <style scoped>
     .dropzone {
-        border: 2px solid #E5E5E5;
+        border: 2px solid #4a505a;
         font-family: 'Roboto', sans-serif;
         color: #777;
         transition: background-color .2s linear;
         padding: 5px;
+        background: #152034;
     }
-
     .dropzone:hover {
-        background-color: #F6F6F6;
+        border-color: #005695;
     }
 
     i {

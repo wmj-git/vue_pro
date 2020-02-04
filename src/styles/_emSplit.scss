@@ -1,0 +1,8 @@
+@import "variables";
+.splitter-pane.vertical.splitter-paneR,.splitter-pane.vertical.splitter-paneL{
+  //background-color: #000307;
+}
+.el-card{
+  background-color: $em-card-bg;
+  border-color: darken($em-card-bg, 10%);
+}

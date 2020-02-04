@@ -147,6 +147,7 @@ export default {
     cursor: pointer;
     font-size: 18px;
     vertical-align: middle;
+    color: darken(#fff,30%);
   }
 
   .header-search-select {

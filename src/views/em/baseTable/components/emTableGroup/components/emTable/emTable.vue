@@ -24,12 +24,42 @@
           />
           <el-table-column
             type="index"
+            width="54"
             fixed="left"
             align="center"
+            label="序号"
             :index="tableIndex"
           />
           <template v-for="(column,index) in set.tableHeader">
             <el-table-column
+              v-if="column.columnType && column.columnType === 'unusualTimes'"
+              :key="index"
+              :prop="column.prop"
+              :label="column.label"
+              :width="column.width"
+              :show-overflow-tooltip="true"
+              :formatter="formatterFn"
+            >
+              <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top">
+                  <el-timeline :reverse="false">
+                    <el-timeline-item
+                      v-for="(activity, _index) in unusualTimesFn(scope.row)"
+                      :key="_index"
+                      :color="'#0bbd87'"
+                      :timestamp="activity.end"
+                    >
+                      {{ activity.start }}
+                    </el-timeline-item>
+                  </el-timeline>
+                  <div slot="reference" class="name-wrapper">
+                    <el-tag size="medium">监控时段</el-tag>
+                  </div>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-else
               :key="index"
               :prop="column.prop"
               :label="column.label"
@@ -38,7 +68,7 @@
               :formatter="formatterFn"
             />
           </template>
-          <el-table-column  :width="248" fixed="right" label="操作">
+          <el-table-column v-if="children.columnBtn.length > 0" :width="248" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
@@ -86,11 +116,16 @@ export default {
     return {
       set: {
         queryUrl: '',
+        queryMethod: 'post', // 查询接口请求类型
         appendUrl: '',
+        appendMethod: 'post',
         removeUrl: '',
+        removeMethod: 'post',
         updateUrl: '',
         updateMethod: 'post',
-        treeShow: false,
+        rowClick: 'none',
+        paginationSever: true, // 是否后台分页
+        treeShow: false, // 是否显示树形结构
         treeShow_set: {
           id: 'id',
           pid: 'pid'
@@ -153,34 +188,46 @@ export default {
     },
     createDataFn(params) { // 更新表数据
       this.listLoading = true
-      const _params = {
+      let _params = {
         pageNum: this.pagination.currentPage,
         pageSize: this.pagination.pageSize
       }
       try {
-        let _val = {}
         if (params) {
-          _val = params
-        }
-        for (const k in _val) {
-          _params[k] = _val[k]
+          _params = Object.assign(_params, params)
         }
       } catch (error) {
         console.log(error.message)
       } finally {
         query({ // 页面渲染时拿表格数据
           url: this.set.queryUrl,
+          method: this.set.queryMethod,
           params: _params
         }).then(res => {
+          let _list = []
+
+          if (res.data && 'list' in res.data) {
+            _list = res.data.list
+          } else if (res.data) {
+            _list = res.data
+          } else {
+            return
+          }
+
           if (this.set.treeShow) {
-            this.tableData = toTree(res.data.list, {
+            this.tableData = toTree(_list, {
               id: this.set.treeShow_set.id,
               pid: this.set.treeShow_set.pid
             })
           } else {
-            this.tableData = res.data.list
+            this.tableData = _list
           }
-          this.pagination.totalSize = res.data.total
+
+          if (this.set.paginationSever) {
+            this.pagination.totalSize = res.data.total
+          } else {
+            this.pagination.totalSize = _list.length
+          }
           this.listLoading = false
         })
       }
@@ -204,6 +251,11 @@ export default {
     },
     // 单击行
     handleRowClick(row, column, event) {
+      if (this.set.rowClick !== 'none') {
+        this.fn({
+          meta: this.set.rowClick
+        }, row)
+      }
       console.log(1, row, column, event)
     },
     // 双击行
@@ -212,6 +264,7 @@ export default {
     },
     // 查询数据
     queryFn(_obj) {
+      this.pagination.currentPage = 1
       if (_obj.Form) {
         this.createDataFn(_obj.Form)
       } else {
@@ -220,7 +273,6 @@ export default {
     },
     // 添加一行数据
     addFn(_obj) { // 添加一行数据
-      console.log(_obj)
       const _this = this
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
@@ -238,7 +290,6 @@ export default {
     },
     // 更新行数据
     updateFn(_obj) {
-      console.log('updateFn', _obj)
       const _this = this
       update({
         url: _this.set.updateUrl,
@@ -256,9 +307,40 @@ export default {
         }
       })
     },
-    // 选择删除行
+    // 删除单行数据
+    delOneFn(_obj) {
+      const _this = this
+      let _val = this
+      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if ('data' in _obj && _obj.data) {
+          _val = _obj.data
+        } else {
+          return
+        }
+        del({
+          url: _this.set.removeUrl,
+          params: _val
+        }).then(res => {
+          if (res) {
+            if (res.statusCode === 200) {
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              })
+              this.callbackFn(this.senderData, res)
+            }
+          }
+        })
+      }).catch(() => {
+
+      })
+    },
+    // 选择删除多行数据
     delFn(_obj) {
-      console.log('del', _obj)
       const _this = this
       const _items = []
 
@@ -295,6 +377,7 @@ export default {
         })
       }
     },
+    // 表单字段格式化
     formatterFn(row, column) {
       let _val = ''
       const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
@@ -304,6 +387,32 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    unusualTimesFn(str) {
+      if (str.unusualTimes) {
+        str = JSON.parse(str.unusualTimes)
+      } else {
+        str = [{
+          start: '00:00:00',
+          end: '00:00:00'
+        }]
+      }
+      // console.log(str)
+      return str
+    },
+    windowOpen(_obj) {
+      // console.log('windowOpen', _obj)
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+      let _str = ''
+      for (const k in _params) {
+        _str += k + '=' + _params[k] + '&'
+      }
+      _str += 'Authorization=' + this.$store.getters['token']
+      window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     }
   }
 }

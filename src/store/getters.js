@@ -17,6 +17,7 @@ const getters = {
   displayMode: state => state.user.displayMode, // 当前显示模式
   currentRole: state => state.user.currentRole, // 当前角色
   permission_routes: state => state.permission.routes, // 用户的权限
-  errorLogs: state => state.errorLog.logs
+  errorLogs: state => state.errorLog.logs,
+  socketToken: state => state.user.socketToken // socket
 }
 export default getters

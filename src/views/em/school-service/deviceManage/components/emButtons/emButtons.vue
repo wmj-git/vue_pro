@@ -30,7 +30,7 @@
               :label="item.meta.title"
               :prop="item.meta.valueKey"
               :disabled="item.meta.disabled"
-              :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+              :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               clearable
             >
               <el-select
@@ -38,6 +38,8 @@
                 v-model="item.meta.valueKey"
                 :style="{width: item.meta.selectWidth}"
                 @change="selectInputKey(item.meta.valueKey,item.meta)"
+                placeholder='请选择'
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -84,6 +86,7 @@
           </el-form-item>
           <el-form-item  v-else-if="item.meta.itemType==='button'" :prop="item.meta.valueKey">
             <el-button
+              class="operate_btn"
               :ref="item.meta.system_id"
               :icon="item.meta.icon"
               :class="item.meta.class"
@@ -167,6 +170,7 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
+    selectInputKey() {},
     getTemp() {
       return this.temp
     }

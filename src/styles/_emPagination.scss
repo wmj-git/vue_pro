@@ -1,0 +1,46 @@
+@import "variables";
+.el-pagination__total,.el-input__inner,.el-pagination__jump,.el-pagination button:disabled,.el-pager li,.el-pagination .btn-prev, .el-pagination .btn-next{
+  color: $em-text-color-base;
+  font-size: 14/$r+rem !important;
+}
+
+.el-input__inner{
+  background: $background-pagination--inner;
+  border-color: darken($em-border-color-base,50%);
+  &:focus{
+    border-color: $em-highlight-border-color-base;
+  }
+}
+.el-input__suffix{
+  color: darken($em-text-color-base,50%);
+}
+.el-pagination button:disabled,.el-pager li,.el-pagination .btn-prev, .el-pagination .btn-next{
+  background: $background-pagination--inner;
+}
+li.number.active{
+  color:  darken($em-text-color-base,40%);
+}
+.el-pager li{
+  min-width: 20.5px;
+}
+.el-icon-more:before {
+  color:  darken($em-text-color-base,30%);
+}
+.el-pager li:hover,.el-select-dropdown__item.selected,.el-pagination button:hover{
+  color: lighten($em-text-highlight-base,20%);
+}
+.el-pagination__sizes .el-input .el-input__inner:hover,.el-select .el-input.is-focus .el-input__inner,.el-select .el-input__inner:focus{
+  border-color: $em-highlight-border-color-base;
+}
+// 分页禁用按钮
+.el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li{
+background-color: darken($background-pagination--inner, 20%);
+}
+
+.el-pagination.is-background .el-pager li{
+  color: darken($em-text-color-base, 30%);
+  &:not(.disabled).active{ // 当前页按钮
+    background-color:darken($em-highlight-border-color-base, 50%) ;
+  }
+}
+

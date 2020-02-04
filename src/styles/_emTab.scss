@@ -1,0 +1,69 @@
+.el-tabs__item{
+  color:$em-text-color-base;
+}
+.el-tabs__nav-wrap::after{
+  background-color: rgba(255, 255, 255, 0.31) ;
+}
+/*navbar-span-color*/
+.el-breadcrumb__inner a{
+  color: darken($em-text-color-base, 10%);
+}
+.app-breadcrumb.el-breadcrumb .no-redirect{
+color: $em-text-highlight-base !important;
+}
+
+/*badge*/
+.el-badge__content{
+  border: none;
+  background-color: transparent;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 30px;
+}
+.el-badge__content--success{
+  color: #00ff00;
+}
+.el-badge__content--danger{
+  color: red;
+}
+
+/*el-image-error图片上传*/
+.el-image__error{
+  background: $toolTip-background;
+}
+
+/*左右分割栏分隔线样式*/
+.splitter-pane-resizer.vertical{
+border-color: rgba(255,255,255,0.5) !important;
+}
+.el-card{
+  color: $em-text-color-base;
+  padding: 10px 10px 20px 10px;
+}
+.el-card__header{
+  border-color: rgba(255,255,255,0.3);
+}
+.el-card__body{
+  padding: 8px;
+}
+/*用户信息进度条数据*/
+.el-progress__text{
+  color: $em-text-color-base;
+}
+
+/* 通知消息el-notification*/
+.el-notification{
+  background: $background-linear-base;
+  border-color: $em-upload-border;
+}
+.el-notification__title{
+  color: $em-text-color-base;
+}
+.el-notification__content,.el-notification__closeBtn{
+  color: darken($em-text-color-base, 20%);
+}
+
+/*图片列表*/
+.el-upload-list__item-name,.el-upload-dragger .el-upload__text,.el-upload__tip{
+  color: darken($em-text-color-base, 20%);
+}

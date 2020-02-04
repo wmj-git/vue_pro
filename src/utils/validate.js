@@ -1,21 +1,19 @@
 /**
  * Created by PanJiaChen on 16/11/18.
+ * 表单验证规则
  */
 
 /**
- 判断为手机号码
+ 判断为手机号码13位
  */
 export function isPhone(rule, value, callback) {
-  if (!value) {
-    return callback(new Error('不能为空'))
-  }
   setTimeout(() => {
-    if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
+    if (/^1[3456789]\d{9}$/.test(value)) {
       callback()
     } else {
-      callback(new Error('请输入正确的手机号'))
+      callback(new Error('请输入有效的手机号'))
     }
-  }, 100)
+  }, 200)
 }
 /**
  正整数

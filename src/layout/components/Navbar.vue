@@ -3,13 +3,11 @@
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
+        <notice-message class="errLog-container right-menu-item hover-effect"/>
+       <school-alarm class="errLog-container right-menu-item hover-effect" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
         <el-tooltip content="Global Size" effect="dark" placement="bottom">
@@ -43,19 +41,21 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
+import SchoolAlarm from '@/components/SchoolAlarm'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 
 import { TimeFn } from '@/utils/tool'
 import { getExpires } from '@/utils/auth'
+import NoticeMessage from '@/components/NoticeMessage'
 
 export default {
   components: {
+    NoticeMessage,
     Breadcrumb,
     Hamburger,
-    ErrorLog,
+    SchoolAlarm,
     Screenfull,
     SizeSelect,
     Search
@@ -100,11 +100,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "../../styles/variables";
 .navbar {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: $em-base-background;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
@@ -143,7 +144,7 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: darken(#fff, 30%);
       vertical-align: text-bottom;
 
       &.hover-effect {

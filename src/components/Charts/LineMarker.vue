@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(document.getElementById(this.id))
+      this.chart = echarts.init()
 
       this.chart.setOption({
         backgroundColor: '#394056',

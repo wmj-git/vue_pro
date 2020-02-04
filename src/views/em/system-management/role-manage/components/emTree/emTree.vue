@@ -12,7 +12,12 @@
             ref="tree"
             :data="treeData"
             :props="defaultProps"
+            :highlight-current="true"
+            :auto-expand-parent="true"
+            :current-node-key="currentKey"
+            :default-expanded-keys="[currentKey]"
             node-key="id"
+            :accordion="true"
             :show-checkbox="set.checkbox"
             :default-expand-all="set.expandAll"
             :expand-on-click-node="false"
@@ -29,14 +34,14 @@
                 <el-button
                   class="em-btn-gradient em-btn-uniform-gradient"
                   size="mini"
-                  @click="() => append(node,data)"
+                  @click.stop="() => append(node,data)"
                 >
                   添加
                 </el-button>
                 <el-button
                   class="em-btn-gradient em-btn-uniform-gradient"
                   size="mini"
-                  @click="() => remove(node, data)"
+                  @click.stop="() => remove(node, data)"
                 >
                   删除
                 </el-button>
@@ -65,9 +70,9 @@ export default {
   data() {
     return {
       set: {
-        title: '',
+        title: '', // 标题
         maxHeight: '',
-        expandAll: true,
+        expandAll: false,
         buttons: false,
         appendUrl: '',
         appendSuccess: '',
@@ -88,6 +93,7 @@ export default {
       },
       treeData: [],
       filterText: '',
+      currentKey: null,
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -112,6 +118,11 @@ export default {
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    treeData(val) {
+      this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.currentKey)
+      })
     }
   },
   created() {
@@ -137,10 +148,7 @@ export default {
           this[_fn](_obj.meta)
           break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
+          this.FN(_obj, _data)
       }
     },
     init() {
@@ -217,12 +225,12 @@ export default {
         }
       })
     },
-    update(node) {
-      console.log('node', node)
+    update({ data, meta }) {
+      console.log('node', data, meta)
       const _this = this
       update({
         url: this.set.updateUrl,
-        params: node
+        params: data
       }).then((response) => {
         if (response.statusCode === 200) {
           this.$message({
@@ -277,8 +285,6 @@ export default {
         'params': _id
       }).then((response) => {
         if (response.statusCode === 200) {
-          // console.log('getRoutePermission', response.data)
-
           _this.$message({
             message: response.message,
             type: 'success'
@@ -314,6 +320,7 @@ export default {
       })
     },
     handleNodeClick(data) {
+      this.currentKey = data.id
       const _componentData = this.componentData
       if (_componentData.meta.handleNodeClickControlType) {
         _componentData.meta.control_type = _componentData.meta.handleNodeClickControlType
@@ -351,6 +358,9 @@ export default {
     },
     setCheckedKeys(_val) {
       this.getRoutePermission(_val.data.id)
+    },
+    setCurrentKey({ data, meta }) {
+      this.currentKey = data.id
     }
   }
 }

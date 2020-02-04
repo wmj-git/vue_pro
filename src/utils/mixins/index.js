@@ -4,7 +4,7 @@ import vueBus from '@/utils/vueBus'
 import { FilterTree, TimeFn, promiseFn } from '@/utils/tool'
 import { DataProcessing } from './dataProcessing'
 
-// 定义一个混入对象
+// 定义一个公用混入对象
 export const emMixin = {
   props: {
     data: {
@@ -43,6 +43,7 @@ export const emMixin = {
         this.receiverFn(obj)
       })
     }
+    this.fetchData()
   },
   updated() {
     // console.log('$route', this.$route)
@@ -54,11 +55,12 @@ export const emMixin = {
   },
   methods: {
     FN(_obj, _data) {
+      const _this = this
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _routePath = _obj.meta.routePath ? _obj.meta.routePath : this.$route.path
       switch (_controlType) {
-        case 'default':
+        case 'default': // 操作本组件
           if (this.senderData && 'meta' in this.senderData) {
             this.senderData.meta = JSON.parse(JSON.stringify(_obj.meta))
           } else {
@@ -69,7 +71,7 @@ export const emMixin = {
             data: _data
           })
           break
-        case 'promiseDefault':
+        case 'promiseDefault': // 异步
           promiseFn(100, () => {
             return true
           }, () => {
@@ -101,8 +103,8 @@ export const emMixin = {
           })
           break
         case 'routerReplace':
-          if (this.$route.query.data) {
-            this.$router.replace({ path: _routePath, query: {
+          if (_this.$route.query.data) {
+            _this.$router.replace({ path: _routePath, query: {
               meta: null,
               data: null
             }})
@@ -116,13 +118,13 @@ export const emMixin = {
           promiseFn(100, () => {
             return true
           }, function() {
-            if (this.$route.query.data) {
+            if ('data' in _this.$route.query) {
               this.$router.replace({ path: _routePath, query: {
                 meta: null,
                 data: null
               }})
             }
-            this.$router.replace({ path: _routePath, query: {
+            _this.$router.replace({ path: _routePath, query: {
               meta: _obj.meta,
               data: _data
             }})
@@ -166,7 +168,8 @@ export const emMixin = {
       let _dataProcessing
       // 数据转换
       if ('fn_set' in _query.meta) {
-        _dataProcessing = dataProcessing.transducerFn(_query.meta.fn_set, _query.data, this.senderData)
+        _dataProcessing = dataProcessing.transducerFn(JSON.parse(JSON.stringify(_query.meta.fn_set)), _query.data, this.senderData)
+        _query.meta.fn_set = JSON.parse(JSON.stringify(dataProcessing.set))
       }
 
       let _refs
@@ -195,7 +198,6 @@ export const emMixin = {
           break
         case 'refs':
           _refs = this.$refs[_controlId]
-          console.log('refs', _refs)
           if (_refs && _refs.length > 0) {
             _refs[0].senderData = JSON.parse(JSON.stringify({
               meta: _query.meta,
@@ -212,6 +214,7 @@ export const emMixin = {
         case 'PromiseRefs':
           promiseFn(100, () => {
             _refs = _this.$refs[_controlId]
+            console.log('refs', _refs, _controlId)
             return _refs && _refs.length > 0
           }, function() {
             _refs[0].senderData = JSON.parse(JSON.stringify({
@@ -223,7 +226,7 @@ export const emMixin = {
               data: _dataProcessing
             })
           })
-          this.controlGroupFn(_query, _query.data)
+          _this.controlGroupFn(_query, _query.data)
           break
         default:
           Message({
@@ -237,7 +240,7 @@ export const emMixin = {
       if ('controlGroup' in _obj.meta) {
         _obj.meta.controlGroup.forEach((_item) => {
           this.fn({
-            meta: _item
+            meta: JSON.parse(JSON.stringify(_item))
           }, _data)
         })
       }
@@ -247,13 +250,14 @@ export const emMixin = {
       if ('callback' in _obj.meta) {
         _obj.meta.callback.forEach((_item) => {
           this.fn({
-            meta: _item
+            meta: JSON.parse(JSON.stringify(_item))
           }, _data)
         })
       }
     },
     receiverFn(_obj) {
       if (!(_obj && 'meta' in _obj)) {
+        this[_obj.fn](_obj.params) // 调用方法:fn, 传递参数:data(解耦)
         return
       }
       const _fn = _obj.meta.fn
@@ -326,9 +330,21 @@ export const emMixin = {
             temp: _obj.temp
           })
           break
-        case 'ParentInfo_EmForm_addForm': // 弹框显示(无需传递参数)
+        case 'ParentInfo_EmForm_addForm': // 添加-弹框显示(无需传递参数)
           this[_fn]({
             params: _obj.params
+          })
+          break
+        case 'TableInfo_EmTransfer_connectClass': // 教师-分配班级
+          this[_fn]({
+            meta: _meta,
+            data: _obj.data
+          })
+          break
+        case 'TableInfo_EmForm_editForm': // 修改-弹框显示(传递行数据给表单)
+          this[_fn]({
+            meta: _meta,
+            data: _obj.data
           })
           break
         case 'ParentInfo_EmTable_deleteData':
@@ -375,7 +391,7 @@ export const emMixin = {
             }
           }
           this[_fn]({
-            Form: val
+            data: val
           })
           break
         case 'BaseTable_EmDialog_openFn':
@@ -421,7 +437,7 @@ export const emMixin = {
     }
   }
 }
-// 定义一个混入对象
+// 定义一个页面混入对象
 export const emPage = {
   data() {
     return {

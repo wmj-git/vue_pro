@@ -1,6 +1,6 @@
 <template>
   <div class="emDialog-container">
-    <el-dialog :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible" v-if="dialogFormVisible">
+    <el-dialog v-if="dialogFormVisible" :title="set.textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="40%">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -12,6 +12,26 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <el-form-item v-if="item.meta.itemType==='inputs'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey][0]"
+                clearable
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+              />
+            </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputPhone'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>13)value=value.slice(0,13)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @input="handlerPhone"
+              />
+            </el-form-item>
             <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
@@ -19,6 +39,29 @@
                 clearable
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+              />
+            </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputBlur'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>13)value=value.slice(0,13)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlur"
+                @input="handlerPhone"
+              />
+            </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='inputIdCard'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-input
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                clearable
+                oninput="if(value.length>18)value=value.slice(0,18)"
+                :disabled="item.meta.disabled"
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlurCard"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -32,6 +75,7 @@
                   slot="prepend"
                   v-model="item.meta.valueKey"
                   :style="{width: item.meta.selectWidth}"
+                  clearable
                   @change="selectInputKey(item.meta.valueKey,item.meta)"
                 >
                   <template v-for="(option, _index) in item.meta.options_OBJ.data">
@@ -58,6 +102,7 @@
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
                 multiple
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -69,6 +114,7 @@
                 :ref="item.meta.system_id"
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                clearable
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
@@ -76,21 +122,56 @@
                 </template>
               </el-select>
             </el-form-item>
+            <el-form-item v-else-if="item.meta.itemType==='selectBlur'" v-show="item.meta.itemFormVisible" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-select
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                :disabled="item.meta.disabled"
+                clearable
+                :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                @change="changeGrade"
+              >
+                <template v-for="(option, _index) in item.meta.options_OBJ.data">
+                  <el-option :key="_index" :label="option.label" :value="option.value" />
+                </template>
+              </el-select>
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
-              {{ temp[item.meta.valueKey] ? temp[item.meta.valueKey] : "" }}
-              <dropzone
-                :id="item.meta.system_id"
-                :url="BASE_API+item.meta.url"
-                :item="item"
-                @dropzone-removedFile="dropzoneR"
-                @dropzone-success="dropzoneS" />
+              <el-row>
+                <el-col :span="16">
+                  <el-image
+                    :src="temp[item.meta.valueKey]"
+                    style="max-height: 120px;overflow: hidden"
+                    fit="fit"
+                  />
+                </el-col>
+                <el-col :span="28">
+                  <dropzone
+                    :id="item.meta.system_id"
+                    :url="BASE_API+item.meta.url"
+                    :item="item"
+                    @dropzone-removedFile="dropzoneR"
+                    @dropzone-success="dropzoneS"
+                  />
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
+        <template v-for="(btn, _index ) in children.formBtn">
+          <el-button
+            :key="_index"
+            :ref="btn.meta.system_id"
+            class="em-btn-operation table_inLine_btn"
+            size="mini"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+            @click="fn(btn,temp)"
+          >
+            {{ btn.meta.title }}
+          </el-button>
+        </template>
       </div>
     </el-dialog>
   </div>
@@ -99,13 +180,13 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, studentInfo, editList, ClassId } from '@/api/schoolService/parentInfo'
+import { addList, editList, currentUser, gradeCode, parentList } from '@/api/schoolService/parentInfo'
 import Dropzone from '@/components/Dropzone'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
-  mixins: [emMixin],
   components: { Dropzone },
+  mixins: [emMixin],
   data() {
     return {
       id: '',
@@ -113,78 +194,86 @@ export default {
         appendUrl: '',
         updateUrl: '',
         selectUrl: '',
+        telUrl: '', // 查询家长
+        allGradeUrl: '',
         status: true,
         labelWidth: '',
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: ''
+        vueBusName: '',
+        clickRow: { // 查询学生对应的家长
+          control_id: ''
+        },
+        fn_set: { // 判断家长是否已经存在
+          control_id: ''
+        },
+        fn_addQuery: { // 刷新表格数据（添加）
+          control_id: ''
+        },
+        fn_editQuery: {
+          control_id: '' // 刷新表格（修改）
+        }
       },
+      name: '',
+      gradeKey: '',
       multiple: {
         type: Boolean
       },
       children: {
-        formItem: []
+        formItem: [],
+        formBtn: []
       },
       temp: {},
       rules: {}, // 验证数据
       formLabelWidth: '120px',
       dialogFormVisible: false,
       itemFormVisible: false,
-      dialogStatus: ''
+      dialogStatus: '',
+      organizationCode: '', // 当前用户的组织编码
+      currentClass: [], // 当前点击班级数组---修改班级
+      currentClassId: null, // 当前班级id----添加学生、刷新表格数据
+      editClassId: null, // 当前班级id --- 修改学生刷新表格数据
+      gradeArr: [],
+      checkedId: null // 选中行的学生id
     }
   },
-  created() {
-    this.init()
-    vueBus.$on(this.set.vueBusName, val => {
-      this.temp = val // 接收修改时的表单值
-      this.edit()
-    })
+  async created() {
+    await this.init()
   },
   beforeDestroy() {
   },
   methods: {
-    init() {
+    async init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
-      // 查找 formTtem: 'studentIds'
-      for (const i in this.children.formItem) {
-        switch (this.children.formItem[i].meta.valueKey) {
-          case 'studentIds':
-            var optionsArr = []
-            var obj = {
-              url: this.set.selectUrl
-            }
-            studentInfo(obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.studentName, 'value': _val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学生id下拉选项赋值
-            break
-          case 'classId':
-            var optionsArrs = []
-            var _obj = {
-              url: this.set.selectUrl
-            }
-            ClassId(_obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArrs.push({ 'label': _val.name, 'value': _val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArrs // 班级id下拉选项赋值
-            break
-        }
-      }
       this.defaultFn(this.children.formItem)
     },
-    fn(_obj) {
-      const _fn = _obj.meta.fn
+    // 电话输入时就开始判断加上短横线
+    handlerPhone(val) {
+      if (val.length <= 13) {
+        if (val.length > 3 && val.length < 7) {
+          val = val.replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+        } else if (val.length >= 7) {
+          val = val.replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+        }
+        this.$set(this.temp, 'parentTel', val) // 家长电话
+        this.$set(this.temp, 'studentTel', val)// 学生电话
+      }
+    },
+    fn(_obj, _data) {
+      console.log('methods', _obj, _data)
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          return false
+        }
+      })
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       switch (_controlType) {
-        case 'default':
-          this[_fn](_obj.meta)
-          break
+        default:
+          this.FN(_obj, _data)
       }
     },
     // 上传图片
@@ -195,26 +284,136 @@ export default {
       const _response = JSON.parse(file.xhr.response)
       const _imgUrl = _response.data[0].networkPath
       this.temp[item.meta.valueKey] = _imgUrl // 后台获取到的url地址赋值给表单
-      this.$message({ message: '图片上传成功', type: 'success' })
     },
     // 移除图片
     dropzoneR(file) {
-      console.log(file)
-      this.$message({ message: 'Delete success', type: 'success' })
     },
-    // 添加数据显示
-    add() {
-      this.dialogStatus = 'create'
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break*/
-          case 'classId':
-            val.meta.itemFormVisible = true // 添加时该字段应该显示
-            break
+    // 失去焦点时根据身份识别号计算出性别和年龄
+    onBlurCard() {
+      const val = this.temp['idCardNo'].length
+      const iden = this.temp['idCardNo']
+      let sex = null
+      const myDate = new Date()
+      const month = myDate.getMonth() + 1
+      const day = myDate.getDate()
+      let age = 0
+
+      if (val === 18) {
+        age = myDate.getFullYear() - iden.substring(6, 10) - 1
+        sex = iden.substring(16, 17)
+        if (iden.substring(10, 12) < month || iden.substring(10, 12) === month && iden.substring(12, 14) <= day) age++
+      }
+      if (val === 15) {
+        age = myDate.getFullYear() - iden.substring(6, 8) - 1901
+        sex = iden.substring(13, 14)
+        if (iden.substring(8, 10) < month || iden.substring(8, 10) === month && iden.substring(10, 12) <= day) age++
+      }
+
+      if (sex % 2 === 0) { sex = 2 } else { sex = 1 }
+      this.temp['studentSex'] = sex
+      this.temp['studentAge'] = age
+    },
+    // 失去焦点时判断该家长是否存在
+    async onBlur() {
+      const _this = this
+      const _params = {
+        tel: this.temp['parentTel'] // 获取当前输入框的值传递给后台查询是否有该家长已存在
+      }
+      await parentList({
+        url: _this.set.telUrl,
+        params: _params
+      }).then(res => {
+        if (res.statusCode === 200) {
+          if (res.data === null) {
+            this.$message({
+              showClose: true,
+              message: '该家长信息为空，请继续填写！',
+              type: 'info'
+            })
+          } else if (res.data !== '') {
+            this.temp['parentName'] = res.data.parentName
+            this.temp['parentSex'] = res.data.parentSex
+            this.temp['kinshipName'] = res.data.kinshipName
+            this.temp['parentAge'] = res.data.parentAge
+          }
         }
       })
+    },
+    // 先选择年级再获取年级对应的年级编码id
+    changeGrade(val) {
+      this.temp['gradeKey'] = val // 赋值给年级编码
+    },
+    // 获取学生选中行的id----添加、刷新家长
+    getCheckedStu(val) {
+      this.checkedId = val.studentId
+    },
+    // 获取学生选中行的id----修改、刷新家长
+    editCheckedStu(val) {
+      this.editClassId = val.studentId
+    },
+    // 添加家长
+    appendParent() {
+      this.temp['studentIds'] = [this.checkedId]
+      if (this.checkedId === null) {
+        this.$message({
+          showClose: true,
+          message: '请先选择学生！',
+          type: 'warning'
+        })
+      } else {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      }
+    },
+    // 从左侧树状获取班级id----添加学生信息、刷新表格数据
+    getClassId(val) {
+      this.currentClassId = val.classId.id
+    },
+    // 从左侧树状获取班级id----修改学生信息、刷新表格数据
+    queryClassId(val) {
+      this.editClassId = val.classId.id
+    },
+    // 添加学生
+    append() {
+      this.temp['classId'] = this.currentClassId
+      if (!this.temp['classId']) {
+        this.$message({
+          showClose: true,
+          message: '请先选择左侧树状中对应的班级！',
+          type: 'warning'
+        })
+      } else {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      }
+    },
+    // 添加班级
+    add() {
+      currentUser({
+        url: this.set.selectUrl
+      }).then(response => {
+        this.temp['siOrgCode'] = String(response.data.orgCode) // 获取当前用户（学校）组织
+      })
+      for (const i in this.children.formItem) {
+        switch (this.children.formItem[i].meta.valueKey) {
+          case 'gradeName':
+            var gradeArr = []
+            var gradeKey = []
+            gradeCode({
+              url: this.set.allGradeUrl
+            }).then(res => {
+              if (res.statusCode === 200) {
+                res.data.forEach(val => {
+                  gradeArr.push({ 'label': val.enumCvalue, 'value': val.id })
+                  gradeKey.push({ 'label': val.id, 'value': val.id })
+                })
+              }
+              this.children.formItem[i].meta.options_OBJ.data = gradeArr // 当前组织具有的年级
+            })
+            break
+        }
+      }
+      this.dialogStatus = 'create'
       this.dialogFormVisible = true
       if (this.$refs[this.system_id] !== undefined) {
         this.$nextTick(() => {
@@ -222,45 +421,61 @@ export default {
         })
       }
     },
+    // 修改班级
+    updateClass(_data) {
+      vueBus.$on('currentClass', val => {
+        this.temp = Object.assign(val, _data.data) // 获取班级传过来的数据
+      })
+      console.log('temp:', this.temp)
+      if (this.temp) {
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+      }
+    },
     // 修改数据弹框
-    edit() {
+    edit(_data) {
+      this.temp = dataInitFn(_data.data, _data.data)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.children.formItem.forEach((val) => {
-        switch (val.meta.valueKey) {
-          /* case 'studentIds':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break*/
-          case 'classId':
-            val.meta.itemFormVisible = false // 修改时该字段应该隐藏
-            break
-        }
-      })
-      try {
-        this.$refs[this.system_id].resetFields()
-      } catch (e) {
-      }
     },
     changeDialogHidden() {
       this.dialogFormVisible = false
-      this.onReset()
+      this.$refs[this.system_id].resetFields()
     },
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
           const obj = {
             url: this.set.appendUrl,
-            params: this.temp
+            params: Object.assign({}, this.temp)
           }
           addList(obj).then((res) => {
-            console.log('填入数据：', obj)
             if (res.statusCode === 200) {
               this.$notify({
                 message: '一条数据添加成功',
                 type: 'success'
               })
               this.changeDialogHidden()
-              vueBus.$emit('query')
+              switch (this.system_id) {
+                case 'system_id_56': // 添加学生
+                  vueBus.$emit(this.set.fn_addQuery.control_id, { // 添加学生需要的班级id
+                    fn: 'getList',
+                    params: {
+                      'classId': this.currentClassId
+                    }
+                  })
+                  break
+                case 'system_id_523': // 添加班级
+                  break
+                case 'system_id_152': // 添加家长
+                  vueBus.$emit(this.set.fn_addQuery.control_id, { // 添加学生需要的班级id
+                    fn: 'getList',
+                    params: {
+                      'studentId': this.checkedId
+                    }
+                  })
+                  break
+              }
             } else {
               this.$notify.error('添加失败')
             }
@@ -273,10 +488,9 @@ export default {
         if (valid) {
           const obj = {
             url: this.set.updateUrl,
-            params: Object.assign({}, this.temp)
+            params: this.temp
           }
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -286,7 +500,27 @@ export default {
               }
             }
             this.changeDialogHidden()
-            vueBus.$emit('query')
+            switch (this.system_id) {
+              case 'system_id_490': // 编辑学生
+                console.log('编辑学生', this.currentClassId)
+                vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
+                  fn: 'getList',
+                  params: {
+                    classId: this.editClassId
+                  }
+                })
+                break
+              case 'system_id_523': // 编辑班级
+                break
+              case 'system_id_443': // 编辑家长
+                vueBus.$emit(this.set.fn_editQuery.control_id, { // 添加学生需要的班级id
+                  fn: 'getList',
+                  params: {
+                    studentId: this.editClassId
+                  }
+                })
+                break
+            }
             this.$notify({
               title: 'Success',
               message: '修改成功',
@@ -296,7 +530,6 @@ export default {
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },
@@ -338,8 +571,14 @@ export default {
       this.temp = _temp
       this.rules = _rules
     },
-    onReset() { // 重置
-      this.$refs[this.system_id].resetFields()
+    // 提交表单
+    submitFn({ meta, data }) {
+      /* 提交表单之前需要判断电话号码是否有空格，修改了电话就有，没修改电话直接提交就没有空格*/
+      if (!(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/).test(this.temp['parentTel']) || !(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/).test(this.temp['studentTel'])) {
+        this.temp['parentTel'] = this.temp['parentTel'].replace(/\s/g, '')
+        this.temp['studentTel'] = this.temp['studentTel'].replace(/\s/g, '')
+      }
+      this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
 }

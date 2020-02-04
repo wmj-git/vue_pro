@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <el-card :style="{'max-height': set.maxHeight,'overflow-y': 'auto'}">
+    <el-card :style="{'height': set.height,'max-height': set.maxHeight,'overflow-y': 'auto'}">
       <el-form
         :ref="system_id"
         :class="set.class"
@@ -12,7 +12,7 @@
       >
         <template v-for="(item,index) in children.formItem">
           <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-            <el-form-item v-if="item.meta.itemType==='input'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-if="item.meta.itemType==='input'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -20,7 +20,7 @@
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -39,7 +39,7 @@
                 </el-select>
               </el-input>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='textarea'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-input
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -49,7 +49,7 @@
                 :autosize="item.meta.autosize_OBJ ? item.meta.autosize_OBJ : { minRows: 2, maxRows: 6}"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='select'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-select
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
@@ -67,16 +67,18 @@
                 </template>
               </el-select>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='switch'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-switch
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
-                :active-color="item.meta.activeColor ? item.meta.activeColor : '#111c95'"
-                :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
+                :active-color="item.meta.activeColor || '#353bbd'"
+                :inactive-color="item.meta.inactiveColor || '#a6aebd'"
+                :active-value="item.meta.activeValue"
+                :inactive-value="item.meta.inactiveValue"
               />
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='dropzone'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-row>
                 <el-col :span="32">
                   <el-image
@@ -85,11 +87,11 @@
                     fit="fit"
                   />
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="14" :offset="2">
                   <dropzone
                     :id="item.meta.system_id"
                     :ref="item.meta.system_id"
-                    :style="{'max-height': '184px','overflow':'hidden'}"
+                    :style="{'max-height': '106px','min-height': '80px','max-width': '106px','min-width': '80px','overflow':'hidden'}"
                     :url="BASE_API+item.meta.url"
                     :item="item"
                     @dropzone-removedFile="dropzoneR"
@@ -98,7 +100,7 @@
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='json'" :label="item.meta.title" :prop="item.meta.valueKey">
+            <el-form-item v-else-if="item.meta.itemType==='json'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
               <div class="json-item">
                 <json-editor
                   :ref="item.meta.system_id"
@@ -106,24 +108,42 @@
                 />
               </div>
             </el-form-item>
-            <el-form-item v-else-if="item.meta.itemType==='tree'" :label="item.meta.title" :prop="item.meta.valueKey">
-              <em-tree :data="item" />
+            <el-form-item v-else-if="item.meta.itemType==='tree'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <em-tree :ref="item.meta.system_id" :data="item" />
             </el-form-item>
-            <el-button
-              v-else-if="item.meta.itemType==='button'"
-              :ref="item.meta.system_id"
-              :icon="item.meta.icon"
-              :class="item.meta.class"
-              :disabled="item.meta.disabled"
-              :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
-              @click="fn(item, Form)"
-            >
-              {{ item.meta.title }}
-            </el-button>
+            <el-form-item v-else-if="item.meta.itemType==='timePicker'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-time-picker
+                :ref="item.meta.system_id"
+                v-model="Form[item.meta.valueKey]"
+                is-range
+                :disabled="item.meta.disabled"
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                placeholder="选择时间范围"
+              />
+            </el-form-item>
           </el-col>
         </template>
       </el-form>
     </el-card>
+    <el-row>
+      <template v-for="(item,index) in children.formItem">
+        <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+          <el-button
+            v-if="item.meta.itemType==='button'"
+            :ref="item.meta.system_id"
+            :icon="item.meta.icon"
+            :class="item.meta.class"
+            :disabled="item.meta.disabled"
+            :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
+            @click="fn(item, Form)"
+          >
+            {{ item.meta.title }}
+          </el-button>
+        </el-col>
+      </template>
+    </el-row>
   </div>
 </template>
 <script>
@@ -148,6 +168,7 @@ export default {
       set: {
         labelPosition: '',
         labelWidth: '',
+        height: '280px',
         maxHeight: '580px', // 表单最大高
         statusIcon: false,
         class: ''
@@ -180,15 +201,25 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    fn(_obj, _data) {
+    fn(obj, data) {
+      const _obj = JSON.parse(JSON.stringify(obj))
+      const _data = JSON.parse(JSON.stringify(data))
+      const _validate = _obj.meta.fn_set.validate || false
+      let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
+          _valid = true
           return true
         } else {
           console.log('error submit!!')
           return false
         }
       })
+      if (_validate) {
+        if (!(_valid)) {
+          return
+        }
+      }
       const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
@@ -253,19 +284,21 @@ export default {
       const _Form = {}
       const _rules = {}
       const _rule_items = JSON.parse(JSON.stringify(rule_items))
-      _rule_items.forEach(function(_obj) {
+      _rule_items.forEach((_obj) => {
+        // 表单验证
         _obj.meta.validate_OBJ.data.forEach((_item) => {
           if ('validator' in _item) {
             _item.validator = validate[_item.validator]
           }
         })
+        // 表单绑定数据
         if (_obj.meta.itemType === 'selectInput') {
           _obj.meta.options_OBJ.data.forEach((_val) => {
-            _Form[_val.value] = _obj.meta.defaultValue
+            _Form[_val.value] = (_val.value in this.Form) ? this.Form[_val.value] : _obj.meta.defaultValue
             _rules[_val.value] = _obj.meta.validate_OBJ.data
           })
         } else {
-          _Form[_obj.meta.valueKey] = _obj.meta.defaultValue
+          _Form[_obj.meta.valueKey] = (_obj.meta.valueKey in this.Form) ? this.Form[_obj.meta.valueKey] : _obj.meta.defaultValue
           _rules[_obj.meta.valueKey] = _obj.meta.validate_OBJ.data
         }
       })
@@ -282,7 +315,6 @@ export default {
       })
     },
     updateOptionParamsFn(_obj) {
-      console.log('updateOptionParamsFn', _obj)
       const _meta = _obj.meta
       const _set = _meta.fn_set
       const _params = _obj.data
@@ -297,12 +329,19 @@ export default {
             let _options = []
             await optionData({
               url: _set.requestUrl,
+              method: _set.requestMethod || null,
               params: _params
             }).then((res) => {
               if (res && res.statusCode === 200) {
+                let _resData = []
+                if ('list' in res.data) {
+                  _resData = _resData.concat(res.data.list)
+                } else {
+                  _resData = _resData.concat(res.data)
+                }
                 const _keys = _set.successKeys
                 const _data = []
-                res.data.forEach((_item) => {
+                _resData.forEach((_item) => {
                   const _value = {}
                   for (const _k in _keys) {
                     _value[_k] = _item[_keys[_k]]
@@ -351,7 +390,6 @@ export default {
           })
         }
       })
-      console.log('optionData', _options)
       return _options
     },
     async optionFn(_meta) {
@@ -388,12 +426,10 @@ export default {
       } else if (_meta && 'options_OBJ' in _meta) {
         _options = _options.concat(_meta.options_OBJ.data ? _meta.options_OBJ.data : [])
       }
-      console.log('optionData', _options)
       return _options
     },
     setForm(_obj) { // 设置表单值
       const _this = this
-      console.log('setForm', _obj)
       let _set = {}
       let _data = {}
       if ('meta' in _obj && 'fn_set' in _obj.meta) {
@@ -413,14 +449,12 @@ export default {
         case 'baseGet':
           break
         case 'userUpdateRoles':
-          console.log('paramsGet', _set)
           paramsGetApi({
             url: _set.requestUrl,
             params: _data[_set.requestParams]
           }).then((res) => {
             if (res && res.statusCode === 200) {
               const _val = []
-              console.log('paramsGet', res)
               res.data.forEach((_item) => {
                 _val.push(_item.id)
               })
@@ -448,32 +482,38 @@ export default {
       const _set = _meta.fn_set
       const _url = _set.requestUrl
 
-      this.$refs[this.system_id].validate((valid) => {
-        if (valid) {
-          postApi({
-            url: _url,
-            params: _params
-          }).then((res) => {
-            console.log('submit!', res)
-            if (res && res.statusCode === 200) {
-              this.$message({
-                message: res.message,
-                type: 'success'
-              })
-              this.callback(this.sendData, res)
-            }
+      postApi({
+        url: _url,
+        method: _set.requestMethod || null,
+        params: _params
+      }).then((res) => {
+        if (res && res.statusCode === 200) {
+          this.$message({
+            message: res.message,
+            type: 'success'
           })
-        } else {
-          console.log('error submit!!')
-          return false
+          this.callbackFn(this.senderData, res)
         }
       })
     },
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
     },
+    windowOpen(_obj) {
+      console.log('windowOpen', _obj)
+      const _meta = _obj.meta
+      // 请求的数据
+      const _params = _obj.data
+      const _set = _meta.fn_set
+      const _url = _set.requestUrl
+      let _str = ''
+      for (const k in _params) {
+        _str += k + '=' + _params[k] + '&'
+      }
+      _str += 'Authorization=' + this.$store.getters['token']
+      window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
+    },
     dropzoneS(file, el, item) {
-      console.log('file', file, file.xhr.status, JSON.parse(file.xhr.response), this.Form, item)
       if (!(file.xhr.status === 200)) {
         return
       }
@@ -484,8 +524,9 @@ export default {
     dropzoneR(file) {
       this.$message({ message: 'Delete success', type: 'success' })
     },
-    selectOnChangeFn(_obj, _data) {
-      console.log('selectOnChangeFn', _obj, _data)
+    selectOnChangeFn(obj, data) {
+      const _obj = JSON.parse(JSON.stringify(obj))
+      const _data = JSON.parse(JSON.stringify(data))
       if ('onChange' in _obj.meta) {
         this.fn({
           meta: _obj.meta.onChange

@@ -24,7 +24,7 @@
         </div>
       </template>
     </split-pane>
-    <!--容器类显示-->
+    <!--容器显示-->
     <template v-for="(item,index) in children.ContainerBox">
       <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
     </template>

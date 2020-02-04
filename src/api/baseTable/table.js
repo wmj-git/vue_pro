@@ -16,10 +16,24 @@ export function del(obj) { // 表格数据删
 }
 
 export function query(obj) { // 表格数据查
+  let _method = 'post'
+
+  if ('method' in obj) {
+    _method = obj.method
+  }
+
+  if ('method' in obj && obj.method === 'get') {
+    return request({
+      url: obj.url,
+      method: obj.method,
+      params: obj.params
+    })
+  }
+
   return request({
     url: obj.url,
-    method: 'get',
-    params: obj.params
+    method: _method,
+    data: obj.params
   })
 }
 

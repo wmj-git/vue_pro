@@ -1,0 +1,32 @@
+.el-drawer {
+  background: $em-background-details;
+  overflow: auto;
+  .el-drawer__body {
+    padding: 0 10px;
+    .el-form-item {
+      display: flex !important;
+
+      .el-form-item__label {
+        width: 20%;
+        color: #99a9bf;
+        text-align: justify;
+        line-height: 20px;
+      }
+
+      .el-form-item__content {
+        width: 80%;
+        text-align: justify;
+        color: $em-text-color-base;
+        line-height: 20px;
+        padding-right: 20px;
+      }
+    }
+  }
+}
+.el-drawer__close-btn{
+  color: darken($em-text-color-base,10%);
+  font-size: 18px;
+  &:hover{
+    color: $em-text-color-base;
+  }
+}

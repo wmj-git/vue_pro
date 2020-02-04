@@ -1,6 +1,7 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
+      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -83,6 +84,7 @@
                 v-model="temp[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请选择'"
+                clearable
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -93,8 +95,18 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="changeDialogHidden">取 消</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确 定</el-button>
+        <template v-for="(btn, _index ) in children.formBtn">
+          <el-button
+            :key="_index"
+            :ref="btn.meta.system_id"
+            class="em-btn-operation table_inLine_btn"
+            size="mini"
+            :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+            @click="fn(btn,temp)"
+          >
+            {{ btn.meta.title }}
+          </el-button>
+        </template>
       </div>
     </el-dialog>
   </div>
@@ -103,7 +115,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, schoolInfo, deviceType } from '@/api/schoolService/tableInfo'
+import { addList, editList, deviceType, currentUser } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -127,7 +139,8 @@ export default {
         type: Boolean
       },
       children: {
-        formItem: []
+        formItem: [],
+        formBtn: []
       },
       temp: {},
       rules: {}, // 验证数据
@@ -135,6 +148,7 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
+      organizationCode: '', // 当前用户的组织编码
       typeArrList: {} // 设备类型传递给表格
     }
   },
@@ -154,28 +168,24 @@ export default {
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
-        const optionsArr = []
-        const obj = {
-          url: this.set.selectUrl
-        }
         switch (this.children.formItem[i].meta.valueKey) {
-          case 'siOrgCode': // 学校组织代码
-            schoolInfo(obj).then(response => {
-              response.data.list.forEach((_val) => {
-                optionsArr.push({ 'label': _val.orgCode, 'value': _val.orgCode })
-              })
+          case 'siOrgCode':
+            await currentUser({
+              url: '/school/organization/selectThis'
+            }).then(response => {
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
             })
-            this.children.formItem[i].meta.options_OBJ.data = optionsArr // 学校组织编码下拉选项赋值
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
             break
           case 'type': // 设备管理-设备类型
             var typeArr = []
             var _obj = {
-              url: this.set.searchUrl,
-              params: {
-                enumType: 'device_type'
-              }
+              enumType: 'device_type'
             }
-            await deviceType(_obj).then(response => {
+            await deviceType({
+              url: this.set.searchUrl,
+              params: _obj
+            }).then(response => {
               const _map = new Map()
               response.data.forEach((_val) => {
                 typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
@@ -191,32 +201,31 @@ export default {
       }
       this.defaultFn(this.children.formItem)
     },
-    fn(_obj) {
-      const _fn = _obj.meta.fn
+    fn(_obj, _data) {
+      console.log('methods', _obj, _data)
+      this.$refs[this.system_id].validate((valid) => { // 表单验证
+        if (valid) {
+          return true
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       switch (_controlType) {
-        case 'default':
-          this[_fn](_obj.meta)
-          break
+        default:
+          this.FN(_obj, _data)
       }
     },
     // 添加数据显示
     add() {
+      console.log('add')
       this.dialogStatus = 'create'
-      this.temp = {}
       this.dialogFormVisible = true
-      if (this.$refs[this.system_id] !== undefined) {
-        try {
-          this.$nextTick(() => {
-            this.$refs[this.system_id].resetFields()
-          })
-        } catch (e) {
-          e
-        }
-      }
     },
     // 修改数据弹框
-    edit() {
+    edit(_data) {
+      this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -263,7 +272,6 @@ export default {
             params: Object.assign({}, this.temp)
           }
           editList(obj).then(() => {
-            console.log('修改数据', this.temp)
             const _this = this
             for (const v in _this.tableDataEnd) {
               if (v.id === _this.temp.id) {
@@ -278,12 +286,11 @@ export default {
               title: 'Success',
               message: '修改成功',
               type: 'success',
-              duration: 2000
+              duration: 20000
             })
           })
         }
       })
-      this.dialogFormVisible = false
     },
     currentSel() {
     },
@@ -324,6 +331,10 @@ export default {
 
       this.temp = _temp
       this.rules = _rules
+    },
+    // 提交表单
+    submitFn({ meta, data }) {
+      this.dialogStatus === 'create' ? this.createData() : this.updateData()
     }
   }
 }

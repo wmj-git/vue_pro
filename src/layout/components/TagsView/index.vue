@@ -195,11 +195,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "../../../styles/variables";
 .tags-view-container {
   height: 34px;
   width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
+  background: #0d1430;
+  border-bottom: 1px solid #0d1430;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   .tags-view-wrapper {
     .tags-view-item {
@@ -214,6 +215,14 @@ export default {
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
+      -webkit-transition: .5s;
+      -moz-transition: .5s;
+      -ms-transition: .5s;
+      color: $targs-view-text;
+      border-color: $targs-view-border-Color;
+      background:rgba(8, 13, 33, 0.81);
+      transition: .5s;
+      border-radius: 30px 0px 30px 0px;
       margin-top: 4px;
       &:first-of-type {
         margin-left: 15px;
@@ -222,9 +231,18 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
+        border-color: $em-text-highlight-base;
+        background:$targs-view-wrapper-bg;
+        -webkit-transition: .5s;
+        -moz-transition: .5s;
+        -ms-transition: .5s;
+        color: #b1d7fa;
+        transition: .5s;
+        border-radius: 30px 0px 30px 0px;
+        &:hover{
+          background:linear-gradient(#1873d4, #020205);
+          color: #fff;
+        }
         &::before {
           content: '';
           background: #fff;
@@ -236,11 +254,16 @@ export default {
           margin-right: 2px;
         }
       }
+      & .el-icon-close:hover{
+        background-color: transparent;
+        color: #fff;
+        font-size: 16px;
+      }
     }
   }
   .contextmenu {
     margin: 0;
-    background: #fff;
+    background: darken(rgba(20, 31, 55, 0.5),5%);
     z-index: 3000;
     position: absolute;
     list-style-type: none;
@@ -248,14 +271,14 @@ export default {
     border-radius: 4px;
     font-size: 12px;
     font-weight: 400;
-    color: #333;
+    color: $em-text-color-base;
     box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
       &:hover {
-        background: #eee;
+        color: $em-text-highlight-base;
       }
     }
   }

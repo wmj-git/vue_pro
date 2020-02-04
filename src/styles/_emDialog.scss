@@ -1,3 +1,99 @@
+.el-dialog{
+  background: $background-linear-base;
+  color: darken($em-text-color-base, 20%);
+  box-shadow: 0 0 10px #aeb1b4;
+  border-radius: 6px;
+}
+.el-dialog__title,.el-dialog__headerbtn .el-dialog__close{
+  color: $em-text-color-base;
+}
 .el-dialog__body{
   overflow: auto;
+  background: darken($em-form-item-checkMenu,5%);
+  margin: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 0 5px #8f9295;
+}
+.el-form-item__label{
+  color: darken($em-text-color-base, 15%);
+}
+.el-form--label-left .el-form-item__label{
+  text-align: right;
+}
+// 已禁用输入框
+.el-input.is-disabled .el-input__inner{
+  background-color: #130f0f54;
+  border-color: #3f3d3d;
+  color: #aaa7a7;
+}
+/*输入框-hover*/
+.el-input__inner:hover{
+  border-color: $em-text-highlight-base;
+}
+// 下拉框-input
+.el-input-group__append, .el-input-group__prepend{
+  background-color: $em-form-item-checkMenu;
+  border-color: $em-form-item-checkMenu-border;
+}
+/*下拉框-Hover*/
+.el-select:hover .el-input__inner{
+  border-color: $em-text-highlight-base;
+}
+// select
+.el-select-dropdown,.el-dropdown-menu{
+  background-color: $em-form-item-checkMenu;
+  border-color: $em-form-item-checkMenu-border;
+}
+.el-select-dropdown__item{
+  color: darken($em-text-color-base, 1%);
+  &.el-dropdown-menu__item{
+    color: darken($em-text-color-base, 1%);
+  }
+  &:hover,&.hover{
+    background-color: lighten($em-form-item-checkMenu, 10%);
+    color: $em-text-highlight-base;
+  }
+  &.selected{
+    background-color: lighten($em-form-item-checkMenu, 5%);
+    color: $em-text-highlight-base !important;
+  }
+}
+/* dropdown-menu*/
+.el-dropdown-menu__item{
+  &:not(.is-disabled):hover,&:focus,&.hover{
+    background-color: lighten($em-form-item-checkMenu, 10%);
+    color: $em-text-highlight-base;
+  }
+}
+.el-dropdown-menu__item--divided{
+  border-color:darken($em-form-item-checkMenu, 10%);
+  &:before{
+    background-color: darken($em-form-item-checkMenu, 10%);
+  }
+}
+
+/*拖拽上传图片*/
+.el-upload-dragger {
+  background-color: $em-upload-bg;
+  border-color: $em-upload-border;
+}
+
+
+/*下拉多选*/
+.el-select .el-tag{
+  background: rgba(255,255,255,0.2);
+  color: darken($em-text-color-base,20%);
+}
+.el-select .el-tag__close.el-icon-close{
+  background: rgba(192, 196, 204, 0.5);
+}
+.el-tag.el-tag--info{
+  border-color:darken($em-border-color-base,70%);
+}
+.el-tag.el-tag--info .el-tag__close{
+  color:darken($em-text-color-base,20%) !important;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
+  color: lighten($em-text-highlight-base,15%) !important;
+  background: transparent !important;
 }

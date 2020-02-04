@@ -23,3 +23,14 @@ const store = new Vuex.Store({
 })
 
 export default store
+
+// this.$store.state.win.win
+// this.$store.commit("win/dialog_open", {})
+// this.$store.getters["user/token"]
+/* this.$store.dispatch("user/LoginByUsername", {
+  username: _username,
+  password: _password
+}).then((response) => {
+  console.log(response);
+  this.$router.push("/home/scene");
+});*/

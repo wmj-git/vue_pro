@@ -1,6 +1,12 @@
+@import "variables";
 .el-table {
+  background: $background-linear-base;
   & th{
-    background-color: black;
+    background: $em-background-table-thead;
+  }
+  & th, & td{
+    border-color: darken($em-border-color-base,30%) !important;
+    font-size: 14/$r+rem;
   }
   & thead th{
     border-right: 1px dotted rgba(255,255,255,0.5);
@@ -8,11 +14,67 @@
   & .cell{
     white-space: nowrap;//不换行，否则会把行高撑开
   }
+  & thead{
+    color: darken($em-text-color-base,20%) !important;
+  }
+  &::before{
+    background-color:darken($em-bg-color-base,65%);//表格之外下方的边框线
+  }
+  & tr{
+    background-color: $em-background-table-tbody;
+    color: darken($em-text-color-base,22%);
+  }
+  &.row-bg tr{
+    background: #f00;
+  }
+}
+.emTable{
+  padding-bottom: 20px;
+}
+.el-table__fixed::before, .el-table__fixed-right::before{
+  height:0;//表格之外行号列下方的边框线
+}
+.#{table-container}{
+ /* background: darken($em-bg-color-base,10%);*/
+}
+/*hover状态*/
+.el-table__body tr.hover-row>td,.el-table__body tr.hover-row.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped>td,.el-table__body tr.hover-row.el-table__row--striped .current-row>td{
+  background-color:darken($em-background-hover-tbody,20%);
+  color: $em-text-color-base;
+}
+/*dialog-table*/
+.el-table--enable-row-hover .el-table__body tr:hover>td{
+  background-color:darken($em-background-hover-tbody,20%);
+  color: $em-text-color-base;
+}
+.el-table th.is-leaf, .el-table td{
+  border-color: darken($em-border-color-base,50%);
+}
+/*选中行*/
+.el-table__body tr.current-row>td,.el-table__row--striped.current-row td{
+  background-color: darken($em-background-hover-tbody,20%);
+  color: $em-text-color-base;
+}
+.el-table--border{
+  border-color: transparent;
+  &::after{
+    background-color:darken($em-bg-color-base,65%);//表格之外右边的边框线
+  }
+  & th,& td{
+    border-right: none;
+  }
 }
 
-.el-table--border th, .el-table--border td{
-  border-right: none;
+/*tbody行内复选框*/
+.el-checkbox__input.is-checked .el-checkbox__inner,.el-checkbox__input.is-indeterminate .el-checkbox__inner{
+  background-color:darken(nth($em-highlight-bg2-color-base, 2),3%);
+  border-color: $em-highlight-border-color-base;
 }
+.el-checkbox__inner:hover,.el-checkbox__input.is-focus .el-checkbox__inner{
+  border-color: darken($em-highlight-border-color-base,15%);
+}
+
 /*webkit滚动条样式*/
 ::-webkit-scrollbar {
   width: 10px;
@@ -29,3 +91,5 @@
 .el-table--scrollable-y .el-table__body-wrapper,.el-table--scrollable-x .el-table__body-wrapper{
   scrollbar-width:thin;
 }
+
+

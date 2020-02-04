@@ -6,6 +6,18 @@
 @import './btn.scss';
 @import "emTable";
 @import "emDialog";
+@import "emTree";
+@import "emButton"; // 按钮
+@import "emPagination"; // 页码
+@import "emSplit"; // 分割
+@import "emTab";// 其他（单个）
+@import "transfer"; // 穿梭框
+@import "em_detailDrawer"; // 抽屉
+@import "toolTip";
+@import "message_element";
+@import "messageBox";
+@import "date_picker_element";
+@import "textarea_element"; // 文本域
 
 //element-ui
 @import 'element-ui/col';
