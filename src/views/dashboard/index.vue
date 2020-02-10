@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div id="hh"><el-button>按钮</el-button></div>
+    <!--<div id="hh"><el-button>按钮123</el-button></div>-->
     <template v-for="(item,index) in children.pane">
       <component :is="item.meta.componentType" :ref="item.meta.system_id" :key="index" :data="item" />
     </template>
