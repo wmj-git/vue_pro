@@ -64,6 +64,7 @@ export default {
         loadJs('ol_js', _url + '/sceneStatic/ol/ol.js', function() {
           _this.mapInit()
         })
+        // 加载
       }
     },
     mapInit() { // 创建地图对象
