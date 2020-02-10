@@ -1,7 +1,6 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
-      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -33,8 +32,8 @@
                 clearable
                 oninput="if(value.length>13)value=value.slice(0,13)"
                 :disabled="item.meta.disabled"
-                @blur="onBlur"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlur"
                 @input="handlerPhone"
               />
             </el-form-item>
