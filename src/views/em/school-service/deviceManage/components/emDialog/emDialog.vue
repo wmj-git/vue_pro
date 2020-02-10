@@ -1,7 +1,6 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
-      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -69,6 +68,17 @@
                 </template>
               </el-select>
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-transfer
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                filterable
+                :titles="item.meta.titles"
+                :right-default-checked="rightDefaultChecked"
+                :data="item.meta.options_OBJ.data"
+                @change="handleChange"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='datetime'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-date-picker
                 :ref="item.meta.system_id"
@@ -115,7 +125,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, deviceType, currentUser } from '@/api/schoolService/tableInfo'
+import { addList, editList, deviceType, currentUser, associateBuild } from '@/api/schoolService/tableInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -128,6 +138,7 @@ export default {
         updateUrl: '',
         selectUrl: '',
         searchUrl: '',
+        buildingUrl: '', // 建筑
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -148,8 +159,10 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
+      rightDefaultChecked: [], // 穿梭框右边默认已选中数组
       organizationCode: '', // 当前用户的组织编码
-      typeArrList: {} // 设备类型传递给表格
+      typeArrList: {}, // 设备类型传递给表格
+      deviceIdes: [] // 设备id关联建筑
     }
   },
   async created() {
@@ -228,6 +241,26 @@ export default {
       this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+    },
+    handleChange(value, direction, movedKeys) {
+      this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
+      console.log('rightCheckedArr', this.rightCheckedArr)
+    },
+    // 设备关联建筑
+    associate(_data) {
+      this.temp = Object.assign({}, this.temp, _data.data) // 赋值给修改表单
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.deviceIdes = this.temp.id
+      console.log('当前设备', this.deviceIdes)
+      const _obj = {
+        deviceIds: this.deviceIdes
+      }
+      associateBuild({
+        url: this.set.buildingUrl
+      }).then(response => {
+        console.log('所有建筑：', response)
+      })
     },
     changeDialogHidden() {
       this.dialogFormVisible = false

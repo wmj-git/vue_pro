@@ -1,13 +1,13 @@
 <template>
   <div class="school-container table-container">
     <el-table
+      :ref="system_id"
       :data="tableDataEnd "
       border
-      :ref="system_id"
       style="width: 100%;"
+      :row-style="rowClass"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
-      :row-style="rowClass"
       @row-click="handleRowClick"
     >
       <el-table-column
@@ -26,7 +26,7 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="auto">
+      <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
@@ -126,6 +126,12 @@ export default {
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
         case 'DeviceInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        case 'DeviceInfo_connectData_dialogVisible':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: Object.assign({}, _data.row)
