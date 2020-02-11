@@ -135,10 +135,9 @@ export default {
       }
       if (node.level === 1) { // 子节点一级
         var buildArr = []
-        buildList({ // 建筑信息
+        await buildList({ // 建筑信息
           url: this.set.buildingUrl
         }).then(response => {
-          console.log('建筑信息', response)
           response.data.list.forEach(val => {
             buildArr.push({ 'label': val.buildingName, 'value': val.id, nodeData: val })
           })
@@ -146,20 +145,20 @@ export default {
         return resolve(buildArr)
       }
       if (node.level === 2) { // 子节点二级
-        var classArr = []
+        var floorArr = []
         const _data = node.data
         var _params = {
-          gradeKey: _data.value
+          buildingId: _data.value
         }
         await fetchList({ // 楼层信息
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
           response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
+            floorArr.push({ 'label': val.floorName, 'value': val.id, leaf: true, nodeData: val })
           })
         })
-        return resolve(classArr)
+        return resolve(floorArr)
       }
     },
     // 修改节点
@@ -190,6 +189,8 @@ export default {
               message: '删除成功',
               type: 'success'
             })
+            node.parent.loaded = false
+            node.parent.expand()
           } else {
             _this.$notify({
               message: '删除失败',

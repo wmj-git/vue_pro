@@ -189,6 +189,8 @@ export default {
               message: '删除成功',
               type: 'success'
             })
+            node.parent.loaded = false
+            node.parent.expand()
           } else {
             _this.$notify({
               message: '删除失败',
