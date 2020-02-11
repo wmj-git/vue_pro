@@ -131,12 +131,6 @@ export default {
             data: Object.assign({}, _data.row)
           })
           break
-        case 'DeviceInfo_connectData_dialogVisible':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: Object.assign({}, _data.row)
-          })
-          break
         default:
           this.FN(_obj, _data)
       }

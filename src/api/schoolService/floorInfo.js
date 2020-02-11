@@ -28,7 +28,15 @@ export function buildList(obj) {
     method: 'post',
     data: obj.params
   })
+}// 获取楼层信息
+export function floorList(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
 }
+
 // 删除
 export function delList(obj) {
   return request({
@@ -54,3 +62,20 @@ export function currentUser(obj) {
     params: obj.params
   })
 }
+// 为指定设备分配建筑
+export function associateBuild(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}
+// 查询设备
+export function deviceInfo(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}
+

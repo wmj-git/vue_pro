@@ -79,6 +79,7 @@ export default {
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
       tableHeader: [],
       tableDataEnd: [],
+      currentFloor: '', // 当前楼层（楼层id渲染表格数据）
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
@@ -105,8 +106,9 @@ export default {
     }
   },
   mounted() {
-    vueBus.$on('class', val => {
-      this.classes = val
+    vueBus.$on('floorInfo', val => {
+      this.currentFloor = val
+      console.log('接受参数', val)
     })
   },
   created() {
@@ -133,6 +135,12 @@ export default {
           })
           break
         case 'TableInfo_connectData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        case 'DeviceInfo_connectData_dialogVisible': // 关联建筑
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: Object.assign({}, _data.row)
@@ -200,7 +208,7 @@ export default {
         }
       })
     },
-    // 渲染数据(班级对应的老师没有分页)
+    // 渲染数据(指定楼层的设备)
     getList(params) {
       const _params = {
         classId: this.classes

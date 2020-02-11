@@ -93,14 +93,6 @@ export function associateClass(obj) {
     data: obj.params
   })
 }
-// 为指定设备分配建筑
-export function associateBuild(obj) {
-  return request({
-    url: obj.url,
-    method: 'post',
-    data: obj.params
-  })
-}
 // 获取年级编码
 export function gradeCode(obj) {
   return request({

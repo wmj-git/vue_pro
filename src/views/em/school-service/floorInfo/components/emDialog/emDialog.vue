@@ -154,7 +154,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, buildList, fetchList } from '@/api/schoolService/floorInfo'
+import { addList, editList, currentUser, buildList, floorList, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -167,10 +167,13 @@ export default {
         searchUrl: '',
         appendUrl: '',
         updateUrl: '',
+        floorUrl: '', // 楼层id
+        deviceUrl: '', // 设备
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
         checkedUrl: '', // 已分配班级-指定老师
         telUrl: '', // 已存在教师
+        buildingUrl: '', // 关联建筑
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -198,24 +201,25 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       typeArrList: {}, // 设备类型传递给表格
-      currentClass: '',
-      rightCheckedArr: [],
+      currentFloor: '',
+      rightCheckedArr: 0,
+      BuildArr: [], // 建筑信息(穿梭框左边的值，添加楼层的下拉选项)
       rightDefaultChecked: [], // 右边默认已选中数组
-      teachersId: []
+      deviceArr: [],
+      deviceIdes: [] // 设备id关联建筑
     }
   },
   async created() {
     await this.init()
-    vueBus.$on('class', val => {
-      this.currentClass = val
-      this.temp['classId'] = val // 异步获取班级传过来的数据，不是初始化获取
+    vueBus.$on('floorInfo', val => {
+      this.currentFloor = val
+      console.log('接受参数', val)
     })
   },
   beforeDestroy() {
   },
   methods: {
     fn(_obj, _data) {
-      console.log('methods', _obj, _data)
       this.$refs[this.system_id].validate((valid) => { // 表单验证
         if (valid) {
           return true
@@ -236,49 +240,40 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
+          /* case 'floorId':
+            floorList({
+              url: this.set.floorUrl
+            }).then(res => {
+              console.log('楼层', res)
+              res.data.list.forEach(val => {
+                this.BuildArr.push({ 'label': val.buildingName, 'key': val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的楼层
+            break*/
+          case 'deviceIds':
+            floorList({
+              url: this.set.deviceUrl
+            }).then(res => {
+              res.data.list.forEach(val => {
+                this.deviceArr.push({ 'label': val.name, 'key': val.id })
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = this.deviceArr // 当前组织具有的所有设备
+            break
           case 'buildingName':
-            var buildArr = []
-            var buildId = []
             buildList({
               url: this.set.searchUrl
             }).then(res => {
               res.data.list.forEach(val => {
-                buildArr.push({ 'label': val.buildingName, 'value': val.id })
-                buildId.push({ 'label': val.id, 'value': val.id })
+                this.BuildArr.push({ 'label': val.buildingName, 'value': val.id })
               })
             })
-            this.children.formItem[i].meta.options_OBJ.data = buildArr // 当前组织具有的建筑
+            this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的建筑
             break
         }
       }
       this.defaultFn(this.children.formItem)
-    },
-    // 失去焦点时判断该教师是否存在
-    onBlur() {
-      const _this = this
-      const _params = {
-        tel: this.temp['tel'].replace(/\s/g, '') // 获取当前输入框的值传递给后台查询是否有该教师已存在
-      }
-      fetchList({
-        url: _this.set.telUrl,
-        params: _params
-      }).then(res => {
-        if (res.statusCode === 200) {
-          if (res.data.list.length !== 0) {
-            this.temp['name'] = res.data.list[0].name
-            this.temp['sex'] = res.data.list[0].sex
-            this.temp['age'] = res.data.list[0].age
-            this.temp['tncumbency'] = res.data.list[0].tncumbency
-            this.temp['seniority'] = res.data.list[0].seniority
-          } else if (res.data.list.length === 0) {
-            this.$message({
-              showClose: true,
-              message: '该教师信息为空，请继续填写！',
-              type: 'info'
-            })
-          }
-        }
-      })
     },
     // 添加数据显示
     add() {
@@ -290,25 +285,22 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
-    // 分配班级(dialog)
-    associate(_data) {
-      this.temp = Object.assign({}, this.temp, _data.data) // 赋值给修改表单
+    // 设备关联楼层
+    associate() {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.teachersId = this.temp.id
-      const _obj = {
-        teacherId: this.teachersId,
-        type: 1
+      const _param = {
+        floorIds: [this.currentFloor.id]
       }
-      /* checkedList({
+      deviceInfo({
         url: this.set.checkedUrl,
-        params: _obj
+        params: _param
       }).then(response => {
-        this.temp['classIds'] = []
+        console.log('已分配设备：', response)
         response.data.list.forEach(val => {
-          this.temp['classIds'].push(val.id) // 获取指定老师已分配的班级
+          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
         })
-      })*/
+      })
     },
     // 修改数据弹框
     edit(_data) {
@@ -425,23 +417,21 @@ export default {
     },
     // 提交表单
     submitFn({ meta, data }) {
-      /* 提交表单之前需要判断电话号码是否有空格，修改了电话就有，没修改电话直接提交就没有空格*/
-      if (!(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/).test(this.temp['tel'])) {
-        this.temp['tel'] = this.temp['tel'].replace(/\s/g, '')
-      }
       this.dialogStatus === 'create' ? this.createData() : this.updateData()
     },
-    handleChange(value, direction, movedKeys) {
+    handleChange(value, direction) {
       this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
-      console.log('rightCheckedArr', this.rightCheckedArr)
+      console.log('选择的值', this.rightCheckedArr)
     },
     // 为指定老师分配班级(提交)
     associateFn() {
+      console.log('提交', this.currentFloor)
       const _params = {
-        teacherIds: [this.teachersId],
-        classIds: this.rightCheckedArr
+        deviceIds: this.rightCheckedArr,
+        buildingId: this.currentFloor.buildingId,
+        floorId: this.currentFloor.id
       }
-      /* associateClass({
+      associateBuild({
         url: this.set.associateUrl,
         params: _params
       }).then(response => {
@@ -449,12 +439,12 @@ export default {
           this.changeDialogHidden()
           this.$notify({
             title: 'Success',
-            message: '班级分配成功',
+            message: '楼层分配成功',
             type: 'success',
             duration: 2000
           })
         }
-      })*/
+      })
     },
     // 先选择建筑再获取该建筑对应的建筑id
     changeGrade(val) {

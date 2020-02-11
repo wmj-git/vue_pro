@@ -74,6 +74,9 @@ export default {
         fn_set: {
           control_id: null // 区别哪个table的getList()
         },
+        fn_floor: {
+          control_id: null // 楼层关联设备
+        },
         fn_append: ''
       },
       expandAll: false,
@@ -98,7 +101,7 @@ export default {
       const _controlId = _obj.meta.control_id
       const treeRow = this.update()
       switch (_controlType) {
-        case 'TreeInfo_editData_dialogVisible': // 修改班级-树弹框
+        case 'floorInfo_associateData_dialogVisible': // 楼层关联设备-树弹框
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: treeRow
@@ -114,13 +117,11 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        /* vueBus.$emit(this.set.fn_set.control_id || this.system_id, { // 点击班级查询相应学生
-          fn: 'getList',
-          params: {
-            'classId': _data.data.nodeData.id
-          }
+        console.log('点击了楼层', _data.data.nodeData)
+        /* vueBus.$emit(this.set.fn_floor.control_id, { // 点击学校查询所有的设备
+          fn: 'getList'
         })*/
-        vueBus.$emit('class', _data.data.nodeData.id) // 添加学生需要的班级id
+        vueBus.$emit('floorInfo', _data.data.nodeData) // 关联设备
       } else if (_data.level === 1) {
         vueBus.$emit(this.set.fn_set.control_id, { // 点击学校查询所有的设备
           fn: 'getAllList'
@@ -189,7 +190,7 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-            node.parent.loaded = false
+            node.parent.loaded = false // 局部刷新
             node.parent.expand()
           } else {
             _this.$notify({
