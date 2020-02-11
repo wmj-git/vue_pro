@@ -20,7 +20,7 @@
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <span>{{ node.label }}</span>
-        <span>
+        <span v-if="node.level === 2">
           <template v-for="(btn, _index ) in children.treeBtn">
             <el-button
               :key="_index"
@@ -35,6 +35,18 @@
           </template>
         </span>
         <span v-if="node.level === 3">
+          <template v-for="(btn, _index ) in children.treeFloorBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="() => fn(btn, {'control_type': btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
           <el-button
             type="text"
             size="mini"
@@ -64,7 +76,8 @@ export default {
         isLeaf: 'leaf'
       },
       children: {
-        treeBtn: []
+        treeBtn: [],
+        treeFloorBtn: []
       },
       highlight: true, // 高亮显示当前节点
       set: {
@@ -99,12 +112,15 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-      const treeRow = this.update()
       switch (_controlType) {
         case 'floorInfo_associateData_dialogVisible': // 楼层关联设备-树弹框
           vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: treeRow
+            meta: _obj.meta
+          })
+          break
+        case 'buildInfo_associateData_dialogVisible': // 建筑关联设备-树弹框
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta
           })
           break
         default:
@@ -117,7 +133,6 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        console.log('点击了楼层', _data.data.nodeData)
         /* vueBus.$emit(this.set.fn_floor.control_id, { // 点击学校查询所有的设备
           fn: 'getList'
         })*/
@@ -162,12 +177,6 @@ export default {
         return resolve(floorArr)
       }
     },
-    // 修改节点
-    update(_data) {
-      /* if (_data.level === 3) {
-        console.log('节点数据', _data)
-      }*/
-    },
     // 删除节点
     remove(node) {
       // 获取子集id
@@ -190,7 +199,7 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-            node.parent.loaded = false // 局部刷新
+            node.parent.loaded = false // 删除操作时局部刷新
             node.parent.expand()
           } else {
             _this.$notify({

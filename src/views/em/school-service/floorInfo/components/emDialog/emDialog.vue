@@ -302,6 +302,23 @@ export default {
         })
       })
     },
+    // 设备关联建筑
+    associateBuild() {
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      const _param = {
+        floorIds: [this.currentFloor.id]
+      }
+      deviceInfo({
+        url: this.set.checkedUrl,
+        params: _param
+      }).then(response => {
+        console.log('已分配设备：', response)
+        response.data.list.forEach(val => {
+          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+        })
+      })
+    },
     // 修改数据弹框
     edit(_data) {
       /* this.temp = dataInitFn(this.temp, _data.data)*/ // 这里不(设置值不能使用this.temp,否则不会将entryTimeStr传递给后台，将会报参数错误)
