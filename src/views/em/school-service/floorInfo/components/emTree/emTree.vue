@@ -112,6 +112,8 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
+      const treeData = this.getTree()
+      console.log('结果', treeData)
       switch (_controlType) {
         case 'floorInfo_associateData_dialogVisible': // 楼层关联设备-树弹框
           vueBus.$emit(_controlId, {
@@ -176,6 +178,9 @@ export default {
         })
         return resolve(floorArr)
       }
+    },
+    getTree(node) {
+      return node
     },
     // 删除节点
     remove(node) {

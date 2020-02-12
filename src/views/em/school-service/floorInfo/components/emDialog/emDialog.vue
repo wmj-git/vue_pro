@@ -154,7 +154,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, buildList, floorList, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
+import { addList, editList, currentUser, buildList, floorList, associateFloor, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -163,7 +163,8 @@ export default {
     return {
       id: '',
       set: {
-        associateUrl: '',
+        associateUrl: '', // 关联设备（楼层）
+        associateBuildUrl: '', // 关联设备（建筑）
         searchUrl: '',
         appendUrl: '',
         updateUrl: '',
@@ -171,9 +172,10 @@ export default {
         deviceUrl: '', // 设备
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
-        checkedUrl: '', // 已分配班级-指定老师
+        checkedUrl: '', // 已分配设备-指定楼层
         telUrl: '', // 已存在教师
         buildingUrl: '', // 关联建筑
+        checkedBuildUrl: '', // 已分配设备-指定建筑
         status: true,
         labelWidth: '',
         statusIcon: '',
@@ -298,26 +300,26 @@ export default {
       }).then(response => {
         console.log('已分配设备：', response)
         response.data.list.forEach(val => {
-          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+          // this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
         })
       })
     },
     // 设备关联建筑
     associateBuild() {
-      this.dialogStatus = 'update'
+      /* this.dialogStatus = 'update'
       this.dialogFormVisible = true
       const _param = {
-        floorIds: [this.currentFloor.id]
+        buildingIds: [this.currentFloor.buildingId]
       }
       deviceInfo({
-        url: this.set.checkedUrl,
+        url: this.set.checkedBuildUrl,
         params: _param
       }).then(response => {
         console.log('已分配设备：', response)
         response.data.list.forEach(val => {
-          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+          /!* this.temp['deviceIds'].push(val.id)*!/ // 获取指定楼层已关联设备
         })
-      })
+      })*/
     },
     // 修改数据弹框
     edit(_data) {
@@ -440,15 +442,14 @@ export default {
       this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
       console.log('选择的值', this.rightCheckedArr)
     },
-    // 为指定老师分配班级(提交)
+    // 为指定楼层分配设备(提交)
     associateFn() {
-      console.log('提交', this.currentFloor)
       const _params = {
         deviceIds: this.rightCheckedArr,
         buildingId: this.currentFloor.buildingId,
         floorId: this.currentFloor.id
       }
-      associateBuild({
+      associateFloor({
         url: this.set.associateUrl,
         params: _params
       }).then(response => {
@@ -456,12 +457,34 @@ export default {
           this.changeDialogHidden()
           this.$notify({
             title: 'Success',
-            message: '楼层分配成功',
+            message: '楼层设备分配成功',
             type: 'success',
             duration: 2000
           })
         }
       })
+    },
+    // 为指定建筑分配设备(提交)
+    associateBuildFn() {
+      /* const _params = {
+        deviceIds: this.rightCheckedArr,
+        buildingId: this.currentFloor.buildingId,
+        floorId: this.currentFloor.id
+      }
+      associateBuild({
+        url: this.set.associateBuildUrl,
+        params: _params
+      }).then(response => {
+        if (response.statusCode === 200) {
+          this.changeDialogHidden()
+          this.$notify({
+            title: 'Success',
+            message: '建筑设备分配成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })*/
     },
     // 先选择建筑再获取该建筑对应的建筑id
     changeGrade(val) {

@@ -70,6 +70,14 @@ export function associateBuild(obj) {
     data: obj.params
   })
 }
+// 为指定设备分配楼层
+export function associateFloor(obj) {
+  return request({
+    url: obj.url,
+    method: 'post',
+    data: obj.params
+  })
+}
 // 查询设备
 export function deviceInfo(obj) {
   return request({
