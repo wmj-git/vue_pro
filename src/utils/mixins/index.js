@@ -341,12 +341,6 @@ export const emMixin = {
             data: _obj.data
           })
           break
-        case 'DeviceInfo_EmTransfer_connectBuilding': // 设备-分配建筑
-          this[_fn]({
-            meta: _meta,
-            data: _obj.data
-          })
-          break
         case 'TableInfo_EmForm_editForm': // 修改-弹框显示(传递行数据给表单)
           this[_fn]({
             meta: _meta,

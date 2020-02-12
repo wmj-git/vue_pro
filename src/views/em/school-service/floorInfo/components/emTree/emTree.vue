@@ -18,9 +18,9 @@
       lazy
       @node-click="handleNodeClick"
     >
-      <span slot-scope="{ node }" class="custom-tree-node">
+      <span slot-scope="{ node, data }" class="custom-tree-node">
         <span>{{ node.label }}</span>
-        <span v-if="node.level === 3">
+        <span v-if="node.level === 2">
           <template v-for="(btn, _index ) in children.treeBtn">
             <el-button
               :key="_index"
@@ -35,6 +35,18 @@
           </template>
         </span>
         <span v-if="node.level === 3">
+          <template v-for="(btn, _index ) in children.treeFloorBtn">
+            <el-button
+              :key="_index"
+              :ref="btn.meta.system_id"
+              class="em-btn-operation"
+              size="mini"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              @click="() => fn(btn, {'control_type': btn.meta.control_type})"
+            >
+              {{ btn.meta.title }}
+            </el-button>
+          </template>
           <el-button
             type="text"
             size="mini"
@@ -48,7 +60,7 @@
   </div>
 </template>
 <script>
-import { fetchList, gradeCode, delList } from '@/api/schoolService/parentInfo'
+import { fetchList, buildList, delList } from '@/api/schoolService/floorInfo'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
@@ -63,27 +75,25 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
-      highlight: true, // 高亮显示当前节点
       children: {
-        treeBtn: []
+        treeBtn: [],
+        treeFloorBtn: []
       },
+      highlight: true, // 高亮显示当前节点
       set: {
         queryUrl: '',
-        gradeUrl: '',
+        buildingUrl: '',
         removeUrl: '',
         fn_set: {
           control_id: null // 区别哪个table的getList()
         },
-        fn_edit: {
-          control_id: null // 编辑学生
+        fn_floor: {
+          control_id: null // 楼层关联设备
         },
-        fn_add: {
-          control_id: null // 添加学生
-        }, // classId给学生
         fn_append: ''
       },
-      filterText: '',
-      expandAll: false
+      expandAll: false,
+      filterText: ''
     }
   },
   watch: {
@@ -102,12 +112,15 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-      const treeRow = this.update()
       switch (_controlType) {
-        case 'TreeInfo_editData_dialogVisible': // 修改班级-树弹框
+        case 'floorInfo_associateData_dialogVisible': // 楼层关联设备-树弹框
           vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: treeRow
+            meta: _obj.meta
+          })
+          break
+        case 'buildInfo_associateData_dialogVisible': // 建筑关联设备-树弹框
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta
           })
           break
         default:
@@ -120,23 +133,13 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        vueBus.$emit(this.set.fn_set.control_id, { // 点击班级查询相应学生
-          fn: 'getList',
-          params: {
-            'classId': _data.data.nodeData.id
-          }
-        })
-        vueBus.$emit(this.set.fn_add.control_id, { // 添加学生需要的班级id
-          fn: 'getClassId',
-          params: {
-            'classId': _data.data.nodeData
-          }
-        })
-        vueBus.$emit(this.set.fn_edit.control_id, { // 修改学生刷新表格数据需要的班级id
-          fn: 'queryClassId',
-          params: {
-            'classId': _data.data.nodeData
-          }
+        /* vueBus.$emit(this.set.fn_floor.control_id, { // 点击学校查询所有的设备
+          fn: 'getList'
+        })*/
+        vueBus.$emit('floorInfo', _data.data.nodeData) // 关联设备
+      } else if (_data.level === 1) {
+        vueBus.$emit(this.set.fn_set.control_id, { // 点击学校查询所有的设备
+          fn: 'getAllList'
         })
       }
     },
@@ -147,38 +150,32 @@ export default {
         return resolve([{ label: name }])
       }
       if (node.level === 1) { // 子节点一级
-        var gradeArr = []
-        await gradeCode({ // 年级信息
-          url: this.set.gradeUrl
+        var buildArr = []
+        await buildList({ // 建筑信息
+          url: this.set.buildingUrl
         }).then(response => {
-          response.data.forEach(val => {
-            gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
+          response.data.list.forEach(val => {
+            buildArr.push({ 'label': val.buildingName, 'value': val.id, nodeData: val })
           })
         })
-        return resolve(gradeArr)
+        return resolve(buildArr)
       }
       if (node.level === 2) { // 子节点二级
-        var classArr = []
+        var floorArr = []
         const _data = node.data
         var _params = {
-          gradeKey: _data.value
+          buildingId: _data.value
         }
-        await fetchList({ // 班级信息
+        await fetchList({ // 楼层信息
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
           response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
+            floorArr.push({ 'label': val.floorName, 'value': val.id, leaf: true, nodeData: val })
           })
         })
-        return resolve(classArr)
+        return resolve(floorArr)
       }
-    },
-    // 修改节点
-    update(_data) {
-      /* if (_data.level === 3) {
-        console.log('节点数据', _data)
-      }*/
     },
     // 删除节点
     remove(node) {
@@ -202,7 +199,7 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-            node.parent.loaded = false
+            node.parent.loaded = false // 删除操作时局部刷新
             node.parent.expand()
           } else {
             _this.$notify({

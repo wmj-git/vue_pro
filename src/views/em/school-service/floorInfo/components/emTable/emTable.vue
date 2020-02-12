@@ -26,14 +26,16 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="200px">
+      <el-table-column label="操作" fixed="right" width="180px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
               :key="_index"
               :ref="btn.meta.system_id"
-              class="em-btn-operation table_inLine_btn"
               size="mini"
+              class="table_inLine_btn"
+              :class="btn.meta.className"
+              :style="{ display: visibleSubmit }"
               :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
               @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
             >
@@ -69,19 +71,15 @@ export default {
       set: {
         queryUrl: '',
         removeUrl: '',
-        vueBusName: ''// 抽屉
+        queryAllUrl: '',
+        vueBusName: ''
       },
+      visibleSubmit: '',
       selectRow: [], // 选中行
       formatterMap: {}, // 需要过滤的动态数据字段（后台返回的id转换为对应的中文名称）
-      tableHeader: [
-        {
-          value: '',
-          formatterSet: {
-            url: ''
-          }
-        }
-      ],
+      tableHeader: [],
       tableDataEnd: [],
+      currentFloor: '', // 当前楼层（楼层id渲染表格数据）
       multipleSelection: [], // 初始化时没有值，forEach属性不能用，就算作了判断也不行
       pageOne: false,
       total: 0,
@@ -91,8 +89,10 @@ export default {
       },
       ids: [],
       children: {
-        columnBtn: []
-      }
+        columnBtn: [] // 行内按钮
+      },
+      rowClick: 'none',
+      classes: ''
     }
   },
   watch: {
@@ -105,14 +105,17 @@ export default {
       }
     }
   },
+  mounted() {
+    vueBus.$on('floorInfo', val => {
+      this.currentFloor = val
+      console.log('接受参数', val)
+    })
+  },
   created() {
     this.init()
-    this.getList()
+    this.getAllList()
     vueBus.$on('query', () => {
       this.getList()
-    })
-    vueBus.$on('device_type', (val) => {
-      this.formatterMap = val // 接受后台获取的动态字段值(传值时已标明字段值)
     })
   },
   methods: {
@@ -125,7 +128,13 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'DeviceInfo_editData_dialogVisible':
+        case 'TableInfo_editData_dialogVisible':
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta,
+            data: Object.assign({}, _data.row)
+          })
+          break
+        case 'TableInfo_connectData_dialogVisible':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: Object.assign({}, _data.row)
@@ -151,7 +160,7 @@ export default {
     // 分页改变:改变条数和分页
     handlePaginationChange(res) {
       this.listQuery = res
-      this.getList()
+      this.getAllList()
     },
     // 查询
     handleFilter(_obj) {
@@ -160,12 +169,43 @@ export default {
         this.getList(_obj.temp)
       }
     },
-    // 渲染数据
-    getList(params) {
+    // 默认显示所有未分配建筑或楼层的设备信息
+    getAllList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
         pageNum: this.listQuery.page,
         enumType: 'device_type' // 设备类型
+      }
+      let _val = {}
+      if (params) {
+        _val = params
+      }
+      for (const k in _val) {
+        _params[k] = _val[k]
+      }
+      fetchList({
+        url: this.set.queryAllUrl,
+        params: _params
+      }).then(val => {
+        if (val.statusCode === 200) {
+          /* this.children.columnBtn[1].meta.className = ''*/ // 学校才能给指定老师分配班级（去掉类名即可显示‘分配班级’）
+          this.total = val.data.total
+          this.tableDataEnd = val.data.list
+        } else if (val.statusCode === 503) { // 数据为空时不渲染表格
+          this.tableDataEnd = null
+          this.$message({
+            showClose: true,
+            message: '没有找到指定内容！',
+            type: 'info',
+            duration: 1000
+          })
+        }
+      })
+    },
+    // 渲染数据(指定楼层的设备)
+    getList(params) {
+      const _params = {
+        classId: this.classes
       }
       try {
         let _val = {}
@@ -182,8 +222,18 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          this.total = response.data.total
-          this.tableDataEnd = response.data.list
+          if (response.statusCode === 200) {
+            this.tableDataEnd = response.data
+            /* this.children.columnBtn[1].meta.className = 'distribution_class' */// 学校才能给指定老师分配班级
+          } else if (response.statusCode === 503) { // 数据为空时不渲染表格
+            this.tableDataEnd = null
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
       }
     },
@@ -191,9 +241,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    handleEdit(row) {
-      vueBus.$emit(this.set.vueBusName, Object.assign({}, row)) // 当前选中行内容返回给表单（当有两个按钮时无法区别点击了哪个按钮）
     },
     // 删除选中行
     remove() {
@@ -218,6 +265,7 @@ export default {
                 message: '删除成功',
                 type: 'success'
               })
+              this.getAllList()
               this.getList()
             }
           })
@@ -242,8 +290,9 @@ export default {
       }
       return _val
     },
+    // 双击行显示抽屉
     showDrawer(row) {
-      vueBus.$emit(this.set.vueBusName, { row: row, label: this.meta.tableHeader })
+      vueBus.$emit('tableDetail', { row: row, label: this.meta.tableHeader })
     }
   }
 }

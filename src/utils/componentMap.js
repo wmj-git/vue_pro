@@ -19,6 +19,8 @@ const componentMap = {
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
   // 设备管理
   'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
+  // 楼层管理
+  'FloorManage': () => import('@/views/em/school-service/floorInfo/floorInfo'),
   // ol地图页面
   'Dashboard': () => import('@/views/dashboard/index')
 }
