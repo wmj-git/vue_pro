@@ -87,9 +87,6 @@ export default {
         fn_set: {
           control_id: null // 区别哪个table的getList()
         },
-        fn_floor: {
-          control_id: null // 楼层关联设备
-        },
         fn_append: ''
       },
       expandAll: false,
@@ -112,8 +109,6 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-      const treeData = this.getTree()
-      console.log('结果', treeData)
       switch (_controlType) {
         case 'floorInfo_associateData_dialogVisible': // 楼层关联设备-树弹框
           vueBus.$emit(_controlId, {
@@ -135,9 +130,12 @@ export default {
     },
     handleNodeClick(node, _data) {
       if (_data.level === 3) {
-        /* vueBus.$emit(this.set.fn_floor.control_id, { // 点击学校查询所有的设备
-          fn: 'getList'
-        })*/
+        vueBus.$emit(this.set.fn_set.control_id, { // 点击楼层查询已分配设备
+          fn: 'getList',
+          params: {
+            floorId: _data.data.nodeData.id
+          }
+        })
         vueBus.$emit('floorInfo', _data.data.nodeData) // 关联设备
       } else if (_data.level === 1) {
         vueBus.$emit(this.set.fn_set.control_id, { // 点击学校查询所有的设备
@@ -178,9 +176,6 @@ export default {
         })
         return resolve(floorArr)
       }
-    },
-    getTree(node) {
-      return node
     },
     // 删除节点
     remove(node) {

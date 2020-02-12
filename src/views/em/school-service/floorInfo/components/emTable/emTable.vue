@@ -173,8 +173,7 @@ export default {
     getAllList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page,
-        enumType: 'device_type' // 设备类型
+        pageNum: this.listQuery.page
       }
       let _val = {}
       if (params) {
@@ -205,7 +204,7 @@ export default {
     // 渲染数据(指定楼层的设备)
     getList(params) {
       const _params = {
-        classId: this.classes
+        floorId: this.currentFloor.id
       }
       try {
         let _val = {}
@@ -223,8 +222,8 @@ export default {
           params: _params
         }).then(response => {
           if (response.statusCode === 200) {
-            this.tableDataEnd = response.data
-            /* this.children.columnBtn[1].meta.className = 'distribution_class' */// 学校才能给指定老师分配班级
+            this.tableDataEnd = response.data.list
+            /* this.children.columnBtn[1].meta.className = 'distribution_class' */
           } else if (response.statusCode === 503) { // 数据为空时不渲染表格
             this.tableDataEnd = null
             this.$message({

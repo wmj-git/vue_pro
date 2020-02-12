@@ -173,7 +173,6 @@ export default {
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
         checkedUrl: '', // 已分配设备-指定楼层
-        telUrl: '', // 已存在教师
         buildingUrl: '', // 关联建筑
         checkedBuildUrl: '', // 已分配设备-指定建筑
         status: true,
@@ -212,10 +211,9 @@ export default {
     }
   },
   async created() {
-    await this.init()
+    this.init()
     vueBus.$on('floorInfo', val => {
       this.currentFloor = val
-      console.log('接受参数', val)
     })
   },
   beforeDestroy() {
@@ -236,23 +234,12 @@ export default {
           this.FN(_obj, _data)
       }
     },
-    async init() { // 异步转换为同步进行
+    init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          /* case 'floorId':
-            floorList({
-              url: this.set.floorUrl
-            }).then(res => {
-              console.log('楼层', res)
-              res.data.list.forEach(val => {
-                this.BuildArr.push({ 'label': val.buildingName, 'key': val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的楼层
-            break*/
           case 'deviceIds':
             floorList({
               url: this.set.deviceUrl
@@ -288,19 +275,19 @@ export default {
       this.dialogFormVisible = true
     },
     // 设备关联楼层
-    associate() {
+    async associate() {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       const _param = {
-        floorIds: [this.currentFloor.id]
+        floorId: this.currentFloor.id
       }
-      deviceInfo({
+      await deviceInfo({
         url: this.set.checkedUrl,
         params: _param
       }).then(response => {
-        console.log('已分配设备：', response)
+        console.log('结果', response)
         response.data.list.forEach(val => {
-          // this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+          /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })
       })
     },
