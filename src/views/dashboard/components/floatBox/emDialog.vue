@@ -26,14 +26,12 @@
 // import vueBus from '@/utils/vueBus'
 import { mapGetters } from 'vuex'
 import { emMixin } from '@/utils/mixins'
-import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { dataInitFn, childrenInitFn, FilterTree } from '@/utils/tool'
 import emButtonGroup from '../emButtonGroup/emButtonGroup'
 import emForm from '../emForm/emForm'
 
 export default {
-  name: 'EmDialog',
-  directives: { elDragDialog },
+  name: 'FloatBox',
   components: {
     emButtonGroup,
     emForm
