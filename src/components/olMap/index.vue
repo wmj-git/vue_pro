@@ -57,7 +57,7 @@ export default {
       if (_element) {
         _this.mapInit()
       } else {
-        // 动态加载依赖库
+       
         const _url = process.env.VUE_APP_STATIC_API
         loadCss('ol_css', _url + '/sceneStatic/ol/ol.css', function() {
         })
