@@ -211,7 +211,7 @@ export default {
     }
   },
   async created() {
-    this.init()
+    await this.init()
     vueBus.$on('floorInfo', val => {
       this.currentFloor = val
     })
@@ -234,14 +234,14 @@ export default {
           this.FN(_obj, _data)
       }
     },
-    init() { // 异步转换为同步进行
+    async init() { // 异步转换为同步进行
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
           case 'deviceIds':
-            floorList({
+            await floorList({
               url: this.set.deviceUrl
             }).then(res => {
               res.data.list.forEach(val => {
@@ -276,8 +276,6 @@ export default {
     },
     // 设备关联楼层
     async associate() {
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
       const _param = {
         floorId: this.currentFloor.id
       }
@@ -285,24 +283,26 @@ export default {
         url: this.set.checkedUrl,
         params: _param
       }).then(response => {
-        console.log('结果', response)
+        console.log('指定楼层已分配设备', response)
         response.data.list.forEach(val => {
           /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })
       })
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
     },
     // 设备关联建筑
     associateBuild() {
       /* this.dialogStatus = 'update'
       this.dialogFormVisible = true
       const _param = {
-        buildingIds: [this.currentFloor.buildingId]
+        buildingId: this.currentFloor.buildingId
       }
       deviceInfo({
         url: this.set.checkedBuildUrl,
         params: _param
       }).then(response => {
-        console.log('已分配设备：', response)
+        console.log('该建筑已分配设备：', response)
         response.data.list.forEach(val => {
           /!* this.temp['deviceIds'].push(val.id)*!/ // 获取指定楼层已关联设备
         })

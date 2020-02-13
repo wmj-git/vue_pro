@@ -236,6 +236,41 @@ export default {
         })
       }
     },
+    // 渲染数据(指定建筑的设备)
+    getBuildList(params) {
+      const _params = {
+        buildingId: this.currentFloor.buildingId
+      }
+      try {
+        let _val = {}
+        if (params) {
+          _val = params
+        }
+        for (const k in _val) {
+          _params[k] = _val[k]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        fetchList({
+          url: this.set.queryUrl,
+          params: _params
+        }).then(response => {
+          if (response.statusCode === 200) {
+            this.tableDataEnd = response.data.list
+            /* this.children.columnBtn[1].meta.className = 'distribution_class' */
+          } else if (response.statusCode === 503) { // 数据为空时不渲染表格
+            this.tableDataEnd = null
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
+        })
+      }
+    },
     handleCurrentChange(val) {
     },
     handleSelectionChange(val) {
