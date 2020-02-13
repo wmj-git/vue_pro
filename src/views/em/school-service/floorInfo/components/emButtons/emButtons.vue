@@ -118,8 +118,8 @@ export default {
       rules: {}
     }
   },
-  created() {
-    this.init()
+  async created() {
+    await this.init()
   },
   beforeDestroy() {
   },
@@ -160,7 +160,7 @@ export default {
           })
       }
     },
-    init: function() {
+    init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },

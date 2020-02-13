@@ -35,13 +35,14 @@ import EmTableGroup from '@/views/em/school-service/floorInfo/components/emTable
 import EmForm from '@/views/em/school-service/floorInfo/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/floorInfo/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/floorInfo/components/emDialog/emDialog'
+import EmImport from '@/views/em/school-service/floorInfo/components/emImport/emImport'
 import EmTree from '@/views/em/school-service/floorInfo/components/emTree/emTree'
 import EmTransfer from '@/views/em/school-service/floorInfo/components/emTransfer/emTransfer'
 import EmCarousel from '@/views/em/school-service/floorInfo/components/emCarousel/emCarousel'
 import EmCropper from '@/views/em/school-service/floorInfo/components/emCropper/emCropper'
 export default {
   name: 'TableInfo',
-  components: { EmCropper, EmCarousel, EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog },
+  components: { EmCropper, EmCarousel, EmTransfer, EmTree, splitPane, EmTableGroup, EmForm, EmTable, EmDialog, EmImport },
   mixins: [emMixin, emPage],
   data() {
     return {
