@@ -86,4 +86,11 @@ export function deviceInfo(obj) {
     data: obj.params
   })
 }
-
+// 获取设备类型
+export function deviceType(obj) {
+  return request({
+    url: obj.url,
+    method: 'get',
+    params: obj.params
+  })
+}

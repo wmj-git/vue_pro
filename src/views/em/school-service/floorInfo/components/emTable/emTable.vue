@@ -278,6 +278,7 @@ export default {
     },
     // 删除选中行
     remove() {
+      console.log('点击删除了！')
       var _val = this.multipleSelection
       _val.forEach(_val => {
         //  提取出需要传给后台的参数ids
@@ -300,7 +301,6 @@ export default {
                 type: 'success'
               })
               this.getAllList()
-              this.getList()
             }
           })
         }).catch(() => {

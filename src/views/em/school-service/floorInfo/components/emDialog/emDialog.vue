@@ -154,7 +154,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, buildList, floorList, associateFloor, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
+import { addList, editList, currentUser, buildList, floorList, deviceType, associateFloor, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -166,6 +166,7 @@ export default {
         associateUrl: '', // 关联设备（楼层）
         associateBuildUrl: '', // 关联设备（建筑）
         searchUrl: '',
+        searchTypeUrl: '', // 获取设备类型
         appendUrl: '',
         updateUrl: '',
         floorUrl: '', // 楼层id
@@ -180,7 +181,10 @@ export default {
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: ''
+        vueBusName: '',
+        fn_set: {
+          control_id: null // 添加设备后刷新表格
+        }
       },
       pickerOptions: {
         disabledDate: (time) => {
@@ -260,6 +264,34 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的建筑
             break
+          case 'siOrgCode':
+            await currentUser({
+              url: '/school/organization/selectThis'
+            }).then(response => {
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
+            })
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
+            break
+          case 'type': // 设备管理-设备类型
+            var typeArr = []
+            var _obj = {
+              enumType: 'device_type'
+            }
+            await deviceType({
+              url: this.set.searchTypeUrl,
+              params: _obj
+            }).then(response => {
+              const _map = new Map()
+              response.data.forEach((_val) => {
+                typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
+                _map.set(_val.id, _val.enumCvalue)
+              })
+              Object.assign(this.typeArrList, { // 表格type字段需要转换为对应的中文显示（需要注明字段名：type）
+                type: _map
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
+            break
         }
       }
       this.defaultFn(this.children.formItem)
@@ -338,6 +370,9 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
+              vueBus.$emit(this.set.fn_set.control_id, { // 点击楼层查询该楼层已分配设备
+                fn: 'getAllList'
+              })
             } else {
               this.$notify.error('添加失败')
             }
