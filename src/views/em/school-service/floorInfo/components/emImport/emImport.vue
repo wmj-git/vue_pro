@@ -106,6 +106,7 @@ export default {
     },
     cancelUpload() {
       this.dialogFormVisible = false
+      this.files = null
       this.$message.info('已取消上传')
     }
   }
