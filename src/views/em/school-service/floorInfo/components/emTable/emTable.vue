@@ -26,7 +26,7 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="180px">
+      <el-table-column label="操作" fixed="right" width="120px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
@@ -116,6 +116,9 @@ export default {
     this.getAllList()
     vueBus.$on('query', () => {
       this.getList()
+    })
+    vueBus.$on('device_type', (val) => {
+      this.formatterMap = val // 接受后台获取的动态字段值(传值时已标明字段值)
     })
   },
   methods: {

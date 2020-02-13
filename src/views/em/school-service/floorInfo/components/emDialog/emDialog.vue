@@ -219,6 +219,7 @@ export default {
     vueBus.$on('floorInfo', val => {
       this.currentFloor = val
     })
+    vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
   },
@@ -245,7 +246,7 @@ export default {
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
           case 'deviceIds':
-            await floorList({
+            floorList({
               url: this.set.deviceUrl
             }).then(res => {
               res.data.list.forEach(val => {
@@ -265,7 +266,7 @@ export default {
             this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的建筑
             break
           case 'siOrgCode':
-            await currentUser({
+            currentUser({
               url: '/school/organization/selectThis'
             }).then(response => {
               this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
@@ -278,7 +279,7 @@ export default {
               enumType: 'device_type'
             }
             await deviceType({
-              url: this.set.searchTypeUrl,
+              url: '/school/enums/queryAllByEnumType',
               params: _obj
             }).then(response => {
               const _map = new Map()
@@ -354,11 +355,6 @@ export default {
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'entryTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           const obj = {
             url: this.set.appendUrl,
             params: this.temp
@@ -383,11 +379,6 @@ export default {
     updateData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'entryTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           const obj = {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)

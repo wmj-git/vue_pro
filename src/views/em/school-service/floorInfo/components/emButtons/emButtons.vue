@@ -139,7 +139,7 @@ export default {
             meta: _obj.item.meta
           })
           break
-        case 'TableInfo_tableQuery_handleFilter': // 家长查询关键字
+        case 'DeviceInfo_tableQuery_handleFilter': // 设备查询关键字
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp
@@ -164,6 +164,7 @@ export default {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
     },
+    selectInputKey() {},
     getTemp() {
       return this.temp
     }
