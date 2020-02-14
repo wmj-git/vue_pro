@@ -316,7 +316,6 @@ export default {
         url: this.set.checkedUrl,
         params: _param
       }).then(response => {
-        console.log('指定楼层已分配设备', response)
         response.data.list.forEach(val => {
           /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })
