@@ -1,0 +1,10 @@
+.el-upload__tip,.el-upload-list__item-name,.el-upload-list__item-name [class^="el-icon"]{
+  color: darken($em-text-color-base,15%);
+}
+.el-upload-list__item:hover{
+  background: $em-background-details;
+  color: darken($em-text-color-base,5%);
+  .el-icon-close{
+    color: darken($em-text-color-base,5%);
+  }
+}

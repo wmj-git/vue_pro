@@ -26,7 +26,7 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="180px">
+      <el-table-column label="操作" fixed="right" width="120px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
@@ -117,6 +117,9 @@ export default {
     vueBus.$on('query', () => {
       this.getList()
     })
+    vueBus.$on('device_type', (val) => {
+      this.formatterMap = val // 接受后台获取的动态字段值(传值时已标明字段值)
+    })
   },
   methods: {
     init() {
@@ -173,8 +176,7 @@ export default {
     getAllList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page,
-        enumType: 'device_type' // 设备类型
+        pageNum: this.listQuery.page
       }
       let _val = {}
       if (params) {
@@ -205,7 +207,7 @@ export default {
     // 渲染数据(指定楼层的设备)
     getList(params) {
       const _params = {
-        classId: this.classes
+        floorId: this.currentFloor.id
       }
       try {
         let _val = {}
@@ -223,8 +225,43 @@ export default {
           params: _params
         }).then(response => {
           if (response.statusCode === 200) {
-            this.tableDataEnd = response.data
-            /* this.children.columnBtn[1].meta.className = 'distribution_class' */// 学校才能给指定老师分配班级
+            this.tableDataEnd = response.data.list
+            if (response.data.total === 0) { // 数据为空时不渲染表格
+              this.tableDataEnd = null
+              this.$message({
+                showClose: true,
+                message: '没有找到指定内容！',
+                type: 'info',
+                duration: 1000
+              })
+            }
+          }
+        })
+      }
+    },
+    // 渲染数据(指定建筑的设备)
+    getBuildList(params) {
+      const _params = {
+        buildingId: this.currentFloor.buildingId
+      }
+      try {
+        let _val = {}
+        if (params) {
+          _val = params
+        }
+        for (const k in _val) {
+          _params[k] = _val[k]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        fetchList({
+          url: this.set.queryUrl,
+          params: _params
+        }).then(response => {
+          if (response.statusCode === 200) {
+            this.tableDataEnd = response.data.list
+            /* this.children.columnBtn[1].meta.className = 'distribution_class' */
           } else if (response.statusCode === 503) { // 数据为空时不渲染表格
             this.tableDataEnd = null
             this.$message({
@@ -244,6 +281,7 @@ export default {
     },
     // 删除选中行
     remove() {
+      console.log('点击删除了！')
       var _val = this.multipleSelection
       _val.forEach(_val => {
         //  提取出需要传给后台的参数ids
@@ -266,7 +304,6 @@ export default {
                 type: 'success'
               })
               this.getAllList()
-              this.getList()
             }
           })
         }).catch(() => {

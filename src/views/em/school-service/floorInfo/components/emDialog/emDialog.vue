@@ -154,7 +154,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
-import { addList, editList, currentUser, buildList, floorList, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
+import { addList, editList, currentUser, buildList, floorList, deviceType, associateFloor, associateBuild, deviceInfo } from '@/api/schoolService/floorInfo'
 import { validate } from '@/utils/validate'
 export default {
   name: 'EmDialog',
@@ -163,23 +163,28 @@ export default {
     return {
       id: '',
       set: {
-        associateUrl: '',
+        associateUrl: '', // 关联设备（楼层）
+        associateBuildUrl: '', // 关联设备（建筑）
         searchUrl: '',
+        searchTypeUrl: '', // 获取设备类型
         appendUrl: '',
         updateUrl: '',
         floorUrl: '', // 楼层id
         deviceUrl: '', // 设备
         selectUrl: '',
         classUrl: '', // 当前组织下的所有班级
-        checkedUrl: '', // 已分配班级-指定老师
-        telUrl: '', // 已存在教师
+        checkedUrl: '', // 已分配设备-指定楼层
         buildingUrl: '', // 关联建筑
+        checkedBuildUrl: '', // 已分配设备-指定建筑
         status: true,
         labelWidth: '',
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: ''
+        vueBusName: '',
+        fn_set: {
+          control_id: null // 添加设备后刷新表格
+        }
       },
       pickerOptions: {
         disabledDate: (time) => {
@@ -213,8 +218,8 @@ export default {
     await this.init()
     vueBus.$on('floorInfo', val => {
       this.currentFloor = val
-      console.log('接受参数', val)
     })
+    vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
   },
@@ -240,17 +245,6 @@ export default {
       // 查找 formTtem: 'studentIds'
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
-          /* case 'floorId':
-            floorList({
-              url: this.set.floorUrl
-            }).then(res => {
-              console.log('楼层', res)
-              res.data.list.forEach(val => {
-                this.BuildArr.push({ 'label': val.buildingName, 'key': val.id })
-              })
-            })
-            this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的楼层
-            break*/
           case 'deviceIds':
             floorList({
               url: this.set.deviceUrl
@@ -271,6 +265,34 @@ export default {
             })
             this.children.formItem[i].meta.options_OBJ.data = this.BuildArr // 当前组织具有的建筑
             break
+          case 'siOrgCode':
+            currentUser({
+              url: '/school/organization/selectThis'
+            }).then(response => {
+              this.organizationCode = String(response.data.orgCode) // 异步获取当前用户（学校）组织
+            })
+            this.children.formItem[i].meta.defaultValue = this.organizationCode
+            break
+          case 'type': // 设备管理-设备类型
+            var typeArr = []
+            var _obj = {
+              enumType: 'device_type'
+            }
+            await deviceType({
+              url: '/school/enums/queryAllByEnumType',
+              params: _obj
+            }).then(response => {
+              const _map = new Map()
+              response.data.forEach((_val) => {
+                typeArr.push({ 'label': _val.enumCvalue, 'value': _val.id })
+                _map.set(_val.id, _val.enumCvalue)
+              })
+              Object.assign(this.typeArrList, { // 表格type字段需要转换为对应的中文显示（需要注明字段名：type）
+                type: _map
+              })
+            })
+            this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
+            break
         }
       }
       this.defaultFn(this.children.formItem)
@@ -286,38 +308,38 @@ export default {
       this.dialogFormVisible = true
     },
     // 设备关联楼层
-    associate() {
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+    async associate() {
       const _param = {
-        floorIds: [this.currentFloor.id]
+        floorId: this.currentFloor.id
       }
-      deviceInfo({
+      await deviceInfo({
         url: this.set.checkedUrl,
         params: _param
       }).then(response => {
-        console.log('已分配设备：', response)
+        console.log('指定楼层已分配设备', response)
         response.data.list.forEach(val => {
-          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+          /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })
       })
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
     },
     // 设备关联建筑
     associateBuild() {
-      this.dialogStatus = 'update'
+      /* this.dialogStatus = 'update'
       this.dialogFormVisible = true
       const _param = {
-        floorIds: [this.currentFloor.id]
+        buildingId: this.currentFloor.buildingId
       }
       deviceInfo({
-        url: this.set.checkedUrl,
+        url: this.set.checkedBuildUrl,
         params: _param
       }).then(response => {
-        console.log('已分配设备：', response)
+        console.log('该建筑已分配设备：', response)
         response.data.list.forEach(val => {
-          this.temp['deviceIds'].push(val.id) // 获取指定楼层已关联设备
+          /!* this.temp['deviceIds'].push(val.id)*!/ // 获取指定楼层已关联设备
         })
-      })
+      })*/
     },
     // 修改数据弹框
     edit(_data) {
@@ -333,11 +355,6 @@ export default {
     createData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'entryTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           const obj = {
             url: this.set.appendUrl,
             params: this.temp
@@ -349,6 +366,9 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
+              vueBus.$emit(this.set.fn_set.control_id, { // 点击楼层查询该楼层已分配设备
+                fn: 'getAllList'
+              })
             } else {
               this.$notify.error('添加失败')
             }
@@ -359,11 +379,6 @@ export default {
     updateData() {
       this.$refs[this.system_id].validate((valid) => {
         if (valid) {
-          for (const i in this.temp) { // 寻找时间字段后再转换
-            if (i === 'entryTime') {
-              this.temp[i] = new Date(this.temp[i]).getTime()
-            }
-          }
           const obj = {
             url: this.set.updateUrl,
             params: Object.assign({}, this.temp)
@@ -440,15 +455,14 @@ export default {
       this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
       console.log('选择的值', this.rightCheckedArr)
     },
-    // 为指定老师分配班级(提交)
+    // 为指定楼层分配设备(提交)
     associateFn() {
-      console.log('提交', this.currentFloor)
       const _params = {
         deviceIds: this.rightCheckedArr,
         buildingId: this.currentFloor.buildingId,
         floorId: this.currentFloor.id
       }
-      associateBuild({
+      associateFloor({
         url: this.set.associateUrl,
         params: _params
       }).then(response => {
@@ -456,12 +470,34 @@ export default {
           this.changeDialogHidden()
           this.$notify({
             title: 'Success',
-            message: '楼层分配成功',
+            message: '楼层设备分配成功',
             type: 'success',
             duration: 2000
           })
         }
       })
+    },
+    // 为指定建筑分配设备(提交)
+    associateBuildFn() {
+      /* const _params = {
+        deviceIds: this.rightCheckedArr,
+        buildingId: this.currentFloor.buildingId,
+        floorId: this.currentFloor.id
+      }
+      associateBuild({
+        url: this.set.associateBuildUrl,
+        params: _params
+      }).then(response => {
+        if (response.statusCode === 200) {
+          this.changeDialogHidden()
+          this.$notify({
+            title: 'Success',
+            message: '建筑设备分配成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })*/
     },
     // 先选择建筑再获取该建筑对应的建筑id
     changeGrade(val) {

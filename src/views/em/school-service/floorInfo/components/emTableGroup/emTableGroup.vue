@@ -36,6 +36,13 @@
           </el-col>
         </template>
       </div>
+      <div class="emImport">
+        <template v-for="(item, items) in children.importItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-import :data="item" />
+          </el-col>
+        </template>
+      </div>
       <div class="emTransfer">
         <template v-for="(item, items) in children.transferItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
@@ -74,6 +81,7 @@ import EmTable from '@/views/em/school-service/floorInfo/components/emTable/emTa
 import EmDialog from '@/views/em/school-service/floorInfo/components/emDialog/emDialog'
 import EmForm from '@/views/em/school-service/floorInfo/components/emButtons/emButtons'
 import EmDrawer from '@/views/em/school-service/floorInfo/components/emDrawer/emDrawer'
+import EmImport from '@/views/em/school-service/floorInfo/components/emImport/emImport'
 import EmTree from '@/views/em/school-service/floorInfo/components/emTree/emTree'
 import EmTransfer from '@/views/em/school-service/floorInfo/components/emTransfer/emTransfer'
 import EmCarousel from '@/views/em/school-service/floorInfo/components/emCarousel/emCarousel'
@@ -81,7 +89,7 @@ import EmSoleForm from '@/views/em/school-service/floorInfo/components/emForm/em
 import EmCropper from '@/views/em/school-service/floorInfo/components/emCropper/emCropper'
 export default {
   name: 'EmTableGroup',
-  components: { EmCropper, EmSoleForm, EmCarousel, EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable },
+  components: { EmCropper, EmSoleForm, EmCarousel, EmTransfer, EmTree, EmDrawer, EmForm, EmDialog, EmTable, EmImport },
   mixins: [emMixin],
   data() {
     return {
