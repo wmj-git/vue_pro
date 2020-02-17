@@ -110,6 +110,11 @@ export default {
             data: treeRow
           })
           break
+        case 'importDialog': // 导入弹框
+          vueBus.$emit(_controlId, {
+            meta: _obj.meta
+          })
+          break
         default:
           this.FN(_obj, _data)
       }
@@ -138,6 +143,7 @@ export default {
             'classId': _data.data.nodeData
           }
         })
+        vueBus.$emit('class', _data.data.nodeData.id)
       }
     },
     async loadNode(node, resolve) {

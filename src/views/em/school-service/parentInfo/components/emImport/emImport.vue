@@ -48,11 +48,16 @@ export default {
       },
       uploadLoading: '',
       action: '',
+      currentClass: null, // 当前选择的班级id
       files: [] // 选择文件
     }
   },
   created() {
     this.init()
+    vueBus.$on('class', val => {
+      this.currentClass = val
+      console.log('接受currentClass', val)
+    })
   },
   methods: {
     init() {
@@ -83,6 +88,7 @@ export default {
         this.files = params.file
         console.log('params.file', params.file)
         formData.append('file', this.files)
+        formData.append('classId', this.currentClass)
         uploadFile({
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
           params: formData
