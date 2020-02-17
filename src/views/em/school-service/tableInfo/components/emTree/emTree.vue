@@ -140,7 +140,7 @@ export default {
         }).then(response => {
           if (response.statusCode === 200) {
             response.data.forEach(val => {
-              gradeArr.push({'label': val.gradeName, 'value': val.gradeKey, nodeData: val})
+              gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
             })
           } else if (response.statusCode === 503) {
             this.$message({
@@ -149,6 +149,7 @@ export default {
               type: 'info',
               duration: 1000
             })
+          }
         })
         return resolve(gradeArr)
       }
