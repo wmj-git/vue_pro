@@ -164,9 +164,18 @@ export default {
         await buildList({ // 建筑信息
           url: this.set.buildingUrl
         }).then(response => {
-          response.data.list.forEach(val => {
-            buildArr.push({ 'label': val.buildingName, 'value': val.id, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.list.forEach(val => {
+              buildArr.push({ 'label': val.buildingName, 'value': val.id, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(buildArr)
       }
@@ -180,9 +189,18 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          response.data.list.forEach(val => {
-            floorArr.push({ 'label': val.floorName, 'value': val.id, leaf: true, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.list.forEach(val => {
+              floorArr.push({ 'label': val.floorName, 'value': val.id, leaf: true, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(floorArr)
       }
