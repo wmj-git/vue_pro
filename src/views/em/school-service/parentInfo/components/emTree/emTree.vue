@@ -27,7 +27,7 @@
               :ref="btn.meta.system_id"
               class="em-btn-operation"
               size="mini"
-              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'text'"
               @click="() => fn(btn, {'control_type': btn.meta.control_type})"
             >
               {{ btn.meta.title }}
@@ -102,14 +102,7 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-      const treeRow = this.update()
       switch (_controlType) {
-        case 'TreeInfo_editData_dialogVisible': // 修改班级-树弹框
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: treeRow
-          })
-          break
         case 'importDialog': // 导入弹框
           vueBus.$emit(_controlId, {
             meta: _obj.meta

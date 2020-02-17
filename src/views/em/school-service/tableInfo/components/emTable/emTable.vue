@@ -1,13 +1,13 @@
 <template>
   <div class="school-container table-container">
     <el-table
+      :ref="system_id"
       :data="tableDataEnd "
       border
-      :ref="system_id"
       style="width: 100%;"
+      :row-style="rowClass"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
-      :row-style="rowClass"
       @row-click="handleRowClick"
     >
       <el-table-column
@@ -95,11 +95,6 @@ export default {
       classes: ''
     }
   },
-  mounted() {
-    vueBus.$on('class', val => {
-      this.classes = val
-    })
-  },
   watch: {
     multipleSelection(data) { // 存储选中的row
       this.selectRow = []
@@ -109,6 +104,11 @@ export default {
         })
       }
     }
+  },
+  mounted() {
+    vueBus.$on('class', val => {
+      this.classes = val
+    })
   },
   created() {
     this.init()
@@ -165,7 +165,7 @@ export default {
     handleFilter(_obj) {
       if (_obj.temp) {
         // 接受后需要传递给查询接口，不然还是查询不到
-        this.getList(_obj.temp)
+        this.getAllList(_obj.temp)
       }
     },
     // 默认显示所有未分配班级的教师信息

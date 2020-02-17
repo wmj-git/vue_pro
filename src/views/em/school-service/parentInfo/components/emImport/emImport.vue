@@ -59,7 +59,6 @@ export default {
     this.init()
     vueBus.$on('class', val => {
       this.currentClass = val
-      console.log('接受currentClass', val)
     })
   },
   methods: {
@@ -95,7 +94,6 @@ export default {
           url: process.env.VUE_APP_BASE_API + this.set.importUrl,
           params: formData
         }).then(response => {
-          console.log('导入结果', response)
           if (response.statusCode === 200) {
             this.$notify({
               message: '数据导入成功',
