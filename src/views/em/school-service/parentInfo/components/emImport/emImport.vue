@@ -39,7 +39,10 @@ export default {
     return {
       set: {
         downloadUrl: '',
-        importUrl: ''
+        importUrl: '',
+        fn_importQuery: {
+          control_id: null // 导入信息成功后刷新表格
+        }
       },
       fileList: [], // 文件列表
       dialogFormVisible: false,
@@ -86,7 +89,6 @@ export default {
       if (this.files) {
         const formData = new FormData()
         this.files = params.file
-        console.log('params.file', params.file)
         formData.append('file', this.files)
         formData.append('classId', this.currentClass)
         uploadFile({
@@ -100,7 +102,12 @@ export default {
               type: 'success'
             })
             this.dialogFormVisible = false
-            vueBus.$emit('query')
+            vueBus.$emit(this.set.fn_importQuery.control_id, { // 修改学生刷新表格数据需要的班级id
+              fn: 'getList',
+              params: {
+                'classId': this.currentClass
+              }
+            })
           } else {
             this.$notify.error('数据导入失败')
           }
