@@ -16,7 +16,12 @@
             :src="baseUrl+imgUrl"
           />
         </el-form-item>
-        <el-form-item v-for="(item,index) in children.drawerItem" :key="index" :label="item.name">
+        <el-form-item
+          v-for="(item,index) in children.drawerItem"
+          :key="index"
+          :label="item.name"
+          :formatter="formatterFn"
+        >
           <span>{{ item.value }}</span>
         </el-form-item>
       </el-form>
@@ -28,6 +33,7 @@
 import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
+import { staticFormatterMap } from '@/utils/formatterMap'
 export default {
   name: 'EmDrawer',
   mixins: [emMixin],
@@ -50,6 +56,7 @@ export default {
   },
   mounted() {
     vueBus.$on('tableDetail', res => {
+      console.log('详情信息：', res)
       this.set.visible = true
       this.children.drawerItem = []
       res.label.forEach(val => {
@@ -68,6 +75,17 @@ export default {
     init() {
       this.set = dataInitFn(this.set, this.meta)
       this.children = childrenInitFn(this.children, this.componentData)
+    },
+    // 过滤字段
+    formatterFn(row, column) {
+      let _val = ''
+      const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap) // 动态和静态数据求交集
+      if (column.property in _formatterMap) {
+        _val = _formatterMap[column.property].get(row[column.property])
+      } else {
+        _val = row[column.property]
+      }
+      return _val
     }
   }
 }

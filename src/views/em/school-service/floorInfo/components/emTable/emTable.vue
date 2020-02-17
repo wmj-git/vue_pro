@@ -329,6 +329,7 @@ export default {
     },
     // 双击行显示抽屉
     showDrawer(row) {
+      console.log('详情信息：', row)
       vueBus.$emit('tableDetail', { row: row, label: this.meta.tableHeader })
     }
   }
