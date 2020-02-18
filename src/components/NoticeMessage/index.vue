@@ -15,8 +15,9 @@
           style="padding: 8px 10px;"
           size="small"
           type="success"
+          class="em-message-btn"
           @click="handleClick"
-          class="em-message-btn">
+        >
           <svg-icon icon-class="message_notice" class-name="alarm-icon" />
         </el-button>
       </el-badge>
@@ -34,8 +35,7 @@
           :label="info.label"
           :prop="info.key"
           :formatter="formatterFn"
-        >
-        </el-table-column>
+        />
       </el-table>
       <Pagination
         :total="total"
@@ -57,8 +57,8 @@
       :size="set.size"
     >
       <el-form label-position="left" class="demo-table-expand">
-        <el-form-item :label="item.name" v-for="(item,index) in drawerItem" :key="index">
-          <span>{{item.value}}</span>
+        <el-form-item v-for="(item,index) in drawerItem" :key="index" :label="item.name">
+          <span>{{ item.value }}</span>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -119,7 +119,6 @@ export default {
     const url = this.BASE_API + '/ws/sockets?access_token=' + token
     this.socketApi.initWebSocket(url)
     this.socketApi.proxyFunction(10, (res) => {
-      console.log('发送socket:', res)
       if (res) {
         this.init() // 发送通知消息后继续获取数量
         this.getList()
@@ -135,7 +134,6 @@ export default {
         url: '/sockets/push/queryCountAllByPageParams',
         params: _param
       }).then(response => {
-        console.log('获取数量', response)
         this.content = '通知消息'
         this.NotificationCount = response.data // 通知消息
       })
@@ -163,7 +161,6 @@ export default {
         url: '/sockets/push/queryTopOrNoTopAllByPageParams',
         params: _params
       }).then(res => {
-        console.log('获取列表', res)
         if (res.statusCode === 200) {
           this.messageData = res.data.list
           this.total = res.data.total
