@@ -223,12 +223,6 @@ export default {
           })
         }).catch(() => {
         })
-      } else {
-        this.$message({
-          showClose: true,
-          message: '请先单击复选框选择你要删除的数据行',
-          type: 'warning'
-        })
       }
     },
     // 过滤字段
