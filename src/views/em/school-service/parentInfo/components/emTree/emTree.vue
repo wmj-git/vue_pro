@@ -193,9 +193,6 @@ export default {
     },
     // 修改节点
     update(_data) {
-      /* if (_data.level === 3) {
-        console.log('节点数据', _data)
-      }*/
     },
     // 删除节点
     remove(node) {
