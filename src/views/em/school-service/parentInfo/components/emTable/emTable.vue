@@ -23,7 +23,7 @@
         width="55"
       />
       <el-table-column v-if="meta.tableHeader[0].key==='studentName'" label="头像">
-        <template slot-scope="scope">
+        <template v-if="scope.row.headImage" slot-scope="scope">
           <img :src="scope.row.headImage" width="40" height="40">
         </template>
       </el-table-column>
@@ -205,6 +205,12 @@ export default {
         params: _params
       }).then(response => {
         if (response.statusCode === 200) {
+          // 判断是否有图片，没有的话需要给一个默认图片给他
+          for (const i in response.data.list) {
+            if (response.data.list[i].headImage === null) {
+              response.data.list[i].headImage = 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4096470977,2295820639&fm=26&gp=0.jpg'
+            }
+          }
           this.total = response.data.total
           this.tableDataEnd = response.data.list
         } else if (response.statusCode === 503) { // 数据为空时不渲染表格
