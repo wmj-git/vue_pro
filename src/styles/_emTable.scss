@@ -1,5 +1,7 @@
 @import "variables";
 .el-table {
+  max-height: 400px;
+  overflow: auto;
   background: $background-linear-base;
   & th{
     background: $em-background-table-thead;

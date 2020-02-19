@@ -22,6 +22,13 @@
           </el-col>
         </template>
       </div>
+      <div class="emImport">
+        <template v-for="(item, items) in children.importItem">
+          <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
+            <em-import :data="item" />
+          </el-col>
+        </template>
+      </div>
       <div class="emDrawer">
         <template v-for="(item, items) in children.drawerItem">
           <el-col :key="items" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
@@ -39,9 +46,10 @@ import EmTable from '@/views/em/school-service/deviceManage/components/emTable/e
 import EmDialog from '@/views/em/school-service/deviceManage/components/emDialog/emDialog'
 import EmForm from '@/views/em/school-service/deviceManage/components/emButtons/emButtons'
 import EmDrawer from '@/views/em/school-service/deviceManage/components/emDrawer/emDrawer'
+import EmImport from '@/views/em/school-service/deviceManage/components/emImport/emImport'
 export default {
   name: 'EmTableGroup',
-  components: { EmDrawer, EmForm, EmDialog, EmTable },
+  components: { EmDrawer, EmForm, EmDialog, EmTable, EmImport },
   mixins: [emMixin],
   data() {
     return {
@@ -53,6 +61,7 @@ export default {
         operateItem: [], // 表头操作表单
         formItem: [],
         dataItem: [],
+        importItem: [], // 导入
         drawerItem: [] // 抽屉
       }
     }

@@ -26,24 +26,6 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="120px">
-        <template slot-scope="scope">
-          <template v-for="(btn, _index ) in children.columnBtn">
-            <el-button
-              :key="_index"
-              :ref="btn.meta.system_id"
-              size="mini"
-              class="table_inLine_btn"
-              :class="btn.meta.className"
-              :style="{ display: visibleSubmit }"
-              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
-              @click="fn(btn,{'index':scope.$index, 'row':scope.row, 'control_type':btn.meta.control_type})"
-            >
-              {{ btn.meta.title }}
-            </el-button>
-          </template>
-        </template>
-      </el-table-column>
     </el-table>
     <Pagination
       :total="total"

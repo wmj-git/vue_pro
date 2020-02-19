@@ -1,4 +1,7 @@
 @import "variables";
+.pagination-container{
+  margin-top: 10px !important;
+}
 .el-pagination__total,.el-input__inner,.el-pagination__jump,.el-pagination button:disabled,.el-pager li,.el-pagination .btn-prev, .el-pagination .btn-next{
   color: $em-text-color-base;
   font-size: 14/$r+rem !important;
