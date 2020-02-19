@@ -4,6 +4,7 @@
       :ref="system_id"
       :data="tableDataEnd "
       border
+      :height="tableHeight"
       style="width: 100%;"
       :row-style="rowClass"
       @selection-change="handleSelectionChange"
@@ -50,6 +51,7 @@ export default {
   data() {
     return {
       id: '',
+      tableHeight: window.innerHeight - 240,
       set: {
         queryUrl: '',
         removeUrl: '',

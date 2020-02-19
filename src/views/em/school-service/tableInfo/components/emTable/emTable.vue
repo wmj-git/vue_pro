@@ -3,6 +3,7 @@
     <el-table
       :ref="system_id"
       :data="tableDataEnd "
+      :height="tableHeight"
       border
       style="width: 100%;"
       :row-style="rowClass"
@@ -69,6 +70,7 @@ export default {
   data() {
     return {
       id: '',
+      tableHeight: window.innerHeight - 240,
       set: {
         queryUrl: '',
         removeUrl: '',

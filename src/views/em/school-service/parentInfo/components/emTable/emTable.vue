@@ -1,16 +1,17 @@
 <template>
   <div class="school-container table-container">
     <el-table
+      :ref="system_id"
       :data="tableDataEnd "
       border
-      :ref="system_id"
+      :height="tableHeight"
       style="width: 100%;"
       :row-click="meta.rowClick"
+      :highlight-current-row="highlight"
+      empty-text="暂无数据"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
       @row-click="onClickRow"
-      :highlight-current-row="highlight"
-      empty-text="暂无数据"
     >
       <el-table-column
         type="index"
@@ -72,6 +73,7 @@ export default {
   data() {
     return {
       id: '',
+      tableHeight: window.innerHeight - 240,
       set: {
         queryUrl: '',
         appendUrl: '',
