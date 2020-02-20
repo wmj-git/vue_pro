@@ -130,6 +130,7 @@ export default {
             'classId': _data.data.nodeData
           }
         })
+        vueBus.$emit('pageQuery', _data.data.nodeData.id) // 学生分页查询
         vueBus.$emit(this.set.fn_edit.control_id, { // 修改学生刷新表格数据需要的班级id
           fn: 'queryClassId',
           params: {

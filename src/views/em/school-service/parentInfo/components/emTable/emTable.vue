@@ -106,11 +106,15 @@ export default {
       children: {
         columnBtn: []
       },
-      formatterMap: {}
+      formatterMap: {},
+      currentClass: null // 指定班级学生分页查询班级id
     }
   },
   created() {
     this.init()
+    vueBus.$on('pageQuery', val => { // 指定班级学生的分页查询
+      this.currentClass = val
+    })
   },
   methods: {
     fn(_obj, _data) {
@@ -191,7 +195,8 @@ export default {
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        pageNum: this.listQuery.page,
+        classId: this.currentClass // 指定班级学生分页查询参数
       }
       let _val = {}
       if (params) {
