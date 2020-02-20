@@ -16,13 +16,13 @@
         :http-request="uploadFile"
         :on-change="fileChange"
       >
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="downloadModel">下载模板</el-button>
+        <el-button slot="trigger" size="small" type="primary" class="em-btn-border">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" class="em-btn-border" @click="downloadModel">下载模板</el-button>
         <div slot="tip" class="el-upload__tip">请先下载模板，再选择文件上传！</div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button class="em-button" @click="cancelUpload">取 消</el-button>
-        <el-button type="primary" class="em-button" @click="submitUpload">提交</el-button>
+        <el-button class="em-button table_inLine_btn" size="mini" icon="el-icon-cancel" @click="cancelUpload">取 消</el-button>
+        <el-button type="primary" class="em-button table_inLine_btn" size="mini" icon="el-icon-submit" @click="submitUpload">提交</el-button>
       </div>
     </el-dialog>
   </div>

@@ -111,6 +111,7 @@
             :ref="btn.meta.system_id"
             class="em-btn-operation table_inLine_btn"
             size="mini"
+            :icon="btn.meta.icon"
             :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             @click="fn(btn,temp)"
           >

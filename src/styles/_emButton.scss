@@ -19,12 +19,22 @@
   color: #dcdcdc;
   border-radius: 6px;
   line-height: 15px;
-  border: solid 1px $em-text-highlight-base;
+  border: solid 1px $em-table-btn-borderColor;
   background: -webkit-gradient(linear, left top, left bottom, from(darken($em-text-highlight-base,20%)), to(nth($em-highlight-bg2-color-base,2)));
   &:hover,&:focus{
     color: #fff;
     background: -webkit-gradient(linear, left top, left bottom, from(darken($em-text-highlight-base,30%)), to(nth($em-highlight-bg2-color-base, 1)));
     border-color: darken($em-text-highlight-base,5%);
+  }
+  &.is-disabled{
+    color:darken($em-text-color-base, 50%);
+    background: $em-background-details;
+    border-color: darken($em-table-inLine-linear-btn, 2%);
+    &:hover{
+      color:darken($em-text-color-base, 50%);
+      background: $em-background-details;
+      border-color: $em-table-inLine-linear-btn;
+    }
   }
 }
 
@@ -92,4 +102,43 @@
 .em-btn-gradient, .em-btn-uniform-gradient:before, .em-btn-uniform-gradient:after {
   -webkit-transition: 0.5s ease all;
   transition: 0.5s ease all;
+}
+
+/*导入文件按钮样式*/
+.em-btn-border {
+  background: linear-gradient($targs-view-border-Color, $em-base-background);
+  color: darken($em-text-color-base, 20%);
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: 800ms ease all;
+  outline: none;
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 2px;
+    width: 0;
+    background: darken($targs-view-border-Color, 1%);
+    transition: 400ms ease all;
+  }
+
+  &:after {
+    right: inherit;
+    top: inherit;
+    left: 0;
+    bottom: 0;
+  }
+
+  &:hover {
+    background: darken(nth($em-highlight-bg2-color-base,2), 10%);
+    color: $em-text-highlight-base;
+  }
+
+  &:hover:before, &:hover:after {
+    width: 100%;
+    transition: 800ms ease all;
+  }
 }

@@ -135,6 +135,7 @@
             :ref="item.meta.system_id"
             :icon="item.meta.icon"
             :class="item.meta.class"
+            size="mini"
             :disabled="item.meta.disabled"
             :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
             @click="fn(item, Form)"
