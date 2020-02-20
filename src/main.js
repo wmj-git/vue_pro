@@ -20,13 +20,13 @@ import './assets/jquery-easyui-1.6.7/themes/black/easyui.css'
 import './assets/jquery-easyui-1.6.7/themes/icon.css'
 import './assets/jquery-easyui-1.6.7/jquery.easyui.min.js'
 import './assets/jquery-easyui-1.6.7/windowAdapter'
-
 import './icons' // icon
+
+import '@/icons/icon/iconfont.css'
 import './permission' // permission control
 import './utils/error-log' // error log
 import '@/components/Pagination/page.js'
 import * as filters from './filters' // global filters
-
 import * as socketApi from './api/socket'// socket
 Vue.prototype.socketApi = socketApi
 /**
