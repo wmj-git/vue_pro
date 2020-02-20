@@ -67,3 +67,9 @@ border-color: rgba(255,255,255,0.5) !important;
 .el-upload-list__item-name,.el-upload-dragger .el-upload__text,.el-upload__tip{
   color: darken($em-text-color-base, 20%);
 }
+
+
+/*弹框间距（包含多层的弹框）*/
+.el-card.is-always-shadow{
+  margin-bottom: 10px;
+}
