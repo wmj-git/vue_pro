@@ -86,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'change', validator: isPhone }
+          { required: true, trigger: 'blur', validator: isPhone }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
@@ -127,7 +127,7 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    // 电话输入时就开始判断加上短横线
+    // 电话输入时就开始判断加上空格
     handlerPhone(val) {
       if (val.length <= 13) {
         if (val.length > 3 && val.length < 7) {
