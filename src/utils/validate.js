@@ -2,12 +2,28 @@
  * Created by PanJiaChen on 16/11/18.
  * 表单验证规则
  */
-
+/**
+ 判断删除空格的手机
+ */
+export function isSpacePhone(rule, value, callback) {
+  value = value.replace(/\s/g, '')
+  setTimeout(() => {
+    if (!(/^1[3456789]\d{9}$/).test(value)) {
+      callback(new Error('请输入有效的手机号'))
+    } else {
+      callback()
+    }
+  }, 200)
+}
 /**
  判断为手机号码13位
  */
 export function isPhone(rule, value, callback) {
-  value = value.replace(/\s/g, '')
+  /* if (/\s/.test(value)) {
+    console.log('没有空格')
+  } else {
+    value = value.replace(/\s/g, '')
+  }*/
   setTimeout(() => {
     if (!(/^1[3456789]\d{9}$/).test(value)) {
       callback(new Error('请输入有效的手机号'))
@@ -242,5 +258,5 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isPhone, idCard, integerP, EnTextCode, cnText, integerN, checkLongitude, checkLatitude, checkString, validateNum, validateDecimal, integerAge
+  isSpacePhone, isPhone, idCard, integerP, EnTextCode, cnText, integerN, checkLongitude, checkLatitude, checkString, validateNum, validateDecimal, integerAge
 }

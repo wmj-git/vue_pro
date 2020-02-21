@@ -247,7 +247,7 @@ export default {
       for (const i in this.children.formItem) {
         switch (this.children.formItem[i].meta.valueKey) {
           case 'deviceIds':
-            floorList({
+            await floorList({
               url: this.set.deviceUrl
             }).then(res => {
               res.data.list.forEach(val => {
@@ -310,13 +310,15 @@ export default {
     },
     // 设备关联楼层
     async associate() {
-      const _param = {
+      const _params = {
         floorId: this.currentFloor.id
       }
+      console.log('点击关联设备')
       await deviceInfo({
         url: this.set.checkedUrl,
-        params: _param
+        params: _params
       }).then(response => {
+        console.log('指定楼层的已分配设备', response)
         response.data.list.forEach(val => {
           /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })

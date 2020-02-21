@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { isPhone } from '@/utils/validate'
+import { isSpacePhone } from '@/utils/validate'
 
 export default {
   name: 'Login',
@@ -86,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: isPhone }
+          { required: true, trigger: 'blur', validator: isSpacePhone }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
