@@ -1,16 +1,6 @@
 <template>
-  <div class="emDialog">
-    <el-dialog
-      v-el-drag-dialog
-      :close-on-click-modal="true"
-      :title="set.title"
-      :modal="set.modal"
-      :visible.sync="set.dialogVisible"
-      :width="set.width"
-      :destroy-on-close="true"
-      :append-to-body="set.appendToBody"
-      @close="clear"
-    >
+  <div class="floatBox">
+    <div :id="system_id">
       <el-row :gutter="2">
         <template v-for="(component, index) in children.ContainerItem">
           <el-col :key="index" :span="Number(component.meta.span)" :offset="Number(component.meta.offset)">
@@ -18,7 +8,7 @@
           </el-col>
         </template>
       </el-row>
-    </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -62,7 +52,15 @@ export default {
     this.init()
   },
   mounted() {
-
+    const _this = this
+    this.$nextTick(function() {
+      $('#' + _this.system_id).window({
+        inline: true,
+        width: 600,
+        height: 400,
+        modal: false
+      })
+    })
   },
   beforeDestroy() {
 
@@ -126,5 +124,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "emDialog";
+  @import "floatBox";
 </style>

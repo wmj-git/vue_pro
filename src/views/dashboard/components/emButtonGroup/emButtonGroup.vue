@@ -74,28 +74,14 @@ export default {
   },
   methods: {
     fn(_obj, _data) {
-      const _fn = _obj.meta.fn
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id
+      // const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'BaseTable_EmButtonGroup_btnClick--BaseTable_EmDialog_closeFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta
-          })
-          break
-        case 'BaseTable_EmButtonGroup_btnClick--BaseTable_EmTransfer_Fn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta
-          })
-          break
-        case 'default':
-          this[_fn](_obj.meta)
+        case 'none':
+          // console.log(_controlId)
           break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
+          this.FN(_obj, _data)
       }
     },
     controlGroupFn(_obj) {
