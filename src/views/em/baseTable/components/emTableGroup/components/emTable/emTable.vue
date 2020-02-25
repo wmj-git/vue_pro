@@ -404,7 +404,9 @@ export default {
       // console.log('windowOpen', _obj)
       const _meta = _obj.meta
       // 请求的数据
-      const _params = _obj.data
+      const _currentRole = this.$store.getters['currentRole'] // 当前角色信息
+      let _params = _obj.data
+      _params = dataInitFn(_params, _currentRole)
       const _set = _meta.fn_set
       const _url = _set.requestUrl
       let _str = ''
