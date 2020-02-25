@@ -74,7 +74,7 @@
                 <el-button
                   :key="_index"
                   :ref="btn.meta.system_id"
-                  :disabled="buttonDisabledFn(scope.row)"
+                  :disabled="buttonDisabledFn(scope.row,btn)"
                   class="em-btn-operation table_inLine_btn"
                   size="mini"
                   :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
@@ -421,11 +421,19 @@ export default {
       _str += 'Authorization=' + this.$store.getters['token']
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     },
-    buttonDisabledFn(_val) { // 初始判断按钮是否禁用
+    buttonDisabledFn(_row, _btn) { // 初始判断按钮是否禁用
       let _value = false
-      if ('category' in _val) {
-        _value = _val['category'] === 'false'
+      if (!('buttonDisabledKey' in _btn.meta)) {
+        return _value
       }
+      switch (_btn.meta.buttonDisabledKey) {
+        case 'category':
+          if ('category' in _row) {
+            _value = _row['category'] === 'false'
+          }
+          break
+      }
+
       return _value
     }
   }
