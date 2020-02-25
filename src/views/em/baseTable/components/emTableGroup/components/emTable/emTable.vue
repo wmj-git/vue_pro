@@ -74,6 +74,7 @@
                 <el-button
                   :key="_index"
                   :ref="btn.meta.system_id"
+                  :disabled="buttonDisabledFn(scope.row)"
                   class="em-btn-operation table_inLine_btn"
                   size="mini"
                   :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
@@ -380,9 +381,13 @@ export default {
     // 表单字段格式化
     formatterFn(row, column) {
       let _val = ''
+      let _fn = null
       const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
-      if (column.property in _formatterMap) {
+      if ((column.property in _formatterMap) && (typeof _formatterMap[column.property] !== 'function')) {
         _val = _formatterMap[column.property].get(row[column.property])
+      } else if ((column.property in _formatterMap) && (typeof _formatterMap[column.property] === 'function')) {
+        _fn = _formatterMap[column.property]
+        _val = _fn(row[column.property])
       } else {
         _val = row[column.property]
       }
@@ -415,6 +420,13 @@ export default {
       }
       _str += 'Authorization=' + this.$store.getters['token']
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
+    },
+    buttonDisabledFn(_val) { // 初始判断按钮是否禁用
+      let _value = false
+      if ('category' in _val) {
+        _value = _val['category'] === 'false'
+      }
+      return _value
     }
   }
 }
