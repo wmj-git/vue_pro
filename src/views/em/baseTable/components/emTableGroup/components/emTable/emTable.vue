@@ -72,6 +72,7 @@
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
+                  v-if="buttonIfFn(scope.row,btn)"
                   :key="_index"
                   :ref="btn.meta.system_id"
                   :disabled="buttonDisabledFn(scope.row,btn)"
@@ -434,6 +435,22 @@ export default {
           break
       }
 
+      return _value
+    },
+    buttonIfFn(_row, _btn) {
+      let _value = true
+      let _key = null
+      let _type = null
+      if (!('buttonIfSet' in _btn.meta)) {
+        return _value
+      }
+      _key = _btn.meta.buttonIfSet.key
+      _type = _btn.meta.buttonIfSet._type
+      switch (_type) {
+        case '1': //
+          _value = _row[_key] === 'false'
+          break
+      }
       return _value
     }
   }

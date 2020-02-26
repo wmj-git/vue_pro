@@ -1,4 +1,6 @@
 
+import { timestampToTime } from './tool'
+
 export const staticFormatterMap = {
   // 设备类型
   dataStatus: new Map([
@@ -77,6 +79,16 @@ export const staticFormatterMap = {
     } else {
       _val = '已发布'
     }
+    return _val
+  },
+  lastUpdateTime: (val) => { // 流程管理-最近更新时间
+    let _val = null
+    _val = timestampToTime(val)
+    return _val
+  },
+  createTime: (val) => { // 流程管理-创建时间
+    let _val = null
+    _val = timestampToTime(val)
     return _val
   }
 }
