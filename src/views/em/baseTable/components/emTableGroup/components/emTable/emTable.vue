@@ -65,7 +65,7 @@
               :label="column.label"
               :width="column.width"
               :show-overflow-tooltip="true"
-              :formatter="formatterFn"
+              :formatter="column.noFormatter && column.noFormatter === true ? noFormatterFn : formatterFn"
             />
           </template>
           <el-table-column v-if="children.columnBtn.length > 0" :width="248" fixed="right" label="操作">
@@ -393,6 +393,9 @@ export default {
         _val = row[column.property]
       }
       return _val
+    },
+    noFormatterFn(row, column) {
+      return row[column.property]
     },
     unusualTimesFn(str) {
       if (str.unusualTimes) {
