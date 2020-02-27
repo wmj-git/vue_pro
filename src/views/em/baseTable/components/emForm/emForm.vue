@@ -149,7 +149,6 @@
 </template>
 <script>
 import { emMixin } from '@/utils/mixins'
-import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
@@ -205,6 +204,8 @@ export default {
     fn(obj, data) {
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
       const _validate = _obj.meta.fn_set.validate || false
       let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
@@ -216,40 +217,15 @@ export default {
           return false
         }
       })
+      console.log(data)
       if (_validate) {
         if (!(_valid)) {
           return
         }
       }
-      const _fn = _obj.meta.fn
-      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id
-      const _Form = this.getForm()
-      let _val = {}
-      let _row = {}
       switch (_controlType) {
-        case 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_addFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            Form: _Form
-          })
-          break
-        case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              _val = Object.assign({}, _obj.meta.fn_set.requestParams)
-              _row = this.senderData.data.row
-              Object.assign(_Form, _row)
-              _val = dataInitFn(_val, _Form)
-              this[_fn]({
-                meta: _obj.meta,
-                data: _val
-              })
-            } else {
-              console.log('验证错误')
-              return false
-            }
-          })
+        case 'none':
+          console.log(_controlId)
           break
         default:
           this.FN(_obj, _data)

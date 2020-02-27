@@ -88,7 +88,7 @@
 </template>
 <script>
 import { emMixin } from '@/utils/mixins'
-import vueBus from '@/utils/vueBus'
+// import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { validate } from '@/utils/validate'
 
@@ -135,7 +135,9 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    fn(_obj, _data) {
+    fn(obj, data) {
+      const _obj = JSON.parse(JSON.stringify(obj))
+      const _data = JSON.parse(JSON.stringify(data))
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       const _validate = _obj.meta.fn_set.validate || false
@@ -154,35 +156,9 @@ export default {
           return
         }
       }
-      const _Form = this.getForm()
       switch (_controlType) {
-        case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmTableGroup_EmTable_queryFn':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                Form: _Form
-              })
-            } else {
-              console.log('error submit!!')
-              return false
-            }
-          })
-          break
-        case 'BaseTable_EmTableGroup_EmForm_ControlType--BaseTable_EmDialog_openFn':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              const _Form = this.getForm()
-              vueBus.$emit(_controlId, {
-                meta: _obj.meta,
-                data: _Form
-              })
-              this.controlGroupFn(_obj)
-            } else {
-              // console.log('error submit!!')
-              return false
-            }
-          })
+        case 'none':
+          console.log(_controlId)
           break
         default:
           this.FN(_obj, _data)

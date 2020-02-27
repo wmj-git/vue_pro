@@ -106,7 +106,7 @@
   </div>
 </template>
 <script>
-import vueBus from '@/utils/vueBus'
+// import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { staticFormatterMap } from '@/utils/formatterMap'
 import { dataInitFn, childrenInitFn, toTree } from '@/utils/tool'
@@ -166,18 +166,8 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'BaseTable_EmTableGroup_columnBtnClick--BaseTable_EmTableGroup_EmTable_queryFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
-          })
-          break
-        case 'BaseTable_EmTableGroup_EmTable_columnBtnClick--BaseTable_EmDialog_openFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
-          })
-          this.controlGroupFn(_obj, _data)
+        case 'none':
+          console.log(_controlId)
           break
         default:
           this.FN(_obj, _data)
