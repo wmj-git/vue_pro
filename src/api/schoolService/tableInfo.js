@@ -118,7 +118,7 @@ export function unreadMessageCount(obj) {
     data: obj.params
   })
 }
-// 获取消息详情
+// 获取
 export function messageRedDetails(obj) {
   return request({
     url: obj.url,

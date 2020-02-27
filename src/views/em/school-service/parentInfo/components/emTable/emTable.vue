@@ -89,6 +89,7 @@ export default {
         fn_edit: {
           control_id: '' // 获取选中行的id---修改刷新家长信息
         },
+        fn_remove: {}, // 获取选中行的id---修改刷新家长信息
         rowClick: false
       },
       highlight: true,
@@ -107,6 +108,7 @@ export default {
         columnBtn: []
       },
       formatterMap: {},
+      currentStudent: null, // 指定学生的家长（删除）
       currentClass: null // 指定班级学生分页查询班级id
     }
   },
@@ -189,6 +191,12 @@ export default {
             studentId: row.id
           }
         })
+        vueBus.$emit(this.set.fn_remove.control_id, { // 获取选中行的学生id用于修改家长信息、刷新家长信息
+          fn: 'removeCheckedStu',
+          params: {
+            studentId: row.id
+          }
+        })
       }
     },
     // 渲染数据
@@ -235,6 +243,10 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    removeCheckedStu(val) {
+      this.currentStudent = val.studentId
+      console.log('删除家长', val)
+    },
     // 删除选中行
     remove() {
       var _val = this.multipleSelection
@@ -260,6 +272,20 @@ export default {
                 message: '删除成功',
                 type: 'success'
               })
+              console.log('系统id', this.system_id)
+              switch (this.system_id) {
+                case 'system_id_55': // 删除学生
+                  this.getList()
+                  break
+                case 'system_id_151': // 删除家长
+                  vueBus.$emit(this.set.fn_set.control_id, { // 点击学生数据行获取相应家长信息
+                    fn: 'getList',
+                    params: {
+                      studentId: this.currentStudent
+                    }
+                  })
+                  break
+              }
             }
           })
         }).catch(() => {

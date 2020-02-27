@@ -143,7 +143,7 @@ export default {
   },
   created() {
     this.init()
-    this.getList()
+    /* this.getList()*/
     /* const token = this.$store.getters.token*/
     // ws：neinx那边加的，要是没有ws则会自动加上一个info,通道没法连接上
     // access_token: //后端的名字
