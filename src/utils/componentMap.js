@@ -12,6 +12,8 @@ const componentMap = {
   'BaseTable': () => import('@/views/em/baseTable/baseTable'),
   // 功能页面
   'EditHtml': () => import('@/views/em/editHtml/editHtml'),
+  // 学校页面
+  'SchoolManage': () => import('@/views/em/editHtml/editHtml'),
 
   // 教师管理、banner管理
   'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo'),

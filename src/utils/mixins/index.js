@@ -86,6 +86,7 @@ export const emMixin = {
             })
           })
           break
+        case 'vueBus':
         case 'VueBus':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
@@ -130,6 +131,7 @@ export const emMixin = {
             }})
           })
           break
+        case 'timeFn':
         case 'TimeFn':
           new TimeFn(this.system_id + '_t1', () => {
             vueBus.$emit(_controlId, {
