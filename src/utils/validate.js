@@ -24,13 +24,12 @@ export function isPhone(rule, value, callback) {
   } else {
     value = value.replace(/\s/g, '')
   }*/
-  setTimeout(() => {
-    if (!(/^1[3456789]\d{9}$/).test(value)) {
-      callback(new Error('请输入有效的手机号'))
-    } else {
-      callback()
-    }
-  }, 200)
+
+  if (!(/^1[3456789]\d{9}$/).test(value)) {
+    callback(new Error('请输入有效的手机号'))
+  } else {
+    callback()
+  }
 }
 /**
  正整数

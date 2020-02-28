@@ -217,7 +217,6 @@ export default {
           return false
         }
       })
-      console.log(data)
       if (_validate) {
         if (!(_valid)) {
           return
@@ -477,7 +476,7 @@ export default {
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
     },
-    windowOpen(_obj) {
+    windowOpen(_obj) { // 新窗口页打开
       console.log('windowOpen', _obj)
       const _meta = _obj.meta
       // 请求的数据
@@ -491,7 +490,7 @@ export default {
       _str += 'Authorization=' + this.$store.getters['token']
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     },
-    dropzoneS(file, el, item) {
+    dropzoneS(file, el, item) { // 文件上传
       if (!(file.xhr.status === 200)) {
         return
       }
@@ -499,10 +498,10 @@ export default {
       this.Form[item.meta.valueKey] = _response.data[0].networkPath
       this.$message({ message: '图片上传成功', type: 'success' })
     },
-    dropzoneR(file) {
+    dropzoneR(file) { // 文件删除
       this.$message({ message: 'Delete success', type: 'success' })
     },
-    selectOnChangeFn(obj, data) {
+    selectOnChangeFn(obj, data) { // 选择框值变化时
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
       if ('onChange' in _obj.meta) {

@@ -42,10 +42,10 @@ export default {
   data() {
     return {
       set: {
-        dialogVisible: true,
-        clear: true,
+        dialogVisible: true, // 是否显示
+        clear: true, // 是否清除数据
         appendToBody: true,
-        title: '标题',
+        title: '标题', // 对话框标题
         modal: true,
         width: '380px',
         childrenId: 'none'

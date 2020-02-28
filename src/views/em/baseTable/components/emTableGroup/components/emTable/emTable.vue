@@ -68,7 +68,7 @@
               :formatter="column.noFormatter && column.noFormatter === true ? noFormatterFn : formatterFn"
             />
           </template>
-          <el-table-column v-if="children.columnBtn.length > 0" :width="248" fixed="right" label="操作">
+          <el-table-column v-if="children.columnBtn.length > 0" :width="set.columnBtnWidth" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
@@ -126,6 +126,7 @@ export default {
         updateUrl: '',
         updateMethod: 'post',
         rowClick: 'none',
+        columnBtnWidth: 180, // 操作列宽度
         paginationSever: true, // 是否后台分页
         treeShow: false, // 是否显示树形结构
         treeShow_set: {
@@ -438,9 +439,9 @@ export default {
         return _value
       }
       _key = _btn.meta.buttonIfSet.key
-      _type = _btn.meta.buttonIfSet._type
+      _type = _btn.meta.buttonIfSet.type
       switch (_type) {
-        case '1': //
+        case '1':
           _value = _row[_key] === 'false'
           break
       }
