@@ -22,7 +22,7 @@ export function isPhone(rule, value, callback) {
   if (/\s/.test(value)) {
     value = value.replace(/\s/g, '')
   } else {
-    console.log('没有空格')
+    // console.log('没有空格')
   }
 
   if (!(/^1[3456789]\d{9}$/).test(value)) {

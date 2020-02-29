@@ -267,9 +267,23 @@ export default {
     // 添加一行数据
     addFn(_obj) { // 添加一行数据
       const _this = this
+      let _params = null
+      if (_this.set.appendUrl === '/user/user/addOrgUser') {
+        _params = {
+          'addPo': {
+            'ids': _obj.data.ids
+          },
+          'user': {
+            'phone': _obj.data.phone,
+            'username': _obj.data.username
+          }
+        }
+      } else {
+        _params = _obj.data
+      }
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
-        params: _obj.data
+        params: _params
       }).then(res => {
         if (res && res.statusCode === 200) {
           _this.$message({
