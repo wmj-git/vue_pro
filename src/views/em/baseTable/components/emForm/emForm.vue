@@ -17,7 +17,10 @@
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                :maxlength="item.meta.maxlength || ''"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="blurEventFn({'meta':item.meta, 'data':Form})"
+                @input="inputEventFn({'meta':item.meta, 'data':Form})"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -186,6 +189,15 @@ export default {
         for (const _k in val) {
           if (typeof val[_k] === 'string') {
             val[_k] = val[_k].trim()
+          }
+          if (_k === 'phone') {
+            if (val[_k].length <= 13) {
+              if (val[_k].length > 3 && val[_k].length < 7) {
+                val[_k] = val[_k].replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+              } else if (val[_k].length >= 7) {
+                val[_k] = val[_k].replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+              }
+            }
           }
         }
         return val
@@ -509,6 +521,42 @@ export default {
           meta: _obj.meta.onChange
         }, _data)
       }
+    },
+    blurEventFn(_obj) {
+      let _meta = null
+      let _data = null
+      if ('meta' in _obj && 'blurEvent' in _obj.meta) {
+        _meta = JSON.parse(JSON.stringify(_obj.meta.blurEvent))
+      } else {
+        return
+      }
+      if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      }
+      this.fn({
+        meta: _meta
+      }, _data)
+      // console.log('inputEventFn', _meta, _data)
+    },
+    inputEventFn(_obj) {
+      let _meta = null
+      let _data = null
+      if ('meta' in _obj && 'inputEvent' in _obj.meta) {
+        _meta = JSON.parse(JSON.stringify(_obj.meta.inputEvent))
+      } else {
+        return
+      }
+      if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      }
+      this.fn({
+        meta: _meta
+      }, _data)
+      // console.log('inputEventFn', _meta, _data)
+    },
+    setPhone(_obj) {
+      // console.log('setPone', _obj)
+      this.Form['phone'] = Number(this.Form['phone'].replace(/\s/g, ''))
     }
   }
 }

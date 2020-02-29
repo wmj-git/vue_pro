@@ -19,11 +19,11 @@ export function isSpacePhone(rule, value, callback) {
  判断为手机号码13位
  */
 export function isPhone(rule, value, callback) {
-  /* if (/\s/.test(value)) {
-    console.log('没有空格')
-  } else {
+  if (/\s/.test(value)) {
     value = value.replace(/\s/g, '')
-  }*/
+  } else {
+    console.log('没有空格')
+  }
 
   if (!(/^1[3456789]\d{9}$/).test(value)) {
     callback(new Error('请输入有效的手机号'))
@@ -229,11 +229,18 @@ export function validAlphabets(str) {
  * @param {string} email
  * @returns {Boolean}
  */
-export function validEmail(email) {
+/* export function validEmail(email) {
   const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return reg.test(email)
+}*/
+export function validEmail(rule, value, callback) {
+  const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  if (!reg.test(value)) {
+    callback(new Error('请输入正确的邮件格式'))
+  } else {
+    callback()
+  }
 }
-
 /**
  * @param {string} str
  * @returns {Boolean}
@@ -257,5 +264,18 @@ export function isArray(arg) {
 }
 
 export const validate = {
-  isSpacePhone, isPhone, idCard, integerP, EnTextCode, cnText, integerN, checkLongitude, checkLatitude, checkString, validateNum, validateDecimal, integerAge
+  isSpacePhone,
+  isPhone,
+  idCard,
+  integerP,
+  EnTextCode,
+  cnText,
+  integerN,
+  checkLongitude,
+  checkLatitude,
+  checkString,
+  validateNum,
+  validateDecimal,
+  integerAge,
+  validEmail
 }
