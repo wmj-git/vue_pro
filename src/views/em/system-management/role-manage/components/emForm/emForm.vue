@@ -267,6 +267,9 @@ export default {
             meta: _obj.meta
           })
           break
+        case 'getForm':
+          this.FN(_obj, _Form)
+          break
         default:
           this.FN(_obj, _data)
       }
@@ -371,7 +374,7 @@ export default {
           })
         }
       })
-      console.log('optionData', _options)
+      // console.log('optionData', _options)
       return _options
     },
     async optionFn(_meta) {
@@ -384,6 +387,17 @@ export default {
           if (res && res.statusCode === 200) {
             const _keys = _meta.successKeys
             const _data = []
+            if (_meta.options_url === '/user/enum/roleEnum') {
+              const _Enum = []
+              for (const _k in res.data) {
+                _Enum.push({
+                  key: _k,
+                  value: res.data[_k]
+                })
+              }
+              res.data = _Enum
+              console.log(res.data)
+            }
             res.data.forEach((_item) => {
               const _value = {}
               for (const _k in _keys) {

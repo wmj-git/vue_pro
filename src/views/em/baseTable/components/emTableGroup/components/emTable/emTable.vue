@@ -120,7 +120,7 @@ export default {
         queryUrl: '',
         queryMethod: 'post', // 查询接口请求类型
         appendUrl: '',
-        appendMethod: 'post',
+        appendMethod: 'post', // 添加接口请求类型
         removeUrl: '',
         removeMethod: 'post',
         updateUrl: '',
@@ -137,7 +137,7 @@ export default {
         tableHeader: []
       },
       listLoading: true, // 加载状态
-      formatterMap: {},
+      formatterMap: {}, // 列格式化列表
       tableData: [], // 表数据
       currentRow: null, // 单选对象
       multipleSelection: [], // 多选框对象组
@@ -318,11 +318,7 @@ export default {
     delOneFn(_obj) {
       const _this = this
       let _val = this
-      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      const _fn = () => {
         if ('data' in _obj && _obj.data) {
           _val = _obj.data
         } else {
@@ -342,41 +338,42 @@ export default {
             }
           }
         })
-      }).catch(() => {
-
-      })
+      }
+      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(_fn).catch(() => {})
     },
     // 选择删除多行数据
     delFn(_obj) {
       const _this = this
       const _items = []
-
+      const _fn = () => {
+        this.multipleSelection.forEach((_val) => {
+          _items.push(_val.id)
+        })
+        del({
+          url: _this.set.removeUrl,
+          params: _items
+        }).then(res => {
+          if (res) {
+            if (res.statusCode === 200) {
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              })
+              this.callbackFn(this.senderData, res)
+            }
+          }
+        })
+      }
       if (this.multipleSelection && this.multipleSelection.length > 0) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          this.multipleSelection.forEach((_val) => {
-            _items.push(_val.id)
-          })
-          del({
-            url: _this.set.removeUrl,
-            params: _items
-          }).then(res => {
-            if (res) {
-              if (res.statusCode === 200) {
-                _this.$message({
-                  message: '恭喜你，删除成功',
-                  type: 'success'
-                })
-                this.callbackFn(this.senderData, res)
-              }
-            }
-          })
-        }).catch(() => {
-
-        })
+        }).then(_fn).catch(() => {})
       } else {
         _this.$message({
           message: '请勾选要删除的行!',

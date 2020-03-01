@@ -24,7 +24,7 @@ export class DataProcessing {
           }
         })
         return
-      case 'stringData':
+      case 'stringData': // 获取字符串值
         _key = _set.requestParams
         _value = _data[_key]
         break

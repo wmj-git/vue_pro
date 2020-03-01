@@ -186,11 +186,13 @@ export default {
   watch: {
     Form: {
       handler: function(val) {
+        const _zc = new RegExp('adminTel|phone', 'ig')
         for (const _k in val) {
           if (typeof val[_k] === 'string') {
             val[_k] = val[_k].trim()
           }
-          if (_k === 'phone') {
+
+          if (_zc.test(_k)) { // 手机号码空格格式化
             if (val[_k].length <= 13) {
               if (val[_k].length > 3 && val[_k].length < 7) {
                 val[_k] = val[_k].replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
@@ -303,6 +305,7 @@ export default {
       })
     },
     updateOptionParamsFn(_obj) {
+      console.log('updateOptionParamsFn', _obj)
       const _meta = _obj.meta
       const _set = _meta.fn_set
       const _params = _obj.data
@@ -489,7 +492,6 @@ export default {
       this.$refs[this.system_id].resetFields()
     },
     windowOpen(_obj) { // 新窗口页打开
-      console.log('windowOpen', _obj)
       const _meta = _obj.meta
       // 请求的数据
       const _params = _obj.data
@@ -536,7 +538,6 @@ export default {
       this.fn({
         meta: _meta
       }, _data)
-      // console.log('inputEventFn', _meta, _data)
     },
     inputEventFn(_obj) {
       let _meta = null
@@ -552,11 +553,18 @@ export default {
       this.fn({
         meta: _meta
       }, _data)
-      // console.log('inputEventFn', _meta, _data)
     },
     setPhone(_obj) {
       // console.log('setPone', _obj)
-      this.Form['phone'] = Number(this.Form['phone'].replace(/\s/g, ''))
+      const _this = this
+      const _keys = [
+        'adminTel', 'phone'
+      ]
+      _keys.forEach((_val) => {
+        if (_val in _this.Form) {
+          _this.Form[_val] = Number(_this.Form[_val].replace(/\s/g, ''))
+        }
+      })
     }
   }
 }

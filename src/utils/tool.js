@@ -118,7 +118,6 @@ export class TimeFn {
     this.off = false
   }
 }
-
 TimeFn.inTimeoutId = {}
 /*
  // 实例化定时器
