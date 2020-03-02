@@ -20,7 +20,8 @@ export const emMixin = {
       meta: {},
       componentData: JSON.parse(JSON.stringify(this.data)),
       BASE_API: process.env.VUE_APP_BASE_API,
-      senderData: null
+      senderData: null,
+      saveData: new Map()
     }
   },
   watch: {
@@ -86,6 +87,7 @@ export const emMixin = {
             })
           })
           break
+        case 'vueBus':
         case 'VueBus':
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
@@ -130,7 +132,8 @@ export const emMixin = {
             }})
           })
           break
-        case 'TimeFn':
+        case 'timeFn':
+        case 'TimeFn': // 循环执行
           new TimeFn(this.system_id + '_t1', () => {
             vueBus.$emit(_controlId, {
               meta: _obj.meta,
@@ -214,7 +217,7 @@ export const emMixin = {
         case 'PromiseRefs':
           promiseFn(100, () => {
             _refs = _this.$refs[_controlId]
-            console.log('refs', _refs, _controlId)
+            // console.log('refs', _refs, _controlId)
             return _refs && _refs.length > 0
           }, function() {
             _refs[0].senderData = JSON.parse(JSON.stringify({
@@ -434,6 +437,21 @@ export const emMixin = {
         default:
           this.fetchFn(_obj)
       }
+    },
+    setSaveDataFn(_obj) {
+      let _meta = null
+      let _set = null
+      let _data = null
+      if ('meta' in _obj) {
+        _meta = JSON.parse(JSON.stringify(_obj.meta))
+        _set = _meta.fn_set
+      } else {
+        return
+      }
+      if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      }
+      this.saveData.set(_set.dataKey, _data)
     }
   }
 }

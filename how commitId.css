@@ -1,0 +1,43 @@
+/*
+Error: Invalid CSS after "Linda <Linda": expected expression (e.g. 1px, bold), was "@sina.com>"
+        on line 2 of how commitId
+
+1: [33mcommit eea2e926bddd3bf0022d6f629acd4f764e88336b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+2: Author: Linda <Linda@sina.com>
+3: Date:   Tue Feb 18 12:37:37 2020 +0800
+4: 
+5:     dev
+6: 
+7: [33mcommit dfd5ea70548fea21bbf7c56800deeaba8e0c0007[m
+
+Backtrace:
+how commitId:2
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/scss/parser.rb:1308:in `expected'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/lexer.rb:240:in `expected!'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/parser.rb:897:in `assert_done'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/parser.rb:69:in `parse'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/parser.rb:228:in `parse'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script.rb:27:in `parse'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:1169:in `parse_script'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:745:in `parse_property'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:707:in `parse_property_or_rule'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:666:in `parse_line'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:539:in `build_tree'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:558:in `block in append_children'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:557:in `each'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:557:in `append_children'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:417:in `_to_tree'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:389:in `_render_with_sourcemap'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:307:in `render_with_sourcemap'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/exec/sass_scss.rb:387:in `run'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/exec/sass_scss.rb:63:in `process_result'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/exec/base.rb:50:in `parse'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/exec/base.rb:18:in `parse!'
+D:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/sass-3.7.3/bin/sass:13:in `<top (required)>'
+D:/Ruby23-x64/bin/sass:22:in `load'
+D:/Ruby23-x64/bin/sass:22:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"Linda <Linda\": expected expression (e.g. 1px, bold), was \"@sina.com>\"\A         on line 2 of how commitId\A \A 1: [33mcommit eea2e926bddd3bf0022d6f629acd4f764e88336b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m\A 2: Author: Linda <Linda@sina.com>\A 3: Date:   Tue Feb 18 12:37:37 2020 +0800\A 4: \A 5:     dev\A 6: \A 7: [33mcommit dfd5ea70548fea21bbf7c56800deeaba8e0c0007[m"; }

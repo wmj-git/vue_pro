@@ -13,8 +13,8 @@
             <el-row>
               <template v-for="(item,index) in children.paneC">
                 <el-col :key="index" :offset="Number(item.meta.offset)" :span="Number(item.meta.span)">
-                <component :is="item.meta.componentType" v-if="item.meta.tableType===tableType" :key="index" :data="item"/>
-              </el-col>
+                  <component :is="item.meta.componentType" v-if="item.meta.tableType===tableType" :key="index" :data="item" />
+                </el-col>
               </template>
             </el-row>
           </div>
@@ -30,9 +30,10 @@ import EmTableGroup from '@/views/em/school-service/deviceManage/components/emTa
 import EmForm from '@/views/em/school-service/deviceManage/components/emButtons/emButtons'
 import EmTable from '@/views/em/school-service/deviceManage/components/emTable/emTable'
 import EmDialog from '@/views/em/school-service/deviceManage/components/emDialog/emDialog'
+import EmImport from '@/views/em/school-service/deviceManage/components/emImport/emImport'
 export default {
   name: 'DeviceManage',
-  components: { EmTableGroup, EmForm, EmTable, EmDialog },
+  components: { EmTableGroup, EmForm, EmTable, EmDialog, EmImport },
   mixins: [emMixin, emPage],
   data() {
     return {

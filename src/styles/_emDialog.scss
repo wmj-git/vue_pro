@@ -44,7 +44,7 @@
   background-color: $em-form-item-checkMenu;
   border-color: $em-form-item-checkMenu-border;
 }
-.el-select-dropdown__item{
+.el-select-dropdown__item, .el-dropdown-menu__item{
   color: darken($em-text-color-base, 1%);
   &.el-dropdown-menu__item{
     color: darken($em-text-color-base, 1%);

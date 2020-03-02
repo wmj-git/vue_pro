@@ -35,7 +35,7 @@
             :round="btn.meta.round ? btn.meta.round : false "
             :circle="btn.meta.circle ? btn.meta.circle : false "
             :class="btn.meta.class ? btn.meta.class : ''"
-            @click="fn(btn.meta.fn,{'btn':btn,'control_type':btn.meta.control_type})"
+            @click="fn(btn,{'btn':btn,'control_type':btn.meta.control_type})"
           >
             {{ btn.meta.title }}
           </el-button>
@@ -49,7 +49,7 @@
 <script>
 import { emMixin } from '@/utils/mixins'
 import vueBus from '@/utils/vueBus'
-import { dataInitFn, childrenInitFn, TimeFn } from '@/utils/tool'
+import { dataInitFn, childrenInitFn } from '@/utils/tool'
 export default {
   name: 'EmButtonGroup',
   components: {},
@@ -80,7 +80,6 @@ export default {
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
         case 'tree':
-          console.log('_obj', _obj)
           vueBus.$emit(_controlId, {
             meta: _obj.meta,
             data: _data
@@ -100,35 +99,7 @@ export default {
           this[_fn](_obj.meta)
           break
         default:
-          this.$message({
-            message: '(control_type)参数无效',
-            type: 'error'
-          })
-      }
-    },
-    controlGroupFn(_obj) {
-      let tm1 = null
-      if ('controlGroup' in _obj.meta) {
-        _obj.meta.controlGroup.forEach((_item) => {
-          switch (_item.control_type) {
-            case 'TimeFn':
-              tm1 = new TimeFn('t1', () => {
-                vueBus.$emit(_item.control_id, {
-                  meta: _item,
-                  set: _item.fn_set
-                })
-              }, () => {
-                return false
-              }, 200)
-              tm1.run()
-              break
-            default:
-              vueBus.$emit(_item.control_id, {
-                meta: _item,
-                set: _item.fn_set
-              })
-          }
-        })
+          this.FN(_obj, _data)
       }
     },
     init() {

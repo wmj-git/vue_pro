@@ -1,7 +1,6 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
-      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -69,6 +68,17 @@
                 </template>
               </el-select>
             </el-form-item>
+            <el-form-item v-if="item.meta.itemType==='transfer'" :label="item.meta.title" :prop="item.meta.valueKey">
+              <el-transfer
+                :ref="item.meta.system_id"
+                v-model="temp[item.meta.valueKey]"
+                filterable
+                :titles="item.meta.titles"
+                :right-default-checked="rightDefaultChecked"
+                :data="item.meta.options_OBJ.data"
+                @change="handleChange"
+              />
+            </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='datetime'" :label="item.meta.title" :prop="item.meta.valueKey">
               <el-date-picker
                 :ref="item.meta.system_id"
@@ -101,6 +111,7 @@
             :ref="btn.meta.system_id"
             class="em-btn-operation table_inLine_btn"
             size="mini"
+            :icon="btn.meta.icon"
             :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             @click="fn(btn,temp)"
           >
@@ -148,6 +159,7 @@ export default {
       dialogFormVisible: false,
       itemFormVisible: false,
       dialogStatus: '',
+      rightDefaultChecked: [], // 穿梭框右边默认已选中数组
       organizationCode: '', // 当前用户的组织编码
       typeArrList: {} // 设备类型传递给表格
     }
@@ -228,6 +240,10 @@ export default {
       this.temp = dataInitFn(_data.data, _data.data) // 赋值给修改表单
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+    },
+    handleChange(value, direction, movedKeys) {
+      this.rightCheckedArr = value // 穿梭框右边的值发生改变时获取穿梭框的值
+      console.log('rightCheckedArr', this.rightCheckedArr)
     },
     changeDialogHidden() {
       this.dialogFormVisible = false

@@ -17,7 +17,10 @@
                 :ref="item.meta.system_id"
                 v-model="Form[item.meta.valueKey]"
                 :disabled="item.meta.disabled"
+                :maxlength="item.meta.maxlength || ''"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="blurEventFn({'meta':item.meta, 'data':Form})"
+                @input="inputEventFn({'meta':item.meta, 'data':Form})"
               />
             </el-form-item>
             <el-form-item v-else-if="item.meta.itemType==='selectInput'" :label-width="item.meta.labelWidth || '0px'" :label="item.meta.title" :prop="item.meta.valueKey">
@@ -135,6 +138,7 @@
             :ref="item.meta.system_id"
             :icon="item.meta.icon"
             :class="item.meta.class"
+            size="mini"
             :disabled="item.meta.disabled"
             :type="item.meta.buttonType ? item.meta.buttonType : 'primary'"
             @click="fn(item, Form)"
@@ -148,7 +152,6 @@
 </template>
 <script>
 import { emMixin } from '@/utils/mixins'
-import vueBus from '@/utils/vueBus'
 import { dataInitFn, childrenInitFn } from '@/utils/tool'
 import { optionData, paramsGetApi, postApi } from '@/api/baseTable/form'
 import { validate } from '@/utils/validate'
@@ -183,9 +186,20 @@ export default {
   watch: {
     Form: {
       handler: function(val) {
+        const _zc = new RegExp('adminTel|phone', 'ig')
         for (const _k in val) {
           if (typeof val[_k] === 'string') {
             val[_k] = val[_k].trim()
+          }
+
+          if (_zc.test(_k)) { // 手机号码空格格式化
+            if (val[_k].length <= 13) {
+              if (val[_k].length > 3 && val[_k].length < 7) {
+                val[_k] = val[_k].replace(/\D/g, '').replace(/(\d{3})(?=\d)/g, '$1 ')
+              } else if (val[_k].length >= 7) {
+                val[_k] = val[_k].replace(/\s/g, '-').replace(/[^\d]/g, ' ').replace(/(\d{4})(?=\d)/g, '$1 ')
+              }
+            }
           }
         }
         return val
@@ -204,6 +218,8 @@ export default {
     fn(obj, data) {
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      const _controlId = _obj.meta.control_id
       const _validate = _obj.meta.fn_set.validate || false
       let _valid = false
       this.$refs[this.system_id].validate((valid) => { // 表单验证
@@ -220,35 +236,9 @@ export default {
           return
         }
       }
-      const _fn = _obj.meta.fn
-      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
-      const _controlId = _obj.meta.control_id
-      const _Form = this.getForm()
-      let _val = {}
-      let _row = {}
       switch (_controlType) {
-        case 'BaseTable_EmForm_btnClick--BaseTable_EmTableGroup_EmTable_addFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            Form: _Form
-          })
-          break
-        case 'BaseTable_EmForm_onSubmit-userUpdateRoles':
-          this.$refs[this.system_id].validate((valid) => {
-            if (valid) {
-              _val = Object.assign({}, _obj.meta.fn_set.requestParams)
-              _row = this.senderData.data.row
-              Object.assign(_Form, _row)
-              _val = dataInitFn(_val, _Form)
-              this[_fn]({
-                meta: _obj.meta,
-                data: _val
-              })
-            } else {
-              console.log('验证错误')
-              return false
-            }
-          })
+        case 'none':
+          console.log(_controlId)
           break
         default:
           this.FN(_obj, _data)
@@ -315,6 +305,7 @@ export default {
       })
     },
     updateOptionParamsFn(_obj) {
+      console.log('updateOptionParamsFn', _obj)
       const _meta = _obj.meta
       const _set = _meta.fn_set
       const _params = _obj.data
@@ -429,6 +420,7 @@ export default {
       return _options
     },
     setForm(_obj) { // 设置表单值
+      console.log(_obj)
       const _this = this
       let _set = {}
       let _data = {}
@@ -499,8 +491,7 @@ export default {
     onReset() { // 重置
       this.$refs[this.system_id].resetFields()
     },
-    windowOpen(_obj) {
-      console.log('windowOpen', _obj)
+    windowOpen(_obj) { // 新窗口页打开
       const _meta = _obj.meta
       // 请求的数据
       const _params = _obj.data
@@ -513,7 +504,7 @@ export default {
       _str += 'Authorization=' + this.$store.getters['token']
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
     },
-    dropzoneS(file, el, item) {
+    dropzoneS(file, el, item) { // 文件上传
       if (!(file.xhr.status === 200)) {
         return
       }
@@ -521,10 +512,10 @@ export default {
       this.Form[item.meta.valueKey] = _response.data[0].networkPath
       this.$message({ message: '图片上传成功', type: 'success' })
     },
-    dropzoneR(file) {
+    dropzoneR(file) { // 文件删除
       this.$message({ message: 'Delete success', type: 'success' })
     },
-    selectOnChangeFn(obj, data) {
+    selectOnChangeFn(obj, data) { // 选择框值变化时
       const _obj = JSON.parse(JSON.stringify(obj))
       const _data = JSON.parse(JSON.stringify(data))
       if ('onChange' in _obj.meta) {
@@ -532,6 +523,48 @@ export default {
           meta: _obj.meta.onChange
         }, _data)
       }
+    },
+    blurEventFn(_obj) {
+      let _meta = null
+      let _data = null
+      if ('meta' in _obj && 'blurEvent' in _obj.meta) {
+        _meta = JSON.parse(JSON.stringify(_obj.meta.blurEvent))
+      } else {
+        return
+      }
+      if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      }
+      this.fn({
+        meta: _meta
+      }, _data)
+    },
+    inputEventFn(_obj) {
+      let _meta = null
+      let _data = null
+      if ('meta' in _obj && 'inputEvent' in _obj.meta) {
+        _meta = JSON.parse(JSON.stringify(_obj.meta.inputEvent))
+      } else {
+        return
+      }
+      if ('data' in _obj) {
+        _data = JSON.parse(JSON.stringify(_obj.data))
+      }
+      this.fn({
+        meta: _meta
+      }, _data)
+    },
+    setPhone(_obj) {
+      // console.log('setPone', _obj)
+      const _this = this
+      const _keys = [
+        'adminTel', 'phone'
+      ]
+      _keys.forEach((_val) => {
+        if (_val in _this.Form) {
+          _this.Form[_val] = Number(_this.Form[_val].replace(/\s/g, ''))
+        }
+      })
     }
   }
 }

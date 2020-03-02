@@ -1,0 +1,128 @@
+<template>
+  <div class="floatBox">
+    <div :id="system_id">
+      <el-row :gutter="2">
+        <template v-for="(component, index) in children.ContainerItem">
+          <el-col :key="index" :span="Number(component.meta.span)" :offset="Number(component.meta.offset)">
+            <component :is="component.meta.componentType" :ref="component.meta.system_id" :data="component" />
+          </el-col>
+        </template>
+      </el-row>
+    </div>
+  </div>
+</template>
+
+<script>
+// import vueBus from '@/utils/vueBus'
+import { mapGetters } from 'vuex'
+import { emMixin } from '@/utils/mixins'
+import { dataInitFn, childrenInitFn, FilterTree } from '@/utils/tool'
+import emButtonGroup from '../emButtonGroup/emButtonGroup'
+import emForm from '../emForm/emForm'
+
+export default {
+  name: 'FloatBox',
+  components: {
+    emButtonGroup,
+    emForm
+  },
+  mixins: [emMixin],
+  data() {
+    return {
+      set: {
+        dialogVisible: true,
+        clear: true,
+        appendToBody: true,
+        title: '标题',
+        modal: true,
+        width: '380px',
+        childrenId: 'none'
+      },
+      children: {
+        ContainerItem: []
+      }
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'permission_routes'
+    ])
+  },
+  created() {
+    this.init()
+  },
+  mounted() {
+    const _this = this
+    this.$nextTick(function() {
+      $('#' + _this.system_id).window({
+        inline: true,
+        width: 600,
+        height: 400,
+        modal: false
+      })
+    })
+  },
+  beforeDestroy() {
+
+  },
+  methods: {
+    fn(_obj, _data) {
+      const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
+      // const _controlId = _obj.meta.control_id
+      switch (_controlType) {
+        case 'none':
+          // console.log(_controlId)
+          break
+        default:
+          this.FN(_obj, _data)
+      }
+    },
+    init() {
+      this.set = dataInitFn(this.set, this.meta)
+      if (!(this.set.clear)) {
+        this.children = childrenInitFn(this.children, this.componentData)
+      }
+    },
+    childrenFn(_val) {
+      const _permissionRoutes = this.permission_routes
+      const Tree = new FilterTree({
+        treeData: _permissionRoutes,
+        key: ['meta', 'system_id'],
+        value: _val
+      })
+      const _data = Tree.getData()
+      if (_data.length > 0) {
+        return _data[0]
+      }
+    },
+    clear() {
+      if (this.set.clear) {
+        this.children.ContainerItem.splice(0, this.children.ContainerItem.length)
+        if (this.set.childrenId === 'none') {
+          this.children = childrenInitFn(this.children, this.childrenFn(this.system_id))
+        } else {
+          this.children = childrenInitFn(this.children, this.childrenFn(this.set.childrenId))
+        }
+      }
+    },
+    openFn(_obj) {
+      if (_obj && 'set' in _obj) {
+        Object.assign(this.set, _obj.set)
+        // this.set = dataInitFn(this.set, _obj.set)
+      } else if (_obj && 'meta' in _obj) {
+        Object.assign(this.set, _obj.meta.fn_set)
+      } else {
+        this.set.dialogVisible = true
+      }
+      this.clear()
+    },
+    closeFn() {
+      this.set.dialogVisible = false
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  @import "floatBox";
+</style>

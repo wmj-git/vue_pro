@@ -57,16 +57,17 @@ export default {
       if (_element) {
         _this.mapInit()
       } else {
-        // 动态加载依赖库
+
         const _url = process.env.VUE_APP_STATIC_API
         loadCss('ol_css', _url + '/sceneStatic/ol/ol.css', function() {
         })
         loadJs('ol_js', _url + '/sceneStatic/ol/ol.js', function() {
           _this.mapInit()
         })
+        // 加载
       }
     },
-    mapInit: function() { // 创建地图对象
+    mapInit() { // 创建地图对象
       // console.log('mapInit', this.$data, _G)
       _G[this.system_id] = new mp.MinMap({
         set: {
@@ -78,7 +79,20 @@ export default {
           ]
         }
       })
-    }
+    },
+    viewToFn(obj) {
+      //  获取对象
+      let _g = _G[this.system_id]
+
+      let _zoom = _g.map.getView().getZoom()
+      let _lng = obj.lng ? obj.lng : 114.031047;
+      let _lat = obj.lat ? obj.lat : 22.663679;
+
+      _g.viewTo({
+        zoom: obj.zoom || _zoom,
+        center: [_lng, _lat],
+        duration: 500 })
+     }
   }
 }
 </script>

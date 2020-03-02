@@ -27,7 +27,7 @@
               :ref="btn.meta.system_id"
               class="em-btn-operation"
               size="mini"
-              :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
+              :type="btn.meta.buttonType ? btn.meta.buttonType : 'text'"
               @click="() => fn(btn, {'control_type': btn.meta.control_type})"
             >
               {{ btn.meta.title }}
@@ -102,12 +102,10 @@ export default {
     fn(_obj, _data) {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
-      const treeRow = this.update()
       switch (_controlType) {
-        case 'TreeInfo_editData_dialogVisible': // 修改班级-树弹框
+        case 'importDialog': // 导入弹框
           vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: treeRow
+            meta: _obj.meta
           })
           break
         default:
@@ -132,12 +130,14 @@ export default {
             'classId': _data.data.nodeData
           }
         })
+        vueBus.$emit('pageQuery', _data.data.nodeData.id) // 学生分页查询
         vueBus.$emit(this.set.fn_edit.control_id, { // 修改学生刷新表格数据需要的班级id
           fn: 'queryClassId',
           params: {
             'classId': _data.data.nodeData
           }
         })
+        vueBus.$emit('class', _data.data.nodeData.id)
       }
     },
     async loadNode(node, resolve) {
@@ -151,9 +151,18 @@ export default {
         await gradeCode({ // 年级信息
           url: this.set.gradeUrl
         }).then(response => {
-          response.data.forEach(val => {
-            gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.forEach(val => {
+              gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(gradeArr)
       }
@@ -167,18 +176,24 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.list.forEach(val => {
+              classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(classArr)
       }
     },
     // 修改节点
     update(_data) {
-      /* if (_data.level === 3) {
-        console.log('节点数据', _data)
-      }*/
     },
     // 删除节点
     remove(node) {
@@ -202,6 +217,8 @@ export default {
               message: '删除成功',
               type: 'success'
             })
+            node.parent.loaded = false
+            node.parent.expand()
           } else {
             _this.$notify({
               message: '删除失败',

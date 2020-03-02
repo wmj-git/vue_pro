@@ -1,12 +1,12 @@
 <template>
   <div class="crousrl-container">
-  <el-carousel :interval="4000" type="card" height="400px">
-    <el-carousel-item v-for="(item, index) in bannerList" :key="index">
-      <h3 class="medium">
-        <img :src="item.imagesUrl" @click="getElement(index)">
-      </h3>
-    </el-carousel-item>
-  </el-carousel>
+    <el-carousel :interval="4000" type="card" height="400px">
+      <el-carousel-item v-for="(item, index) in bannerList" :key="index">
+        <h3 class="medium">
+          <img :src="item.imagesUrl" @click="getElement(index)">
+        </h3>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 <script>
@@ -49,7 +49,12 @@ export default {
         if (val.statusCode === 200) {
           this.bannerList = val.data
         } else if (val.statusCode === 503) {
-          this.bannerList = 'banner图片加载中'
+          this.$message({
+            showClose: true,
+            message: '还没有banner图哦,点击右下角上传按钮上传第一张banner图！',
+            type: 'warning'
+          })
+          this.bannerList = []
         }
       })
     }

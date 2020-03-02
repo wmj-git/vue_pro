@@ -1,0 +1,658 @@
+[33mcommit eea2e926bddd3bf0022d6f629acd4f764e88336b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Linda <Linda@sina.com>
+Date:   Tue Feb 18 12:37:37 2020 +0800
+
+    dev
+
+[33mcommit dfd5ea70548fea21bbf7c56800deeaba8e0c0007[m
+Author: Linda <Linda@sina.com>
+Date:   Tue Feb 18 11:24:56 2020 +0800
+
+    dev
+
+[33mcommit 0965eabb01198a7d26ea4055884e0c269d086e2c[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 21:20:39 2020 +0800
+
+    dev
+
+[33mcommit 932f18176641e188038b17f4ca60567bee8de1b8[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 20:25:57 2020 +0800
+
+    dev
+
+[33mcommit 2615f7258bcc06f7aa08fcc1ca525f556dd281d2[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 18:40:51 2020 +0800
+
+    dev
+
+[33mcommit c1bb57b5d65441f8d26fe61a4f96d1f8453cdb10[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 12:20:36 2020 +0800
+
+    dev
+
+[33mcommit c6a1a3913c1d6c1b327fbceeb14763192099379b[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 12:18:20 2020 +0800
+
+    dev
+
+[33mcommit c096bbb23ac4c714a67960756385b987a98cd6ff[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 17 11:43:43 2020 +0800
+
+    dev
+
+[33mcommit fedd6fcabd245feb2e05d18c645fc21a97604432[m
+Author: Linda <Linda@sina.com>
+Date:   Fri Feb 14 16:29:15 2020 +0800
+
+    dev
+
+[33mcommit 3808bc5f9e725509abbb6696865df99826ba5c7d[m
+Merge: 42434ee 9ecb1a4
+Author: Linda <Linda@sina.com>
+Date:   Fri Feb 14 16:25:11 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 42434eea3ce70bb90a023fc5eb3388b65c572efb[m
+Author: Linda <Linda@sina.com>
+Date:   Fri Feb 14 16:24:41 2020 +0800
+
+    dev
+
+[33mcommit 9ecb1a4a9b0203ed9f92876437f9e5141f612b1a[m
+Merge: c43591f b976139
+Author: LiuJun <gt@example.com>
+Date:   Fri Feb 14 10:37:14 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit c43591facaec429de02f2be96187e2fc0c63b937[m
+Author: LiuJun <gt@example.com>
+Date:   Fri Feb 14 10:36:33 2020 +0800
+
+    dev
+
+[33mcommit b9761396af37886e9bb30b1cda4d711384b57165[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 19:04:10 2020 +0800
+
+    dev
+
+[33mcommit 35d563d61c8ca19030ebb82688219b2d285b31a4[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 18:10:27 2020 +0800
+
+    dev
+
+[33mcommit 6487cc4118949f5dcd08f18af254c2fcf805e6cf[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 14:50:04 2020 +0800
+
+    dev
+
+[33mcommit c05860f2813990fc136f8b22400aef09252c7595[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 14:40:56 2020 +0800
+
+    dev
+
+[33mcommit 69ab113f649f9b2ff2c25ab2baf9926460fc9d7e[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 13:28:58 2020 +0800
+
+    dev
+
+[33mcommit 80a06653aa27c3b00c9b3dbd46ed210730df8149[m
+Author: Linda <Linda@sina.com>
+Date:   Thu Feb 13 11:19:07 2020 +0800
+
+    dev
+
+[33mcommit a930976a77689b45a53aa332a4947656e5827cd0[m
+Author: Linda <Linda@sina.com>
+Date:   Wed Feb 12 17:54:58 2020 +0800
+
+    dev
+
+[33mcommit 85724d07abbbc4cbb680f518d05b96e87683faa9[m
+Author: Linda <Linda@sina.com>
+Date:   Wed Feb 12 13:00:28 2020 +0800
+
+    dev
+
+[33mcommit c42ac1b61bcb9e864b7f5b76cc7f2f6709e56f0c[m
+Author: LiuJun <gt@example.com>
+Date:   Wed Feb 12 11:56:19 2020 +0800
+
+    dev
+
+[33mcommit 1e546fc84c1c470a6698ff26c148bc60662dc516[m
+Author: LiuJun <gt@example.com>
+Date:   Wed Feb 12 11:39:21 2020 +0800
+
+    dev
+
+[33mcommit 886b3a15ad375a5034c33f250c93b5318683bf01[m
+Merge: da9ce55 aee0c84
+Author: LiuJun <gt@example.com>
+Date:   Wed Feb 12 11:38:46 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit da9ce554ac21ad0093e35cc3b3e5a55114bc6783[m
+Author: LiuJun <gt@example.com>
+Date:   Wed Feb 12 11:23:14 2020 +0800
+
+    dev
+
+[33mcommit aee0c8496cf94205c1c6f529798ebeb0b611db81[m
+Author: Linda <Linda@sina.com>
+Date:   Tue Feb 11 19:33:05 2020 +0800
+
+    dev
+
+[33mcommit fd2717a5c26e82d6b775d00dd2a83a019f537cc0[m
+Author: Linda <Linda@sina.com>
+Date:   Tue Feb 11 18:44:48 2020 +0800
+
+    dev
+
+[33mcommit 95b6b44159e48028d2c55eeb267d3492a7ff01ca[m
+Author: Linda <Linda@sina.com>
+Date:   Tue Feb 11 11:20:28 2020 +0800
+
+    dev
+
+[33mcommit 22acd790d710a726398dbc93dc19627cf82301f3[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 16:38:23 2020 +0800
+
+    dev
+
+[33mcommit 77f0b2b6052383d38de87590f849dad8b244ce0c[m
+Merge: c3a82c0 190d85d
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 16:28:41 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit c3a82c0c81edb2ec4dffb3baa74bd2d9f99d5ce3[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 16:27:13 2020 +0800
+
+    dev
+
+[33mcommit 190d85daacc4651f97816bdb71339e9eacbde8dc[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 15:45:47 2020 +0800
+
+    dev
+
+[33mcommit a840652973c4775a953990cc569d7f2bbcc7c682[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 15:35:23 2020 +0800
+
+    dev
+
+[33mcommit efa51839b0e980d62872b7cadaa374664b12184a[m
+Merge: 1302e33 7f2186d
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 15:30:06 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 1302e330d06eb5bfd4ac110d0751c3f42ceea8f6[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 15:29:44 2020 +0800
+
+    dev
+
+[33mcommit 7f2186dcd2564caaf9b32b18ce71825a04f5b823[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 13:13:29 2020 +0800
+
+    dev
+
+[33mcommit c7b96c85ea36a137225cb2c0ef798ac76521183e[m
+Merge: 6e264dd f6dfa84
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 13:12:11 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 6e264dddcbf21d0b2cc888d1f5b2b35c2f84334f[m
+Author: Linda <Linda@sina.com>
+Date:   Mon Feb 10 13:04:54 2020 +0800
+
+    dev
+
+[33mcommit f6dfa844e3236281f968c86f38348a8d8e17a54a[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 10:17:47 2020 +0800
+
+    dev
+
+[33mcommit 86bde0cae49d085d7bb8d1c486628680c3adb860[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 10:17:11 2020 +0800
+
+    0210
+
+[33mcommit c78c9c99a32cc5a6cba3da0bd49654620e1b2966[m
+Author: LiuJun <gt@example.com>
+Date:   Mon Feb 10 10:13:12 2020 +0800
+
+    0210
+
+[33mcommit e3ba102ca7fe340f893fb2a7b9bbd8278e9a0aa0[m
+Author: LiuJun <gt@example.com>
+Date:   Fri Feb 7 20:34:57 2020 +0800
+
+    0207
+
+[33mcommit b56e3afa84d019c181b3f72c34321386b2e52d43[m
+Merge: 67057c3 78b5df4
+Author: LiuJun <gt@example.com>
+Date:   Tue Feb 4 11:44:28 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 67057c34d799059aeb9890a7c39badbd303e1b1b[m
+Author: LiuJun <gt@example.com>
+Date:   Tue Feb 4 11:43:36 2020 +0800
+
+    0204
+
+[33mcommit 78b5df4ec89a3dd6afa0988dfffddc8f2182648d[m
+Merge: 6b0a317 f105b17
+Author: yfb-lj <838108200@qq.com>
+Date:   Mon Jan 20 15:32:55 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 6b0a317e4d4d3d74429df58654a333487d61c7b4[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Mon Jan 20 15:31:30 2020 +0800
+
+    0120
+
+[33mcommit f105b17f57e688ca09f4d00ac3af3e10d8126de4[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 17:08:16 2020 +0800
+
+    dev
+
+[33mcommit 84dc1dc838bdbbb69a3d90d51455621a674a9a9e[m
+Merge: 1d02432 6d326b9
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 16:28:26 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 1d024323ea85d1b05ea13bd64151ff2f404f80e5[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 16:28:19 2020 +0800
+
+    dev
+
+[33mcommit 6d326b9e383a8c59a65db62275cfc67ba8e85250[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Sun Jan 19 15:10:24 2020 +0800
+
+    dev
+
+[33mcommit 21286c1f9d91a7da2a3587e7ea9192c07c2b6291[m
+Merge: 50a4e4b f9e1b84
+Author: yfb-lj <838108200@qq.com>
+Date:   Sun Jan 19 15:09:39 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 50a4e4b07de5ed5a03518c7b764ec365196c440f[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Sun Jan 19 15:09:15 2020 +0800
+
+    dev
+
+[33mcommit f9e1b8422ee4f88e9ffcdf77160fa33738f5f37c[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 15:03:58 2020 +0800
+
+    dev
+
+[33mcommit eebed1f211207eedf80e303a51df74e5191fb7ce[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Sun Jan 19 14:55:19 2020 +0800
+
+    dev
+
+[33mcommit d02e6cdc87880f6b2a5fb1d4700357c85fe0df2b[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 12:02:00 2020 +0800
+
+    dev
+
+[33mcommit 946fa81bf746e088ce2af57dbdd8c5a5fa6a4173[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 10:22:22 2020 +0800
+
+    dev
+
+[33mcommit b7b0b46e918e5229db9642bf2a0e9070b05d36df[m
+Author: linda <linda@sina.com>
+Date:   Sun Jan 19 09:27:18 2020 +0800
+
+    dev
+
+[33mcommit e171db80d9f5bb301dd767c4c996f4f51964d806[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 18:09:59 2020 +0800
+
+    dev
+
+[33mcommit 959be6afbc32c297a8e1097b5a0a67bc8e158a39[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 16:35:03 2020 +0800
+
+    dev
+
+[33mcommit 3c352f3d0d0e1de7467db212ea6b0705c04bf8a5[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 15:20:01 2020 +0800
+
+    dev
+
+[33mcommit 61d8073b242d2c53465d39140fe879ff434bcfb2[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 15:13:47 2020 +0800
+
+    dev
+
+[33mcommit abb3fd16b21ac9c04b3898901538485f77045ab4[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 11:01:03 2020 +0800
+
+    dev
+
+[33mcommit 5b1422b7774813fce1a83d6f611d6ae00024f50e[m
+Author: linda <linda@sina.com>
+Date:   Fri Jan 17 09:15:57 2020 +0800
+
+    dev
+
+[33mcommit 20569de0ac46a7eaa3e756313c9053a4047ab5a2[m
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 18:53:21 2020 +0800
+
+    dev
+
+[33mcommit d45e4fe70854bbfe5d11861b9d997163d2cde7c3[m
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 17:55:42 2020 +0800
+
+    dev
+
+[33mcommit 6484688a16afa48f49af757b28999ab02ec39430[m
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 17:43:35 2020 +0800
+
+    dev
+
+[33mcommit c66d9801fcc346a6b88e96d3df82d9c7dfa2da1a[m
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 14:49:03 2020 +0800
+
+    dev
+
+[33mcommit 81936b217bb8378b41cadb97aeefcff333db605b[m
+Merge: a917106 313ebf5
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 14:47:52 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit a91710672bf4b0199e02aeb0255689c5c13fa790[m
+Author: linda <linda@sina.com>
+Date:   Thu Jan 16 14:47:43 2020 +0800
+
+    dev
+
+[33mcommit 313ebf539756a9b76f9d8975bc83358bb82f6a01[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Thu Jan 16 08:41:19 2020 +0800
+
+    prod
+
+[33mcommit 6b848d6f6eac2fa02d6f21201f119476073cc0f8[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Thu Jan 16 08:39:39 2020 +0800
+
+    dev
+
+[33mcommit 26859797c981e1fb4062b5a09fcfb6dd117b447e[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 18:36:12 2020 +0800
+
+    prod
+
+[33mcommit d34d796dff1808aeaa1eff1a8a66909f45f75459[m
+Merge: 25977dd ceab946
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 18:35:21 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 25977dd2cbd82f0131e63f40784fbddef5422669[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 18:35:11 2020 +0800
+
+    prod
+
+[33mcommit ceab9463126eabcd8c1ac691d84b48dc70fc593d[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 17:01:28 2020 +0800
+
+    prod
+
+[33mcommit 943e585ccd8730895306ae120f9b4c7c21c9a16a[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 17:00:33 2020 +0800
+
+    dev
+
+[33mcommit 731def4dc8f9e522f2c793e574bb30eb660c60fa[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 16:47:29 2020 +0800
+
+    dev
+
+[33mcommit a920a18896d74c4c37aa133082cd9b5c4bae9d2e[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 16:46:26 2020 +0800
+
+    prod
+
+[33mcommit 18dfc525eb1f2ddd089b9d5e17919f0defb7d5ba[m
+Merge: 9e06717 b03d3b7
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 16:44:48 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 9e0671794c53d70b434aa356460df78618ce9d08[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 16:44:23 2020 +0800
+
+    0114
+
+[33mcommit b03d3b7dd1e25defb943cbd121995618bd6bc630[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:42:32 2020 +0800
+
+    prod
+
+[33mcommit ff72a1ad3df8ba5d3c98e3d3547be30cbaddf11c[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:39:08 2020 +0800
+
+    prod
+
+[33mcommit e89804fbc0875c15d8d24a091681425dc7052bf3[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:33:48 2020 +0800
+
+    dev
+
+[33mcommit 18d9ba88f0c2d13c01c5b68c4eaafc20c14e37fb[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:24:19 2020 +0800
+
+    dev
+
+[33mcommit 68681b434d1054a8b94b360155db16e29b61f62e[m
+Merge: 523bbe3 e2c5ce5
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:21:51 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 523bbe3d68f4b88da638a9a56c4129ee93dfbab4[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 16:21:40 2020 +0800
+
+    dev
+
+[33mcommit e2c5ce5f0a6d41985b27d2725c1ddb553eb2bba3[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 12:11:11 2020 +0800
+
+    dev
+
+[33mcommit 78dc78e5cdc9dd234e6b12cc6e524754f255c7f9[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 12:03:18 2020 +0800
+
+    dev
+
+[33mcommit 4ee7f7c95d716531f007b0b14a7ae4c447ab5bd9[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 11:45:04 2020 +0800
+
+    dev
+
+[33mcommit f22198ca08afbd1cf04e23070d455e2da8401393[m
+Merge: 7fb4e62 11d771d
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 11:42:40 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 7fb4e622c5779155586337b1c60c2d40926aff85[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 11:42:32 2020 +0800
+
+    dev
+
+[33mcommit 11d771d3fb948603aef7a95486156cda14d35fa6[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Wed Jan 15 11:05:32 2020 +0800
+
+    dev
+
+[33mcommit 79897ca8395045f76356d71e47492bb1f866511e[m
+Author: linda <linda@sina.com>
+Date:   Wed Jan 15 09:55:19 2020 +0800
+
+    dev
+
+[33mcommit c8d895b048cd79b6e8566a65d859c3e41e5610b1[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 17:57:23 2020 +0800
+
+    dev
+
+[33mcommit fb082a90f960bc36efa52a64446afddd17822c71[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 17:18:42 2020 +0800
+
+    dev
+
+[33mcommit 088d9a3888b1ab9a22ea2e23ededde6a674ee1a0[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 16:50:18 2020 +0800
+
+    dev
+
+[33mcommit 20a5412c63007dcc8bec1a9257ffeeeec8f3427f[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 14:47:19 2020 +0800
+
+    dev
+
+[33mcommit 1a7cd262d6b5beb0185e6196c03831707d6f4a86[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 14:45:21 2020 +0800
+
+    'dev'
+
+[33mcommit 41e1df29388f576adec3228d2bda77934d27707d[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 10:09:16 2020 +0800
+
+    'dev'
+
+[33mcommit 7fca745062c17abb7faa89ba0d77aa932140e99a[m
+Author: linda <linda@sina.com>
+Date:   Tue Jan 14 09:23:44 2020 +0800
+
+    'prod'
+
+[33mcommit 732cb4bef8a4f50ee18f03dda8e6d9aa8f8b93d2[m
+Author: linda <linda@sina.com>
+Date:   Mon Jan 13 17:43:10 2020 +0800
+
+    'prod'
+
+[33mcommit ef23ec37cfeefe04ad85582a6053193cee35d61e[m
+Author: linda <linda@sina.com>
+Date:   Mon Jan 13 17:28:11 2020 +0800
+
+    'prod'
+
+[33mcommit 554b729a13066c0fdcdee3f832e9c4acf259e79d[m
+Author: linda <linda@sina.com>
+Date:   Mon Jan 13 16:33:22 2020 +0800
+
+    'prod'
+
+[33mcommit 1b0e73755f6b241248b5125e66cc5b68fc64dcde[m
+Merge: d1c75e9 d43b7ce
+Author: linda <linda@sina.com>
+Date:   Mon Jan 13 14:38:20 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit d1c75e9e8ed021d612abe603540c137997a6b480[m
+Author: linda <linda@sina.com>
+Date:   Mon Jan 13 14:38:08 2020 +0800
+
+    'prod'
+
+[33mcommit d43b7ce198f8604594fea4580eae5d1fca9c6afd[m
+Merge: 9c6762f 26952d9
+Author: yfb-lj <838108200@qq.com>
+Date:   Fri Jan 10 19:20:15 2020 +0800
+
+    Merge branch 'master' of http://amkj.cqemme.com:10080/school_security/school-admin
+
+[33mcommit 9c6762fec9f07da55968f71f57150e3791c5280b[m
+Author: yfb-lj <838108200@qq.com>
+Date:   Fri Jan 10 19:19:58 2020 +0800
+
+    prod

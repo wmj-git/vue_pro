@@ -93,7 +93,7 @@ export default {
       },
       treeData: [],
       filterText: '',
-      currentKey: null,
+      currentKey: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -104,7 +104,6 @@ export default {
         handleNodeClickControlId: '',
         handleNodeClickFn: '',
         handleNodeClickFnType: '',
-
         handleCheckChange: '',
         handleDragEnd: ''
       }
@@ -129,6 +128,7 @@ export default {
     this.init()
   },
   mounted() {
+
   },
   beforeDestroy() {
   },
@@ -357,10 +357,27 @@ export default {
       return _Keys
     },
     setCheckedKeys(_val) {
+      console.log('setCheckedKeys', this.$data)
       this.getRoutePermission(_val.data.id)
     },
     setCurrentKey({ data, meta }) {
       this.currentKey = data.id
+    },
+    setPermissionFn(_obj) {
+      console.log(_obj, this.saveData)
+      /* let _this = this
+      update({
+        url: this.set.updateUrl,
+        params: data
+      }).then((response) => {
+        if (response.statusCode === 200) {
+          this.$message({
+            message: response.message,
+            type: 'success'
+          })
+        }
+       _this.callbackFn(this.senderData, res)
+      })*/
     }
   }
 }

@@ -1,11 +1,13 @@
 
+import { timestampToTime } from './tool'
+
 export const staticFormatterMap = {
   // 设备类型
   dataStatus: new Map([
     [1, '启用'],
     [0, '禁用']
   ]),
-  orgType: new Map([
+  orgType: new Map([ // 组织类型
     [2, '省教委'],
     [3, '市教委'],
     [4, '县教委'],
@@ -60,6 +62,34 @@ export const staticFormatterMap = {
   isRead: new Map([ // 消息状态
     [0, '未读'],
     [1, '已读']
-  ])
+  ]),
+  category: (val) => { // 流程管理-是否属于本组织
+    let _val = ''
+    if (val === 'false') {
+      _val = '否'
+    } else {
+      _val = '是'
+    }
+    return _val
+  },
+  deploymentId: (val) => { // 流程管理-发布状态
+    let _val = ''
+    if (!val) {
+      _val = '未发布'
+    } else {
+      _val = '已发布'
+    }
+    return _val
+  },
+  lastUpdateTime: (val) => { // 流程管理-最近更新时间
+    let _val = null
+    _val = timestampToTime(val)
+    return _val
+  },
+  createTime: (val) => { // 流程管理-创建时间
+    let _val = null
+    _val = timestampToTime(val)
+    return _val
+  }
 }
 

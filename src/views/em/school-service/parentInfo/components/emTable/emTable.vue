@@ -1,16 +1,17 @@
 <template>
   <div class="school-container table-container">
     <el-table
+      :ref="system_id"
       :data="tableDataEnd "
       border
-      :ref="system_id"
+      :height="tableHeight"
       style="width: 100%;"
       :row-click="meta.rowClick"
+      :highlight-current-row="highlight"
+      empty-text="暂无数据"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
       @row-click="onClickRow"
-      :highlight-current-row="highlight"
-      empty-text="暂无数据"
     >
       <el-table-column
         type="index"
@@ -22,7 +23,7 @@
         width="55"
       />
       <el-table-column v-if="meta.tableHeader[0].key==='studentName'" label="头像">
-        <template slot-scope="scope">
+        <template v-if="scope.row.headImage" slot-scope="scope">
           <img :src="scope.row.headImage" width="40" height="40">
         </template>
       </el-table-column>
@@ -72,6 +73,7 @@ export default {
   data() {
     return {
       id: '',
+      tableHeight: window.innerHeight - 240,
       set: {
         queryUrl: '',
         appendUrl: '',
@@ -87,6 +89,7 @@ export default {
         fn_edit: {
           control_id: '' // 获取选中行的id---修改刷新家长信息
         },
+        fn_remove: {}, // 获取选中行的id---修改刷新家长信息
         rowClick: false
       },
       highlight: true,
@@ -104,11 +107,16 @@ export default {
       children: {
         columnBtn: []
       },
-      formatterMap: {}
+      formatterMap: {},
+      currentStudent: null, // 指定学生的家长（删除）
+      currentClass: null // 指定班级学生分页查询班级id
     }
   },
   created() {
     this.init()
+    vueBus.$on('pageQuery', val => { // 指定班级学生的分页查询
+      this.currentClass = val
+    })
   },
   methods: {
     fn(_obj, _data) {
@@ -183,13 +191,20 @@ export default {
             studentId: row.id
           }
         })
+        vueBus.$emit(this.set.fn_remove.control_id, { // 获取选中行的学生id用于修改家长信息、刷新家长信息
+          fn: 'removeCheckedStu',
+          params: {
+            studentId: row.id
+          }
+        })
       }
     },
     // 渲染数据
     getList(params) {
       const _params = {
         pageSize: this.listQuery.limit,
-        pageNum: this.listQuery.page
+        pageNum: this.listQuery.page,
+        classId: this.currentClass // 指定班级学生分页查询参数
       }
       let _val = {}
       if (params) {
@@ -203,6 +218,12 @@ export default {
         params: _params
       }).then(response => {
         if (response.statusCode === 200) {
+          // 判断是否有图片，没有的话需要给一个默认图片给他
+          for (const i in response.data.list) {
+            if (response.data.list[i].headImage === null) {
+              response.data.list[i].headImage = 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4096470977,2295820639&fm=26&gp=0.jpg'
+            }
+          }
           this.total = response.data.total
           this.tableDataEnd = response.data.list
         } else if (response.statusCode === 503) { // 数据为空时不渲染表格
@@ -221,6 +242,10 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    removeCheckedStu(val) {
+      this.currentStudent = val.studentId
+      console.log('删除家长', val)
     },
     // 删除选中行
     remove() {
@@ -248,7 +273,16 @@ export default {
                 type: 'success'
               })
               switch (this.system_id) {
-                case 'system_is_151':
+                case 'system_id_55': // 删除学生
+                  this.getList()
+                  break
+                case 'system_id_151': // 删除家长
+                  vueBus.$emit(this.set.fn_set.control_id, { // 点击学生数据行获取相应家长信息
+                    fn: 'getList',
+                    params: {
+                      studentId: this.currentStudent
+                    }
+                  })
                   break
               }
             }

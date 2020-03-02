@@ -12,6 +12,8 @@ const componentMap = {
   'BaseTable': () => import('@/views/em/baseTable/baseTable'),
   // 功能页面
   'EditHtml': () => import('@/views/em/editHtml/editHtml'),
+  // 学校页面
+  'SchoolManage': () => import('@/views/em/editHtml/editHtml'),
 
   // 教师管理、banner管理
   'TableInfo': () => import('@/views/em/school-service/tableInfo/tableInfo'),
@@ -19,6 +21,8 @@ const componentMap = {
   'ParentInfo': () => import('@/views/em/school-service/parentInfo/parentInfo'),
   // 设备管理
   'DeviceManage': () => import('@/views/em/school-service/deviceManage/deviceManage'),
+  // 楼层管理
+  'FloorManage': () => import('@/views/em/school-service/floorInfo/floorInfo'),
   // ol地图页面
   'Dashboard': () => import('@/views/dashboard/index')
 }

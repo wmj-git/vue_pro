@@ -11,14 +11,14 @@
         </span>
         <el-input
           ref="username"
-          oninput="if(value.length>13)value=value.slice(0,13)"
           v-model="loginForm.username"
+          oninput="if(value.length>13)value=value.slice(0,13)"
           placeholder="输入手机账号"
-          @input="handlerPhone"
           name="username"
           type="text"
           tabindex="1"
           autocomplete="on"
+          @input="handlerPhone"
         />
       </el-form-item>
 
@@ -45,8 +45,8 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
-      <el-button type="primary" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button type="primary" class="loginOperate-btn" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button type="primary" class="loginOperate-btn" style="width:48%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
     <el-dialog
       title="请选择登录角色"
@@ -65,15 +65,15 @@
         />
       </el-select>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleGenerateAuth">确 定</el-button>
+        <el-button size="mini" class="table_inLine_btn" icon="el-icon-cancel" @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="mini" class="table_inLine_btn" icon="el-icon-submit" @click="handleGenerateAuth">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { isPhone } from '@/utils/validate'
+import { isSpacePhone } from '@/utils/validate'
 
 export default {
   name: 'Login',
@@ -86,7 +86,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'change', validator: isPhone }
+          { required: true, trigger: 'blur', validator: isSpacePhone }
         ],
         password: [{ required: true, min: 6, message: '长度大于6位', trigger: 'blur' }]
       },
@@ -127,7 +127,7 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    // 电话输入时就开始判断加上短横线
+    // 电话输入时就开始判断加上空格
     handlerPhone(val) {
       if (val.length <= 13) {
         if (val.length > 3 && val.length < 7) {

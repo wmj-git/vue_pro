@@ -1,13 +1,14 @@
 <template>
   <div class="school-container table-container">
     <el-table
+      :ref="system_id"
       :data="tableDataEnd "
       border
-      :ref="system_id"
+      :height="tableHeight"
       style="width: 100%;"
+      :row-style="rowClass"
       @selection-change="handleSelectionChange"
       @row-dblclick="showDrawer"
-      :row-style="rowClass"
       @row-click="handleRowClick"
     >
       <el-table-column
@@ -26,7 +27,7 @@
         :prop="info.key"
         :formatter="formatterFn"
       />
-      <el-table-column label="操作" fixed="right" width="auto">
+      <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <template v-for="(btn, _index ) in children.columnBtn">
             <el-button
@@ -66,6 +67,7 @@ export default {
   data() {
     return {
       id: '',
+      tableHeight: window.innerHeight - 240,
       set: {
         queryUrl: '',
         removeUrl: '',
@@ -222,12 +224,6 @@ export default {
             }
           })
         }).catch(() => {
-        })
-      } else {
-        this.$message({
-          showClose: true,
-          message: '请先单击复选框选择你要删除的数据行',
-          type: 'warning'
         })
       }
     },

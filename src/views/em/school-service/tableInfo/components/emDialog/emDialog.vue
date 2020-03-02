@@ -1,7 +1,6 @@
 <template>
   <div class="emDialog-container">
     <el-dialog
-      width="40%"
       :title="set.textMap[dialogStatus]"
       :modal-append-to-body="false"
       :visible.sync="dialogFormVisible"
@@ -33,8 +32,8 @@
                 clearable
                 oninput="if(value.length>13)value=value.slice(0,13)"
                 :disabled="item.meta.disabled"
-                @blur="onBlur"
                 :placeholder="item.meta.placeholder ? item.meta.placeholder : '请输入'"
+                @blur="onBlur"
                 @input="handlerPhone"
               />
             </el-form-item>
@@ -141,6 +140,7 @@
             :ref="btn.meta.system_id"
             class="em-btn-operation table_inLine_btn"
             size="mini"
+            :icon="btn.meta.icon"
             :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
             @click="fn(btn,temp)"
           >
@@ -177,7 +177,13 @@ export default {
         statusIcon: '',
         labelPosition: '',
         textMap: {},
-        vueBusName: ''
+        vueBusName: '',
+        fn_addQuery: {
+          control_id: null
+        },
+        fn_editQuery: {
+          control_id: null // 已分配班级的教师修改后刷新数据
+        }
       },
       pickerOptions: {
         disabledDate: (time) => {
@@ -370,6 +376,12 @@ export default {
                 type: 'success'
               })
               this.changeDialogHidden()
+              vueBus.$emit(this.set.fn_addQuery.control_id, { // 添加学生需要的班级id
+                fn: 'getAllList',
+                params: {
+                  'classId': this.currentClass
+                }
+              })
             } else {
               this.$notify.error('添加失败')
             }
@@ -399,6 +411,14 @@ export default {
               }
             }
             this.changeDialogHidden()
+            console.log('系统id', this.system_id)
+            switch (this.system_id) {
+              case 'system_id_458': // 未分配班级的老师信息修改(修改老师信息使用同一个弹框，待定)
+                vueBus.$emit(this.set.fn_editQuery.control_id, {
+                  fn: 'getAllList'
+                })
+                break
+            }
             if (response.statusCode === 200) {
               this.$notify({
                 title: 'Success',

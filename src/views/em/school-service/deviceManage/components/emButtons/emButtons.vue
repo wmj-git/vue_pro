@@ -37,9 +37,9 @@
                 slot="prepend"
                 v-model="item.meta.valueKey"
                 :style="{width: item.meta.selectWidth}"
-                @change="selectInputKey(item.meta.valueKey,item.meta)"
-                placeholder='请选择'
+                placeholder="请选择"
                 clearable
+                @change="selectInputKey(item.meta.valueKey,item.meta)"
               >
                 <template v-for="(option, _index) in item.meta.options_OBJ.data">
                   <el-option :key="_index" :label="option.label" :value="option.value" />
@@ -60,7 +60,7 @@
               clearable
             />
           </el-form-item>
-          <el-form-item  v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
+          <el-form-item v-else-if="item.meta.itemType==='select'" :label="item.meta.title" :prop="item.meta.valueKey">
             <el-select
               :ref="item.meta.system_id"
               v-model="temp[item.meta.valueKey]"
@@ -75,7 +75,7 @@
               </template>
             </el-select>
           </el-form-item>
-          <el-form-item  v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
+          <el-form-item v-else-if="item.meta.itemType==='switch'" :label="item.meta.title" :prop="item.meta.valueKey">
             <el-switch
               :ref="item.meta.system_id"
               v-model="temp[item.meta.valueKey]"
@@ -84,10 +84,10 @@
               :inactive-color="item.meta.inactiveColor ? item.meta.inactiveColor : '#c6c6c6'"
             />
           </el-form-item>
-          <el-form-item  v-else-if="item.meta.itemType==='button'" :prop="item.meta.valueKey">
+          <el-form-item v-else-if="item.meta.itemType==='button'" :prop="item.meta.valueKey">
             <el-button
-              class="operate_btn"
               :ref="item.meta.system_id"
+              class="operate_btn"
               :icon="item.meta.icon"
               :class="item.meta.class"
               :disabled="item.meta.disabled"
@@ -154,6 +154,11 @@ export default {
           vueBus.$emit(_controlId, {
             meta: _obj.item.meta,
             temp: temp
+          })
+          break
+        case 'importDialog': // 导入弹框
+          vueBus.$emit(_controlId, {
+            meta: _obj.item.meta
           })
           break
         case 'default':

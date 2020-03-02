@@ -138,9 +138,18 @@ export default {
         await gradeCode({ // 年级信息
           url: this.set.gradeUrl
         }).then(response => {
-          response.data.forEach(val => {
-            gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.forEach(val => {
+              gradeArr.push({ 'label': val.gradeName, 'value': val.gradeKey, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(gradeArr)
       }
@@ -154,9 +163,18 @@ export default {
           url: this.set.queryUrl,
           params: _params
         }).then(response => {
-          response.data.list.forEach(val => {
-            classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
-          })
+          if (response.statusCode === 200) {
+            response.data.list.forEach(val => {
+              classArr.push({ 'label': val.name, 'value': val.gradeKey, leaf: true, nodeData: val })
+            })
+          } else if (response.statusCode === 503) {
+            this.$message({
+              showClose: true,
+              message: '没有找到指定内容！',
+              type: 'info',
+              duration: 1000
+            })
+          }
         })
         return resolve(classArr)
       }
@@ -189,6 +207,8 @@ export default {
               message: '删除成功',
               type: 'success'
             })
+            node.parent.loaded = false
+            node.parent.expand()
           } else {
             _this.$notify({
               message: '删除失败',

@@ -6,6 +6,76 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "938174",
+      "name": "查询",
+      "font_class": "query",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "5389078",
+      "name": "添加",
+      "font_class": "add",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "11830359",
+      "name": "删 除",
+      "font_class": "deletes",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "1687015",
+      "name": "重置",
+      "font_class": "reset",
+      "unicode": "e72e",
+      "unicode_decimal": 59182
+    },
+    {
+      "icon_id": "12862495",
+      "name": "提 交",
+      "font_class": "submit",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "1509738",
+      "name": "取消",
+      "font_class": "cancel",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "3610672",
+      "name": "客户管理-账户管理",
+      "font_class": "userManage",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "4615518",
+      "name": "分配权限",
+      "font_class": "permissions",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "8048877",
+      "name": "报警柱",
+      "font_class": "baojingzhu",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "12700059",
+      "name": "报警",
+      "font_class": "alarm",
+      "unicode": "e9a6",
+      "unicode_decimal": 59814
+    },
+    {
       "icon_id": "3203565",
       "name": "导出Excel",
       "font_class": "excel_out",
@@ -18,13 +88,6 @@
       "font_class": "excel_in",
       "unicode": "e9a5",
       "unicode_decimal": 59813
-    },
-    {
-      "icon_id": "12700059",
-      "name": "报警",
-      "font_class": "alarm",
-      "unicode": "e9a6",
-      "unicode_decimal": 59814
     }
   ]
 }

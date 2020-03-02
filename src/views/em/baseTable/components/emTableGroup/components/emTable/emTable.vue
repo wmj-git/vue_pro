@@ -65,16 +65,18 @@
               :label="column.label"
               :width="column.width"
               :show-overflow-tooltip="true"
-              :formatter="formatterFn"
+              :formatter="column.noFormatter && column.noFormatter === true ? noFormatterFn : formatterFn"
             />
           </template>
-          <el-table-column v-if="children.columnBtn.length > 0" :width="248" fixed="right" label="操作">
+          <el-table-column v-if="children.columnBtn.length > 0" :width="set.columnBtnWidth" fixed="right" label="操作">
             <template slot-scope="scope">
               <template v-for="(btn, _index ) in children.columnBtn">
                 <el-button
+                  v-if="buttonIfFn(scope.row,btn)"
                   :key="_index"
                   :ref="btn.meta.system_id"
-                  class="em-btn-operation"
+                  :disabled="buttonDisabledFn(scope.row,btn)"
+                  class="em-btn-operation table_inLine_btn"
                   size="mini"
                   :type="btn.meta.buttonType ? btn.meta.buttonType : 'primary'"
                   @click.stop
@@ -104,7 +106,7 @@
   </div>
 </template>
 <script>
-import vueBus from '@/utils/vueBus'
+// import vueBus from '@/utils/vueBus'
 import { emMixin } from '@/utils/mixins'
 import { staticFormatterMap } from '@/utils/formatterMap'
 import { dataInitFn, childrenInitFn, toTree } from '@/utils/tool'
@@ -118,12 +120,13 @@ export default {
         queryUrl: '',
         queryMethod: 'post', // 查询接口请求类型
         appendUrl: '',
-        appendMethod: 'post',
+        appendMethod: 'post', // 添加接口请求类型
         removeUrl: '',
         removeMethod: 'post',
         updateUrl: '',
         updateMethod: 'post',
         rowClick: 'none',
+        columnBtnWidth: 180, // 操作列宽度
         paginationSever: true, // 是否后台分页
         treeShow: false, // 是否显示树形结构
         treeShow_set: {
@@ -134,7 +137,7 @@ export default {
         tableHeader: []
       },
       listLoading: true, // 加载状态
-      formatterMap: {},
+      formatterMap: {}, // 列格式化列表
       tableData: [], // 表数据
       currentRow: null, // 单选对象
       multipleSelection: [], // 多选框对象组
@@ -164,18 +167,8 @@ export default {
       const _controlType = _obj.meta.control_type ? _obj.meta.control_type : ''
       const _controlId = _obj.meta.control_id
       switch (_controlType) {
-        case 'BaseTable_EmTableGroup_columnBtnClick--BaseTable_EmTableGroup_EmTable_queryFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
-          })
-          break
-        case 'BaseTable_EmTableGroup_EmTable_columnBtnClick--BaseTable_EmDialog_openFn':
-          vueBus.$emit(_controlId, {
-            meta: _obj.meta,
-            data: _data
-          })
-          this.controlGroupFn(_obj, _data)
+        case 'none':
+          console.log(_controlId)
           break
         default:
           this.FN(_obj, _data)
@@ -274,9 +267,23 @@ export default {
     // 添加一行数据
     addFn(_obj) { // 添加一行数据
       const _this = this
+      let _params = null
+      if (_this.set.appendUrl === '/user/user/addOrgUser') {
+        _params = {
+          'addPo': {
+            'ids': _obj.data.ids
+          },
+          'user': {
+            'phone': _obj.data.phone,
+            'username': _obj.data.username
+          }
+        }
+      } else {
+        _params = _obj.data
+      }
       add({ // 页面渲染时拿表格数据
         url: _this.set.appendUrl,
-        params: _obj.data
+        params: _params
       }).then(res => {
         if (res && res.statusCode === 200) {
           _this.$message({
@@ -311,11 +318,7 @@ export default {
     delOneFn(_obj) {
       const _this = this
       let _val = this
-      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      const _fn = () => {
         if ('data' in _obj && _obj.data) {
           _val = _obj.data
         } else {
@@ -335,41 +338,42 @@ export default {
             }
           }
         })
-      }).catch(() => {
-
-      })
+      }
+      this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(_fn).catch(() => {})
     },
     // 选择删除多行数据
     delFn(_obj) {
       const _this = this
       const _items = []
-
+      const _fn = () => {
+        this.multipleSelection.forEach((_val) => {
+          _items.push(_val.id)
+        })
+        del({
+          url: _this.set.removeUrl,
+          params: _items
+        }).then(res => {
+          if (res) {
+            if (res.statusCode === 200) {
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              })
+              this.callbackFn(this.senderData, res)
+            }
+          }
+        })
+      }
       if (this.multipleSelection && this.multipleSelection.length > 0) {
         this.$confirm('此操作将删除所选项, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          this.multipleSelection.forEach((_val) => {
-            _items.push(_val.id)
-          })
-          del({
-            url: _this.set.removeUrl,
-            params: _items
-          }).then(res => {
-            if (res) {
-              if (res.statusCode === 200) {
-                _this.$message({
-                  message: '恭喜你，删除成功',
-                  type: 'success'
-                })
-                this.callbackFn(this.senderData, res)
-              }
-            }
-          })
-        }).catch(() => {
-
-        })
+        }).then(_fn).catch(() => {})
       } else {
         _this.$message({
           message: '请勾选要删除的行!',
@@ -380,13 +384,20 @@ export default {
     // 表单字段格式化
     formatterFn(row, column) {
       let _val = ''
+      let _fn = null
       const _formatterMap = Object.assign({}, this.formatterMap, staticFormatterMap)
-      if (column.property in _formatterMap) {
+      if ((column.property in _formatterMap) && (typeof _formatterMap[column.property] !== 'function')) {
         _val = _formatterMap[column.property].get(row[column.property])
+      } else if ((column.property in _formatterMap) && (typeof _formatterMap[column.property] === 'function')) {
+        _fn = _formatterMap[column.property]
+        _val = _fn(row[column.property])
       } else {
         _val = row[column.property]
       }
       return _val
+    },
+    noFormatterFn(row, column) {
+      return row[column.property]
     },
     unusualTimesFn(str) {
       if (str.unusualTimes) {
@@ -404,7 +415,9 @@ export default {
       // console.log('windowOpen', _obj)
       const _meta = _obj.meta
       // 请求的数据
-      const _params = _obj.data
+      const _currentRole = this.$store.getters['currentRole'] // 当前角色信息
+      let _params = _obj.data
+      _params = dataInitFn(_params, _currentRole)
       const _set = _meta.fn_set
       const _url = _set.requestUrl
       let _str = ''
@@ -413,6 +426,37 @@ export default {
       }
       _str += 'Authorization=' + this.$store.getters['token']
       window.open(`${process.env.VUE_APP_ACT_API + _url + '?' + _str}`, '_blank')
+    },
+    buttonDisabledFn(_row, _btn) { // 初始判断按钮是否禁用
+      let _value = false
+      if (!('buttonDisabledKey' in _btn.meta)) {
+        return _value
+      }
+      switch (_btn.meta.buttonDisabledKey) {
+        case 'category':
+          if ('category' in _row) {
+            _value = _row['category'] === 'false'
+          }
+          break
+      }
+
+      return _value
+    },
+    buttonIfFn(_row, _btn) {
+      let _value = true
+      let _key = null
+      let _type = null
+      if (!('buttonIfSet' in _btn.meta)) {
+        return _value
+      }
+      _key = _btn.meta.buttonIfSet.key
+      _type = _btn.meta.buttonIfSet.type
+      switch (_type) {
+        case '1':
+          _value = _row[_key] === 'false'
+          break
+      }
+      return _value
     }
   }
 }

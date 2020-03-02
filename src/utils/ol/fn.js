@@ -196,16 +196,28 @@ export class MinMap {
     this.view = new ol.View({
       center: center,
       zoom: zoom,
+      maxZoom: 28,
+      minZoom: 5,
       projection: 'EPSG:4326'
     })
     this.map = new ol.Map({
+      controls: ol.control.defaults({attribution: false, zoom: false, rotate: true}).extend([
+        //new ol.control.LayerSwitcher({ trash: false, extent: true }),
+        //new ol.control.ScaleLine(),
+        //new ol.control.Zoom({ target: undefined}),
+        //new ol.control.Rotate({
+        // autoHide: true,
+        // label: “N”
+        //}),
+        //new ol.control.MeasureTool({ sphereradius: 6378137 })
+      ]),
       target: target || '',
       layers: layers,
       view: this.view
     })
   }
 
-  viewFn({ zoom, center, duration }) {
+  viewTo({ zoom, center, duration }) {
     if (center === 'none') {
       this.view.animate({
         zoom: zoom
@@ -219,7 +231,7 @@ export class MinMap {
     }
   }
 
-  addOverlayFn({ _icon, _data, className, clickFn }) { // 添加覆盖物
+  addOverlay({ _icon, _data, className, clickFn }) { // 添加覆盖物
     /* [{
           type:"",
           id:"",
@@ -252,7 +264,7 @@ export class MinMap {
     }
   }
 
-  clearOverlayFn(_overlay, _type) { // 删除覆盖物
+  clearOverlay(_overlay, _type) { // 删除覆盖物
     /* {
           type:"",
           id:"",
