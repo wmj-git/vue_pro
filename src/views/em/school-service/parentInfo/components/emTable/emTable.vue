@@ -247,6 +247,10 @@ export default {
                 message: '删除成功',
                 type: 'success'
               })
+              switch (this.system_id) {
+                case 'system_is_151':
+                  break
+              }
             }
           })
         }).catch(() => {
