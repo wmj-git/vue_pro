@@ -144,12 +144,8 @@ export default {
         vueBus.$emit(this.set.fn_set.control_id, { // 点击楼层查询该楼层已分配设备
           fn: 'getBuildList',
           params: {
-            buildingId: _data.data.nodeData.buildingId
+            buildingId: _data.data.nodeData.id
           }
-        })
-      } else if (_data.level === 1) {
-        vueBus.$emit(this.set.fn_set.control_id, { // 点击学校查询所有的设备
-          fn: 'getAllList'
         })
       }
     },

@@ -207,7 +207,7 @@ export default {
       itemFormVisible: false,
       dialogStatus: '',
       typeArrList: {}, // 设备类型传递给表格
-      currentFloor: '',
+      currentFloor: null,
       rightCheckedArr: 0,
       BuildArr: [], // 建筑信息(穿梭框左边的值，添加楼层的下拉选项)
       rightDefaultChecked: [], // 右边默认已选中数组
@@ -215,11 +215,15 @@ export default {
       deviceIdes: [] // 设备id关联建筑
     }
   },
+  mounted() {
+    vueBus.$on('floorInfo', val => {
+      this.currentFloor = val.id
+      console.log('11', val.id)
+      console.log('12', this.currentFloor)
+    })
+  },
   async created() {
     await this.init()
-    vueBus.$on('floorInfo', val => {
-      this.currentFloor = val
-    })
     vueBus.$emit('device_type', this.typeArrList)
   },
   beforeDestroy() {
@@ -250,13 +254,14 @@ export default {
             await floorList({
               url: this.set.deviceUrl
             }).then(res => {
+              console.log('设备啊', res)
               res.data.list.forEach(val => {
                 this.deviceArr.push({ 'label': val.name, 'key': val.id })
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = this.deviceArr // 当前组织具有的所有设备
             break
-          case 'buildingName':
+          /*   case 'buildingName':
             buildList({
               url: this.set.searchUrl
             }).then(res => {
@@ -293,7 +298,7 @@ export default {
               })
             })
             this.children.formItem[i].meta.options_OBJ.data = typeArr // 设备类型下拉选项赋值
-            break
+            break*/
         }
       }
       this.defaultFn(this.children.formItem)
@@ -309,16 +314,15 @@ export default {
       this.dialogFormVisible = true
     },
     // 设备关联楼层
-    async associate() {
+    associate() {
+      // this.currentFloor(楼层ID接受不到)
       const _params = {
-        floorId: this.currentFloor.id
+        floorId: this.currentFloor
       }
-      console.log('点击关联设备')
-      await deviceInfo({
+      deviceInfo({
         url: this.set.checkedUrl,
         params: _params
       }).then(response => {
-        console.log('指定楼层的已分配设备', response)
         response.data.list.forEach(val => {
           /* this.temp['deviceIds'].push(val.id) */// 获取指定楼层已关联设备
         })

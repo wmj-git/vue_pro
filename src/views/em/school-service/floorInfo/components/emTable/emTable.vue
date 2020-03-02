@@ -92,7 +92,6 @@ export default {
   mounted() {
     vueBus.$on('floorInfo', val => {
       this.currentFloor = val
-      console.log('接受参数', val)
     })
   },
   created() {
@@ -191,7 +190,9 @@ export default {
     // 渲染数据(指定楼层的设备)
     getList(params) {
       const _params = {
-        floorId: this.currentFloor.id
+        floorId: this.currentFloor.id,
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}
@@ -209,6 +210,7 @@ export default {
           params: _params
         }).then(response => {
           if (response.statusCode === 200) {
+            this.total = response.data.total
             this.tableDataEnd = response.data.list
             if (response.data.total === 0) { // 数据为空时不渲染表格
               this.tableDataEnd = null
@@ -226,7 +228,8 @@ export default {
     // 渲染数据(指定建筑的设备)
     getBuildList(params) {
       const _params = {
-        buildingId: this.currentFloor.buildingId
+        pageSize: this.listQuery.limit,
+        pageNum: this.listQuery.page
       }
       try {
         let _val = {}
@@ -244,6 +247,7 @@ export default {
           params: _params
         }).then(response => {
           if (response.statusCode === 200) {
+            this.total = response.data.total
             this.tableDataEnd = response.data.list
             /* this.children.columnBtn[1].meta.className = 'distribution_class' */
           } else if (response.statusCode === 503) { // 数据为空时不渲染表格
